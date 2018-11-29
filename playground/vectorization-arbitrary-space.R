@@ -41,9 +41,8 @@ f <- function(...) {
   do.call(mapply, c(transformation, list(...), SIMPLIFY=FALSE))
 }
 
-df <- data.frame(r = I(rs_as_list))
-df$rs <- rs
-df$flow <- lapply(df$r, flow) %>% unlist %>% matrix(nrow = nrow(rs), byrow = TRUE) %>% data.frame
+df <- data.frame(rs = rs)
+df$flow <- lapply(rs_as_list, flow) %>% unlist %>% matrix(nrow = nrow(rs), byrow = TRUE) %>% data.frame
 df$J <- do.call(f, rs)
 
 df$egv <- lapply(df$J, eigen)
