@@ -43,10 +43,9 @@ f <- function(...) {
 
 df <- data.frame(r = I(rs_as_list))
 df$rs <- rs
-df$flow <- lapply(df$r, flow)
-df$flow_x <- lapply(df$flow, '[[', 1) %>% unlist
-df$flow_y <- lapply(df$flow, '[[', 2) %>% unlist
+df$flow <- lapply(df$r, flow) %>% unlist %>% matrix(nrow = nrow(rs), byrow = TRUE) %>% data.frame
 df$J <- do.call(f, rs)
+
 df$egv <- lapply(df$J, eigen)
 df$stabilityLyap <- lapply(df$egv, '[[', 'values') %>% # Drop eigenvectors
               lapply(Re) %>% # Calculate the real part
@@ -81,17 +80,17 @@ p_skew <- (ggplot(data=clean, aes(x=rs$x, y=rs$y, z=skewnorm))
 
 grid.arrange(p_symm, p_skew, nrow = 1)
 
-p_fx <- (ggplot(data=clean, aes(x=rs$x, y=rs$y, z=flow_x))
-           + stat_contour(geom = "polygon", aes(fill = flow_x))
-           + geom_tile(aes(fill = flow_x))
+p_fx <- (ggplot(data=clean, aes(x=rs$x, y=rs$y, z=flow$X1))
+           + stat_contour(geom = "polygon", aes(fill = flow$X1))
+           + geom_tile(aes(fill = flow$X1))
            + stat_contour(bins = 15)
            + guides(fill = guide_colorbar(title = "Norm"))
            + ggtitle("f_x")
 )
 
-p_fy <- (ggplot(data=clean, aes(x=rs$x, y=rs$y, z=flow_y))
-           + stat_contour(geom = "polygon", aes(fill = flow_y))
-           + geom_tile(aes(fill = flow_y))
+p_fy <- (ggplot(data=clean, aes(x=rs$x, y=rs$y, z=flow$X2))
+           + stat_contour(geom = "polygon", aes(fill = flow$X2))
+           + geom_tile(aes(fill = flow$X2))
            + stat_contour(bins = 15)
            + guides(fill = guide_colorbar(title = "Norm"))
            + ggtitle("f_y")
