@@ -12,15 +12,14 @@ library(gridExtra)
 # Example of a flow R^n --> R^n
 flow <- function(x) {
   c(
-    x[2]^2,
+    x[2]^2 - cos(x[1]*x[2]),
     2*x[1]*x[2]
   )
 }
 
 ## Create meshgrid
-xs <- seq(-1, 2, length = 3)
-ys <- seq(-1, 1, length = 4)
-zs <- seq(1, 3, length = 3)
+xs <- seq(-1, 2, length = 30)
+ys <- seq(-1, 1, length = 40)
 
 # This is just an ordered list of all the sampling points
 rs <- expand.grid(x = xs, y = ys) # Cartesian product
@@ -42,9 +41,11 @@ f <- function(...) {
   do.call(mapply, c(transformation, list(...), SIMPLIFY=FALSE))
 }
 
-df <- data.frame(rs = rs)
-df$r <- I(rs_as_list)
-df$F <- lapply(df$r, flow)
+df <- data.frame(r = I(rs_as_list))
+df$rs <- rs
+df$flow <- lapply(df$r, flow)
+df$flow_x <- lapply(df$flow, '[[', 1) %>% unlist
+df$flow_y <- lapply(df$flow, '[[', 2) %>% unlist
 df$J <- do.call(f, rs)
 df$egv <- lapply(df$J, eigen)
 df$stabilityLyap <- lapply(df$egv, '[[', 'values') %>% # Drop eigenvectors
@@ -62,7 +63,7 @@ df$cons <-  lapply(df$Jskew, function(x) {all(abs(x) < tol)}) %>% unlist
 clean <- select(df, -J, -Jsymm, -Jskew, -egv)
 
 ## Plot
-p_symm <- (ggplot(data=clean, aes(x=rs.x, y=rs.y, z=symmnorm))
+p_symm <- (ggplot(data=clean, aes(x=rs$x, y=rs$y, z=symmnorm))
            + stat_contour(geom = "polygon", aes(fill = symmnorm))
            + geom_tile(aes(fill = symmnorm))
            + stat_contour(bins = 15)
@@ -70,7 +71,7 @@ p_symm <- (ggplot(data=clean, aes(x=rs.x, y=rs.y, z=symmnorm))
            + ggtitle("Symm part")
 )
 
-p_skew <- (ggplot(data=clean, aes(x=rs.x, y=rs.y, z=skewnorm))
+p_skew <- (ggplot(data=clean, aes(x=rs$x, y=rs$y, z=skewnorm))
   + stat_contour(geom = "polygon", aes(fill = skewnorm))
   + geom_tile(aes(fill = skewnorm))
   + stat_contour(bins = 15)
@@ -79,4 +80,22 @@ p_skew <- (ggplot(data=clean, aes(x=rs.x, y=rs.y, z=skewnorm))
   )
 
 grid.arrange(p_symm, p_skew, nrow = 1)
+
+p_fx <- (ggplot(data=clean, aes(x=rs$x, y=rs$y, z=flow_x))
+           + stat_contour(geom = "polygon", aes(fill = flow_x))
+           + geom_tile(aes(fill = flow_x))
+           + stat_contour(bins = 15)
+           + guides(fill = guide_colorbar(title = "Norm"))
+           + ggtitle("f_x")
+)
+
+p_fy <- (ggplot(data=clean, aes(x=rs$x, y=rs$y, z=flow_y))
+           + stat_contour(geom = "polygon", aes(fill = flow_y))
+           + geom_tile(aes(fill = flow_y))
+           + stat_contour(bins = 15)
+           + guides(fill = guide_colorbar(title = "Norm"))
+           + ggtitle("f_y")
+)
+
+grid.arrange(p_fx, p_fy, p_symm, p_skew, nrow = 2)
 
