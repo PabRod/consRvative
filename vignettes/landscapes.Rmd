@@ -1,13 +1,14 @@
 ---
 title: "Stability landscapes for weakly non-gradient flows"
 author: "Pablo Rodríguez-Sánchez & Egbert van Nes"
+abstract: "Stability landscapes are useful tools for understanding dynamical systems. Stability landscapes are usually identified with the physical concept of scalar potential. Unfortunately, the conditions for those potentials to be well defined (and thus, meaningful) are quite restrictive for higher dimensional systems. Here we present a numerical method for decomposing dynamical systems of any size in two terms, one that has an associated potential (the gradient term), and another one that lacks it (the curl term). If the magnitude of the curl part is locally small compared to the gradient part, we can still make approximate use of the concept of stability landscapes. The curl to gradient ratio can be used as a local measure of the error introduced by our approximation."
 date: "`r Sys.Date()`"
 output:
   pdf_document:
     keep_tex: yes
-    toc: true
-  html_vignette: default
+    toc: false
   md_document:
+  html_vignette: default
 bibliography: landscapes.bib
 params:
   plotly_update: false
@@ -27,9 +28,6 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 ```
-
-## Abstract
-Stability landscapes are useful tools for understanding dynamical systems. Stability landscapes are usually identified with the physical concept of scalar potential. Unfortunately, the conditions for those potentials to be well defined (and thus, meaningful) are quite restrictive for higher dimensional systems. Here we present a numerical method for decomposing dynamical systems of any size in two terms, one that has an associated potential (the gradient term), and another one that lacks it (the curl term). If the magnitude of the curl part is locally small compared to the gradient part, we can still make approximate use of the concept of stability landscapes. The curl to gradient ratio can be used as a local measure of the error introduced by our approximation.
 
 ## Introduction
 With knowledge becoming progressively more interdisciplinary, the relevance of science communication is increasing fast. Mathematical concepts are among the hardest topics to communicate to non-expert audiences, policy makers, and even to professionals from the so-called _soft sciences_. Visual methods are known to be, when applicable, successful ways of teaching and communicating mathematical results to non-specialists.

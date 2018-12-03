@@ -8,5 +8,10 @@ inst/doc
 *.html
 *.R
 *.pdf
-*.tex
 *_files
+*.aux
+*.bbl
+*.blg
+*_latexmk
+*.fls
+*.out
