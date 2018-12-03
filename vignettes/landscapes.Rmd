@@ -1,5 +1,5 @@
 ---
-title: "Stability landscapes"
+title: "Stability landscapes for weakly non-gradient flows"
 author: "Pablo Rodríguez-Sánchez & Egbert van Nes"
 date: "`r Sys.Date()`"
 output:
@@ -28,4 +28,87 @@ knitr::opts_chunk$set(
 )
 ```
 
+## Abstract
+Stability landscapes are useful tools for understanding dynamical systems. Stability landscapes are usually identified with the physical concept of scalar potential. Unfortunately, the conditions for those potentials to be well defined (and thus, meaningful) are quite restrictive for higher dimensional systems. Here we present a numerical method for decomposing dynamical systems of any size in two terms, one that has an associated potential (the gradient term), and another one that lacks it (the curl term). If the magnitude of the curl part is locally small compared to the gradient part, we can still make approximate use of the concept of stability landscapes. The curl to gradient ratio can be used as a local measure of the error introduced by our approximation.
+
 ## Introduction
+With knowledge becoming progressively more interdisciplinary, the relevance of science communication is increasing fast. Mathematical concepts are among the hardest topics to communicate to non-expert audiences, policy makers, and even to professionals from the so-called _soft sciences_. Visual methods are known to be, when applicable, successful ways of teaching and communicating mathematical results to non-specialists.
+
+### Stability landscape figures
+[comment1]: <> (Proved to be succesful)
+One particularly successful visualization method is that of the stability landscape, also known as the rolling marble or ball-in-a-cup diagrams (@Beisner2003), and deeply related to the physical concept of scalar potential (@Zhou) and the mathematical of Lyapunov function (@Strogatz1994). Stability landscapes have proven to be successful tool to understand and explain certain non-trivial concepts about dynamical systems, such as those of multistability, basin of attraction and even bifurcation, in a remarkably intuitive way (@Beisner2003, @Scheffer2001).
+
+[comment2]: <> (Why does it work?)
+The main reason for the success of this picture comes from the fact that stability landscapes are built as an analogy with our most familiar dynamical system: movement. Particularly, the movement of a marble along a curved surface under the influence of its own weight and a strong frictional force. It is important to stress the fact that under this picture there's not such a thing as inertia. The accurate analogy is that of a marble rolling in a surface while submerged inside a very viscous fluid (@Strogatz1994, @Pawlowski2006). This explains why our intuition, based in what we know about movement in our everyday life, works so well here. 
+
+The position of the marble represents the state of the system at a given time. With this picture in mind, the shape of the surface summarizes the underlying dynamical equations, being the slope the driver of the movement. Under this picture, the peaks on the undulated surface represent unstable equilibrium states and the wells represent stable equilibrium states. Different basins of attraction are separated by _mountain ridges_ in the surface. Summarizing: the marble naturally rolls downhill to the lowest point of its basin of attraction.
+
+In order to understand why and how this analogy works for systems different than a rolling marble, we should begin with the understanding of the rolling marble itself.
+
+From a mathematical point of view, the relationship between the surface $V(x,y)$ and the dynamics is given by equation $\ref{eq:2D}$.
+
+\begin{equation}
+\label{eq:2D}
+  \begin{cases}
+    \frac{dx}{dt} = f(x,y) = - \frac{\partial V}{\partial x} \\
+    \frac{dy}{dt} = g(x,y) = - \frac{\partial V}{\partial y}
+  \end{cases}
+\end{equation}
+
+[comment3]: <> (Limitations)
+Like with any other analogy, it is important to be aware of its limitations. The most important one is the fact that, for general flows $f(x,y)$ and $g(x,y)$, it doesn't exist such a surface $V(x,y)$ satisfying equation $\ref{eq:2D}$. To get an intutive feeling of why this is true, picture a flow with a stable cyclic attractor. We need a surface where our marble can rotate in a closed loop while always going downhill. The kind of surface that only exists on M.C. Escher's paintings.
+
+From an operational point of view, the surface $V(x,y)$ can be computed if and only if the crossed derivatives of the elements of the flow are point-to-point identical (equation $\ref{eq:2Dcond}$). Flows satisfying this equation are known as irrotational or gradient flows.
+
+\begin{equation}
+\label{eq:2Dcond}
+\frac{\partial f}{\partial y}(x,y) = \frac{\partial g}{\partial x}(x,y)
+\end{equation}
+
+### Generalization
+
+Relationship $\ref{eq:2D}$ and condition $\ref{eq:2Dcond}$ can be straightforwardly generalized to a different number of dimensions. For instance, for a three dimensional system the dynamical equation becomes $\ref{eq:3D}$ and the condition involves all crossed derivatives (see $\ref{eq:3Dcond}$).
+
+\begin{equation}
+\label{eq:3D}
+  \begin{cases}
+    \frac{dx}{dt} = f(x,y,z) = - \frac{\partial V}{\partial x} \\
+    \frac{dy}{dt} = g(x,y,z) = - \frac{\partial V}{\partial y} \\
+    \frac{dz}{dt} = h(x,y,z) = - \frac{\partial V}{\partial z}
+  \end{cases}
+\end{equation}
+
+\begin{equation}
+\label{eq:3Dcond}
+\begin{cases}
+\frac{\partial f}{\partial y}(x,y,z) = \frac{\partial g}{\partial x}(x,y,z) \\
+\frac{\partial g}{\partial z}(x,y,z) = \frac{\partial h}{\partial y}(x,y,z) \\
+\frac{\partial h}{\partial x}(x,y,z) = \frac{\partial f}{\partial z}(x,y,z)
+\end{cases}
+\end{equation}
+
+Using vector notation and the nabla operator $\vec \nabla$ both the dynamical equation and the condition can be written compactly for any number of dimensions(see equation $\ref{eq:anyD}$ and condition $\ref{eq:anyDcond}$).
+
+\begin{equation}
+\label{eq:anyD}
+  \frac{d\vec x}{dt} = \vec f(\vec x) = - \vec{\nabla{V}}
+\end{equation}
+
+\begin{equation}
+\label{eq:anyDcond}
+  \vec \nabla \times \vec f(\vec x) = \vec 0
+\end{equation}
+
+The nabla operator is used to generalize the concept of derivative to functions with more than one argument. For more information see @Marsden2003 or any other introductory text about vector calculus. During the rest of this paper we'll focus only in the two dimensional case shown in equation $\ref{eq:2D}$. There are two reasons for this choice. The first is that two-dimensional flows are the simpler systems that can lack a stability landscape (or equivalently: one-dimensional systems always have one). The second reason is that, being interested in visualization, we want to focus on _"surfaces"_ like $y = V(x)$ (i.e.: curves) and $z = V(x,y)$ (i.e.: surfaces), and not in hypersurfaces with too many dimensions to plot like $u = V(x,y,z)$. We made this choice motivated by didactical considerations despite the algorithm we developed can handle general n-dimensional flows.
+
+## Methods
+- Algorithm
+
+## Results
+- Case studies
+
+## Discussion
+- Power of visualization and intuition
+- Limits of visualization and intuition
+- Peters projection and geometrical limits
+- Why did we abandon the phase plane?
