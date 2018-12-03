@@ -1,5 +1,12 @@
+inst/doc
 .Rproj.user
 .Rhistory
 .RData
 .Ruserdata
 *.Rproj
+
+*.html
+*.R
+*.pdf
+*.tex
+*_files

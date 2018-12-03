@@ -1,0 +1,31 @@
+---
+title: "Stability landscapes"
+author: "Pablo Rodríguez-Sánchez & Egbert van Nes"
+date: "`r Sys.Date()`"
+output:
+  pdf_document:
+    keep_tex: yes
+    toc: true
+  html_vignette: default
+  md_document:
+bibliography: landscapes.bib
+params:
+  plotly_update: false
+header-includes:
+  - \usepackage{tikz}
+  - \usepackage{pgfplots}
+  - \usetikzlibrary{shapes,arrows}
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Introduction
