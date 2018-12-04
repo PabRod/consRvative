@@ -1,6 +1,6 @@
 ---
 title: "Stability landscapes for weakly non-gradient flows"
-author: "Pablo Rodríguez-Sánchez & Egbert van Nes"
+author: "Pablo Rodríguez-Sánchez, Marten Scheffer & Egbert van Nes"
 abstract: "Stability landscapes are useful tools for understanding dynamical systems. Stability landscapes are usually identified with the physical concept of scalar potential. Unfortunately, the conditions for those potentials to be well defined (and thus, meaningful) are quite restrictive for higher dimensional systems. Here we present a numerical method for decomposing dynamical systems of any size in two terms, one that has an associated potential (the gradient term), and another one that lacks it (the curl term). If the magnitude of the curl part is locally small compared to the gradient part, we can still make approximate use of the concept of stability landscapes. The curl to gradient ratio can be used as a local measure of the error introduced by our approximation."
 date: "`r Sys.Date()`"
 output:
@@ -11,7 +11,7 @@ output:
   md_document:
   html_vignette: default
 documentclass: article
-classoption: twocolumn, a4paper
+classoption: onecolumn, a4paper
 fontsize: 10pt
 bibliography: landscapes.bib
 params:
@@ -38,12 +38,12 @@ With knowledge becoming progressively more interdisciplinary, the relevance of s
 
 ### Stability landscape figures
 [comment1]: <> (Proved to be succesful)
-One particularly successful visualization method is that of the stability landscape, also known as the rolling marble or ball-in-a-cup diagrams (@Beisner2003), and deeply related to the physical concept of scalar potential (@Zhou) and the mathematical of Lyapunov function (@Strogatz1994). Stability landscapes have proven to be successful tool to understand and explain certain non-trivial concepts about dynamical systems, such as those of multistability, basin of attraction and even bifurcation, in a remarkably intuitive way (@Beisner2003, @Scheffer2001).
+One particularly successful visualization method is that of the stability landscape, also known as the rolling marble or ball-in-a-cup diagrams (@Beisner2003), and deeply related to the physical concept of scalar potential (@Zhou) and the mathematical of Lyapunov function (@Strogatz1994). Stability landscapes have proven to be a successful tool to understand and explain certain non-trivial concepts about dynamical systems, such as those of multistability, basin of attraction and even bifurcation, in a remarkably intuitive way (@Beisner2003, @Scheffer2001).
 
 [comment2]: <> (Why does it work?)
 The main reason for the success of this picture comes from the fact that stability landscapes are built as an analogy with our most familiar dynamical system: movement. Particularly, the movement of a marble along a curved surface under the influence of its own weight and a strong frictional force. It is important to stress the fact that under this picture there's not such a thing as inertia. The accurate analogy is that of a marble rolling in a surface while submerged inside a very viscous fluid (@Strogatz1994, @Pawlowski2006). This explains why our intuition, based in what we know about movement in our everyday life, works so well here. 
 
-The position of the marble represents the state of the system at a given time. With this picture in mind, the shape of the surface summarizes the underlying dynamical equations, being the slope the driver of the movement. Under this picture, the peaks on the undulated surface represent unstable equilibrium states and the wells represent stable equilibrium states. Different basins of attraction are separated by _mountain ridges_ in the surface. Summarizing: the marble naturally rolls downhill to the lowest point of its basin of attraction.
+In stability landscapes the position of the marble represents the state of the system at a given time. With this picture in mind, the shape of the surface summarizes the underlying dynamical equations, being the slope the driver of the movement. Under this picture, the peaks on the undulated surface represent unstable equilibrium states and the wells represent stable equilibrium states. Different basins of attraction are separated by _mountain ridges_ in the surface. Summarizing: the marble naturally rolls downhill to the lowest point of its basin of attraction.
 
 In order to understand why and how this analogy works for systems different than a rolling marble, we should begin with the understanding of the rolling marble itself.
 
@@ -60,7 +60,7 @@ From a mathematical point of view, the relationship between the surface $V(x,y)$
 [comment3]: <> (Limitations)
 Like with any other analogy, it is important to be aware of its limitations. The most important one is the fact that, for general flows $f(x,y)$ and $g(x,y)$, it doesn't exist such a surface $V(x,y)$ satisfying equation $\ref{eq:2D}$. To get an intutive feeling of why this is true, picture a flow with a stable cyclic attractor. We need a surface where our marble can rotate in a closed loop while always going downhill. The kind of surface that only exists on M.C. Escher's paintings.
 
-From an operational point of view, the surface $V(x,y)$ can be computed if and only if the crossed derivatives of the elements of the flow are point-to-point identical (equation $\ref{eq:2Dcond}$). Flows satisfying this equation are known as irrotational or gradient flows.
+From an operational point of view, the surface $V(x,y)$ exists (and thus can be computed) if and only if the crossed derivatives of the elements of the flow are point-to-point identical (equation $\ref{eq:2Dcond}$). Flows satisfying this equation are known as irrotational or gradient flows.
 
 \begin{equation}
 \label{eq:2Dcond}
@@ -111,7 +111,7 @@ The method we propose is based on the numerical decomposition of our field in tw
 \vec f (\vec x) = \vec f_{gradient} (\vec x) + \vec f_{curl} (\vec x)
 \end{equation}
 
-So to say, $\vec f_{gradient} (\vec x)$ captures all the part of the system that can be associated to a scalar potential, while $\vec f_{curl} (\vec x)$ represents the deviation from this ideal, conservative case. We'll use $\vec f_{gradient} (\vec x)$ to compute a scalar potential, which we will call pseudopotential. The absolute error of this approach will be given by $\parallel \vec f_{curl} (\vec x) \parallel$.
+$\vec f_{gradient} (\vec x)$ captures all the part of the system that can be associated to a scalar potential, while $\vec f_{curl} (\vec x)$ represents the deviation from this ideal, conservative case. We'll use $\vec f_{gradient} (\vec x)$ to compute a scalar potential, which we will call pseudopotential. The absolute error of this approach will be given by $\parallel \vec f_{curl} (\vec x) \parallel$.
 
 \subsection{Skew-symmetric decomposition}
 \label{subsec:SkewSymmDecomposition}
@@ -126,34 +126,36 @@ Being a unique decomposition, if the original matrix is already symmetric the co
 
 \subsection{Linear approximation}
 \label{subsec:LinearApproximation}
-Any sufficiently smooth and continuous vector field $\vec f(\vec x)$ can be approximated around the point $\vec{x_0}$ using a first order Taylor series:
+Any sufficiently smooth and continuous vector field $\vec f(\vec x)$ can be approximated around the point $\vec{x_0}$ using linearization:
 
 \begin{equation}
 \label{eq:TaylorExp}
-\vec f(\vec x)^t = \vec f(\vec{x_0})^t + J(\vec{x_0}) \cdot \left(\vec x - \vec{x_0} \right)^t + \mathcal{O} \left( \| \vec x \| ^2 \right)
+\vec f(\vec x)^t = \vec f(\vec{x_0})^t + J(\vec{x_0}) \cdot \Delta \vec x^t + \mathcal{O} \left( \| \vec x \| ^2 \right)
 \end{equation}
 
-where $J(\vec{x_0})$ is the jacobian matrix evaluated at $\vec{x_0}$. Using the skew symmetric decomposition described in equation \ref{eq:SkewSymDec}, we can rewrite \ref{eq:TaylorExp} as:
+where $J(\vec{x_0})$ is the jacobian matrix evaluated at the approximation point $\vec{x_0}$ and $\Delta \vec x$ is defined as the vector distance to the approximation point, that is, $\Delta \vec x = \vec x - \vec{x_0}$.
+
+Using the skew symmetric decomposition described in equation \ref{eq:SkewSymDec}, we can rewrite \ref{eq:TaylorExp} as:
 
 \begin{equation}
 \label{eq:TaylorExpDecomposed}
-\vec f(\vec x)^t = \vec f(\vec{x_0})^t + J_{Symm}(\vec{x_0}) \cdot \left(\vec x - \vec{x_0} \right)^t + J_{Skew}(\vec{x_0}) \cdot \left(\vec x - \vec{x_0} \right)^t+ \mathcal{O} \left( \| \vec x \| ^2 \right)
+\vec f(\vec x)^t = \vec f(\vec{x_0})^t + J_{Symm}(\vec{x_0}) \cdot \Delta \vec x^t + J_{Skew}(\vec{x_0}) \cdot \Delta \vec x^t+ \mathcal{O} \left( \| \vec x \| ^2 \right)
 \end{equation}
 
 This trick is interesting because it represents a natural decomposition of the field $\vec f(\vec x)$ in a gradient and a non-gradient term. More specifically, the only non-gradient term is the last one\footnote{This is deeply related with the Helmholtz decomposition: it is proven that, for a huge range of easy to fulfil conditions, any field can be decomposed as $\vec f (\vec x) = - \vec \nabla V (\vec x) + \vec \nabla \times \vec A (\vec x )$, where $V$ and $\vec A$ are known as scalar and vector potentials. Both of them have a straightforward natural interpretation, and are widely used, for instance, in electromagnetism and fluid dynamics}.
 
 \begin{equation}
 \label{eq:TaylorExpDecomposedAndGradient}
-\vec f(\vec x)^t = - \vec \nabla V(\vec{x})^t + J_{Skew}(\vec{x_0}) \cdot \left(\vec x - \vec{x_0} \right)^t+ \mathcal{O} \left( \| \vec x \| ^2 \right)
+\vec f(\vec x)^t = - \vec \nabla V(\vec{x})^t + J_{Skew}(\vec{x_0}) \cdot \Delta \vec x^t + \mathcal{O} \left( \| \vec x \| ^2 \right)
 \end{equation}
 
 This means that systems like \ref{eq:TaylorExp} are only gradient when their jacobians are symmetric and, thus, the skew component is a matrix of zeros.
 
-Additionally, $V(\vec x)$ can be computed analytically:
+Additionally, $V(\vec x)$ can be computed analytically by direct integration:
 
 \begin{equation}
 \label{eq:Potential}
-V(\vec{x})^t = V(\vec{x_0})^t - \vec f(\vec x_0) \cdot \left(\vec x - \vec{x_0} \right)^t - \frac{1}{2} \left(\vec x - \vec{x_0} \right) \cdot J_{Symm} (\vec{x_0}) \cdot \left(\vec x - \vec{x_0} \right)^t
+V(\vec{x})^t = V(\vec{x_0})^t - \vec f(\vec x_0) \cdot \Delta \vec x^t - \frac{1}{2} \Delta \vec x \cdot J_{Symm} (\vec{x_0}) \cdot \Delta \vec x^t + \mathcal{O} \left( \| \vec x \| ^3 \right)
 \end{equation}
 
 \subsection{Numerical algorithm}
@@ -218,9 +220,13 @@ so the recursion relation reads:
 V(x_i) = V(x_0) + \sum_{n = 0}^{i-1} \Delta V(x_n, x_{n+1})
 \end{equation}
 
+### Code package
 
 ## Results
-- Case studies
+
+### A synthetic example
+
+### Competition model
 
 ## Discussion
 - Power of visualization and intuition
