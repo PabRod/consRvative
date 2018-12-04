@@ -51,8 +51,6 @@ The main reason for the success of this picture comes from the fact that stabili
 
 In stability landscapes the position of the marble represents the state of the system at a given time. With this picture in mind, the shape of the surface summarizes the underlying dynamical equations, being the slope the driver of the movement. Under this picture, the peaks on the undulated surface represent unstable equilibrium states and the wells represent stable equilibrium states. Different basins of attraction are separated by _mountain ridges_ in the surface. Summarizing: the marble naturally rolls downhill to the lowest point of its basin of attraction.
 
-In order to understand why and how this analogy works for systems different than a rolling marble, we should begin with the understanding of the rolling marble itself.
-
 From a mathematical point of view, the relationship between the surface $V(x,y)$ and the dynamics is given by equation $\ref{eq:2D}$.
 
 \begin{equation}
@@ -66,11 +64,18 @@ From a mathematical point of view, the relationship between the surface $V(x,y)$
 [comment3]: <> (Limitations)
 Like with any other analogy, it is important to be aware of its limitations. The most important one is the fact that, for general flows $f(x,y)$ and $g(x,y)$, it doesn't exist such a surface $V(x,y)$ satisfying equation $\ref{eq:2D}$. To get an intutive feeling of why this is true, picture a flow with a stable cyclic attractor. We need a surface where our marble can rotate in a closed loop while always going downhill. The kind of surface that only exists on M.C. Escher's paintings (see, for instance, @escher).
 
-From an operational point of view, the surface $V(x,y)$ exists (and thus can be computed) if and only if the crossed derivatives of the elements of the flow are point-to-point identical (equation $\ref{eq:2Dcond}$). Flows satisfying this equation are known as irrotational or gradient flows.
+From an operational point of view, the surface $V(x,y)$ exists (and thus can be computed) if and only if the crossed derivatives of the elements of the flow are equal (equation $\ref{eq:2Dcond}$).
 
 \begin{equation}
 \label{eq:2Dcond}
 \frac{\partial f}{\partial y} = \frac{\partial g}{\partial x}
+\end{equation}
+
+Flows satisfying this equation are known as irrotational or gradient flows. It is important to note that equation $\ref{eq:2Dcond}$ is an equality of functions, meaning that both of them are point-to-point identical. If an only if condition $\ref{eq:2Dcond}$ holds, we can use a path integral (@Marsden2003) to invert $\ref{eq:2D}$ and thus calculate $V(x,y)$ using the flow equations $f(x,y)$ and $g(x,y)$ as an input (equation $\ref{eq:2Dint}$)
+
+\begin{equation}
+\label{eq:2Dint}
+V(x,y) = V(x_0, y_0) - \int^{x}_{x_0} \int^{y}_{y_0} \left( f(\xi,\eta) d\xi + g(\xi,\eta) d\eta \right)
 \end{equation}
 
 ### Generalization
@@ -87,6 +92,13 @@ Dynamics in equation $\ref{eq:2D}$ and the condition for the crossed derivatives
   \frac{\partial f_i}{\partial g_j} = \frac{\partial f_j}{\partial g_i} : i \neq j
 \end{equation}
 
+And, if $\ref{eq:anyDcond}$ holds, the potential is given by equation $\ref{eq:anyDint}$, where the path integral is computed along the curve $\Gamma$ joining the points $\vec x_0$ and $\vec x$.
+
+\begin{equation}
+\label{eq:anyDint}
+V(\vec x) = V(\vec x_0) - \int_\Gamma \sum_{i=1}^n f_i(\vec x) dx_i
+\end{equation}
+
 It is important to note that the number of equations $N$ contained in condition $\ref{eq:anyDcond}$ grows with the dimensionality of the system $D$, particularly following the series of triangular numbers $N = \frac{1}{2}(D-1)D$. Thus, the higher the dimensionality, the harder is to fulfill condition $\ref{eq:anyDcond}$. As a side effect, we see that in one dimensional systems the condition contains $0$ equations and is thus automatically fulfilled, meaning that one dimensional systems always have a well defined landscape.
 
 Using vector notation and the nabla operator $\vec \nabla$ both the dynamical equation and the condition can be written compactly for any number of dimensions(see equation $\ref{eq:vec}$ and condition $\ref{eq:vecCond}$). 
@@ -101,6 +113,12 @@ Using vector notation and the nabla operator $\vec \nabla$ both the dynamical eq
   \vec \nabla \times \vec f(\vec x) = \vec 0
 \end{equation}
 
+and, if $\ref{eq:vecCond}$ holds, the potential reads $\ref{eq:vecInt}$.
+
+\begin{equation}
+\label{eq:vecInt}
+V(\vec x) = V(\vec x_0) - \int_\Gamma \vec f(\vec x) d\vec x
+\end{equation}
 
 The nabla operator is used to generalize the concept of derivative to functions with more than one argument. For more information see @Marsden2003 or any other introductory text about vector calculus. During the rest of this paper we'll focus only in the two dimensional case shown in equation $\ref{eq:2D}$. There are two reasons for this choice. The first is that two-dimensional flows are the simpler systems that can lack a stability landscape (or equivalently: one-dimensional systems always have one). The second reason is that, being interested in visualization, we want to focus on _"surfaces"_ like $y = V(x)$ (i.e.: curves) and $z = V(x,y)$ (i.e.: surfaces), and not in hypersurfaces with too many dimensions to plot like $u = V(x,y,z)$. We made this choice motivated by didactical considerations despite the algorithm we developed can handle general n-dimensional flows.
 
