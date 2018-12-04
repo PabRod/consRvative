@@ -45,18 +45,18 @@ With knowledge becoming progressively more interdisciplinary, the relevance of s
 
 ### Stability landscape figures
 [comment1]: <> (Proved to be succesful)
-One particularly successful visualization method is that of the stability landscape, also known as the rolling marble or ball-in-a-cup diagram (@Beisner2003). The idea is deeply related to the physical concept of scalar potential (@Zhou) and the mathematical of Lyapunov function (@Strogatz1994). Stability landscapes have proven to be a successful tool to understand and explain certain non-trivial concepts about dynamical systems, such as those of multistability, basin of attraction and even bifurcation, in a remarkably intuitive way (@Beisner2003, @Scheffer2001 and figure $\ref{fig:aew}$).
+One particularly successful visualization method is that of the stability landscape, also known as the rolling marble or ball-in-a-cup diagram (@Beisner2003). The idea is deeply related to the physical concept of scalar potential (@Zhou) and the mathematical of Lyapunov function (@Strogatz1994). Stability landscapes have proven to be a successful tool to understand and explain certain non-trivial concepts about dynamical systems, such as those of multistability, basin of attraction and even bifurcation, in a remarkably intuitive way (see @Beisner2003, @Scheffer2001 and figure $\ref{fig:aew}$).
 
 \begin{figure}[h]
 	\begin{center}
 		\includegraphics[width=0.5\columnwidth]{img/sl.jpg}
 	\end{center}
-	\caption{Example of a stability landscape from @Scheffer2001. The upper side of the figure shows the stability landscape of a one dimensional system for different values of a bifurcation parameter. The lower side shows the bifurcation diagram.}
+	\caption{Example of a stability landscape from @Scheffer2001. The upper side of the figure shows the stability landscape of a one dimensional system for different values of a bifurcation parameter. The lower side shows the bifurcation diagram. This diagram proved to be a succesful tool for explaining an advanced concept in bifurcation theory such as the Fold bifurcation.}
 	\label{fig:aew}
 \end{figure}
 
 [comment2]: <> (Why does it work?)
-The main reason for the success of this picture comes from the fact that stability landscapes are built as an analogy with our most familiar dynamical system: movement. Particularly, the movement of a marble along a curved surface under the influence of its own weight and a strong frictional force. It is important to stress the fact that under this picture there's not such a thing as inertia. The accurate analogy is that of a marble rolling in a surface while submerged inside a very viscous fluid (@Strogatz1994, @Pawlowski2006). This explains why our intuition, based in what we know about movement in our everyday life, works so well here. 
+The main reason for the success of this picture comes from the fact that stability landscapes are built as an analogy with our most familiar dynamical system: movement. Particularly, the movement of a marble along a curved surface under the influence of its own weight and a strong frictional force. It is important to stress the fact that under this picture there's not such a thing as inertia. The accurate analogy is that of a marble rolling in a surface while submerged inside a very viscous fluid (@Strogatz1994, @Pawlowski2006). This explains why our intuition, based in what we know about movement in our everyday life, works so well here.
 
 In stability landscapes the position of the marble represents the state of the system at a given time. With this picture in mind, the shape of the surface summarizes the underlying dynamical equations, being the slope the driver of the movement. Under this picture, the peaks on the undulated surface represent unstable equilibrium states and the wells represent stable equilibrium states. Different basins of attraction are separated by _mountain ridges_ in the surface. Summarizing: the marble naturally rolls downhill to the lowest point of its basin of attraction.
 
@@ -112,7 +112,7 @@ V(\vec x) = V(\vec x_0) - \int_\Gamma \sum_{i=1}^n f_i(\vec x) dx_i
 
 It is important to note that the number of equations $N$ contained in condition $\ref{eq:anyDcond}$ grows with the dimensionality of the system $D$, particularly following the series of triangular numbers $N = \frac{1}{2}(D-1)D$. Thus, the higher the dimensionality, the harder is to fulfill condition $\ref{eq:anyDcond}$. As a side effect, we see that in one dimensional systems the condition contains $0$ equations and is thus automatically fulfilled, meaning that one dimensional systems always have a well defined landscape.
 
-Using vector notation and the nabla operator $\vec \nabla$ both the dynamical equation and the condition can be written compactly for any number of dimensions(see equation $\ref{eq:vec}$ and condition $\ref{eq:vecCond}$). 
+Using vector notation and the nabla operator $\vec \nabla$ both the dynamical equation and the condition can be written compactly for any number of dimensions(see equation $\ref{eq:vec}$ and condition $\ref{eq:vecCond}$).
 
 \begin{equation}
 \label{eq:vec}
@@ -132,6 +132,14 @@ V(\vec x) = V(\vec x_0) - \int_\Gamma \vec f(\vec x) d\vec x
 \end{equation}
 
 The nabla operator is used to generalize the concept of derivative to functions with more than one argument. For more information see @Marsden2003 or any other introductory text about vector calculus. During the rest of this paper we'll focus only in the two dimensional case shown in equation $\ref{eq:2D}$. There are two reasons for this choice. The first is that two-dimensional flows are the simpler systems that can lack a stability landscape (or equivalently: one-dimensional systems always have one). The second reason is that, being interested in visualization, we want to focus on _"surfaces"_ like $y = V(x)$ (i.e.: curves) and $z = V(x,y)$ (i.e.: surfaces), and not in hypersurfaces with too many dimensions to plot like $u = V(x,y,z)$. We made this choice motivated by didactical considerations despite the algorithm we developed can handle general n-dimensional flows.
+
+## Summary table
+
+|           |              1 dimension              |                                    n dimensions                                    |                with matrix notation                |
+|:---------:|:-------------------------------------:|:----------------------------------------------------------------------------------:|:--------------------------------------------------:|
+|   Flow    |            $f(x) = -V'(x)$            |            $f_i(\vec x) = -\frac{\partial V}{\partial x_i} : i = 1..n$             |        $\vec f(\vec x) = -\vec{\nabla{V}}$         |
+| Condition |                 none                  | $\frac{\partial f_i}{\partial g_j} = \frac{\partial f_j}{\partial g_i} : i \neq j$ |    $\vec \nabla \times \vec f(\vec x) = \vec 0$    |
+| Potential | $V(x_0) - \int^{x}_{x_0} f(\xi) d\xi$ |             $V(\vec x_0) - \int_\Gamma \sum_{i=1}^n f_i(\vec x) dx_i$              | $V(\vec x_0) - \int_\Gamma \vec f(\vec x) d\vec x$ |
 
 ## Methods
 The method we propose is based on the numerical decomposition of our field in two components, a conservative or gradient part and a non-conservative or curl part:
