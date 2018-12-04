@@ -100,7 +100,7 @@ Dynamics in equation $\ref{eq:2D}$ and the condition for the crossed derivatives
 
 \begin{equation}
 \label{eq:anyDcond}
-  \frac{\partial f_i}{\partial g_j} = \frac{\partial f_j}{\partial g_i} : i \neq j
+  \frac{\partial f_i}{\partial x_j} = \frac{\partial f_j}{\partial x_i} : i \neq j
 \end{equation}
 
 And, if $\ref{eq:anyDcond}$ holds, the potential is given by equation $\ref{eq:anyDint}$, where the line integral is computed along the curve $\Gamma$ joining the points $\vec x_0$ and $\vec x$.
@@ -133,10 +133,12 @@ V(\vec x) = V(\vec x_0) - \int_\Gamma \vec f(\vec x) d\vec x
 
 The nabla operator is used to generalize the concept of derivative to functions with more than one argument. For more information see @Marsden2003 or any other introductory text about vector calculus. During the rest of this paper we'll focus only in the two dimensional case shown in equation $\ref{eq:2D}$. There are two reasons for this choice. The first is that two-dimensional flows are the simpler systems that can lack a stability landscape (or equivalently: one-dimensional systems always have one). The second reason is that, being interested in visualization, we want to focus on _"surfaces"_ like $y = V(x)$ (i.e.: curves) and $z = V(x,y)$ (i.e.: surfaces), and not in hypersurfaces with too many dimensions to plot like $u = V(x,y,z)$. We made this choice motivated by didactical considerations despite the algorithm we developed can handle general n-dimensional flows.
 
+## Summary table
+
 |           |                           1 dimension |                                                                       n dimensions |                               with matrix notation |
 |:----------|--------------------------------------:|-----------------------------------------------------------------------------------:|---------------------------------------------------:|
 | Flow      |                       $f(x) = -V'(x)$ |                        $f_i(\vec x) = -\frac{\partial V}{\partial x_i} : i = 1..n$ |                $\vec f(\vec x) = -\vec{\nabla{V}}$ |
-| Condition |                                  none | $\frac{\partial f_i}{\partial g_j} = \frac{\partial f_j}{\partial g_i} : i \neq j$ |       $\vec \nabla \times \vec f(\vec x) = \vec 0$ |
+| Condition |                                  none | $\frac{\partial f_i}{\partial x_j} = \frac{\partial f_j}{\partial x_i} : i \neq j$ |       $\vec \nabla \times \vec f(\vec x) = \vec 0$ |
 | Potential | $V(x_0) - \int^{x}_{x_0} f(\xi) d\xi$ |                          $V(\vec x_0) - \int_\Gamma \sum_{i=1}^n f_i(\vec x) dx_i$ | $V(\vec x_0) - \int_\Gamma \vec f(\vec x) d\vec x$ |
 
 ## Methods
