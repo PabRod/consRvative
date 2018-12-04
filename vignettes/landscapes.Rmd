@@ -7,8 +7,12 @@ output:
   pdf_document:
     keep_tex: yes
     toc: false
+    citation_package: natbib
   md_document:
   html_vignette: default
+documentclass: article
+classoption: twocolumn, a4paper
+fontsize: 10pt
 bibliography: landscapes.bib
 params:
   plotly_update: false
@@ -100,7 +104,120 @@ Using vector notation and the nabla operator $\vec \nabla$ both the dynamical eq
 The nabla operator is used to generalize the concept of derivative to functions with more than one argument. For more information see @Marsden2003 or any other introductory text about vector calculus. During the rest of this paper we'll focus only in the two dimensional case shown in equation $\ref{eq:2D}$. There are two reasons for this choice. The first is that two-dimensional flows are the simpler systems that can lack a stability landscape (or equivalently: one-dimensional systems always have one). The second reason is that, being interested in visualization, we want to focus on _"surfaces"_ like $y = V(x)$ (i.e.: curves) and $z = V(x,y)$ (i.e.: surfaces), and not in hypersurfaces with too many dimensions to plot like $u = V(x,y,z)$. We made this choice motivated by didactical considerations despite the algorithm we developed can handle general n-dimensional flows.
 
 ## Methods
-- Algorithm
+The method we propose is based on the numerical decomposition of our field in two components, a conservative or gradient part and a non-conservative or curl part:
+
+\begin{equation}
+\label{eq:FieldDecomposition}
+\vec f (\vec x) = \vec f_{gradient} (\vec x) + \vec f_{curl} (\vec x)
+\end{equation}
+
+So to say, $\vec f_{gradient} (\vec x)$ captures all the part of the system that can be associated to a scalar potential, while $\vec f_{curl} (\vec x)$ represents the deviation from this ideal, conservative case. We'll use $\vec f_{gradient} (\vec x)$ to compute a scalar potential, which we will call pseudopotential. The absolute error of this approach will be given by $\parallel \vec f_{curl} (\vec x) \parallel$.
+
+\subsection{Skew-symmetric decomposition}
+\label{subsec:SkewSymmDecomposition}
+Any square matrix can be easily and uniquely decomposed as the sum of a skew and a symmetric matrix.
+
+\begin{equation}
+\label{eq:SkewSymDec}
+M = \frac{1}{2} \left( M + M^t \right) + \frac{1}{2} \left( M - M^t \right) \equiv M_{Symm} + M_{Skew}
+\end{equation}
+
+Being a unique decomposition, if the original matrix is already symmetric the computed skew matrix will be zero. Conversely, if the original matrix is already skew the symmetric part will be zero.
+
+\subsection{Linear approximation}
+\label{subsec:LinearApproximation}
+Any sufficiently smooth and continuous vector field $\vec f(\vec x)$ can be approximated around the point $\vec{x_0}$ using a first order Taylor series:
+
+\begin{equation}
+\label{eq:TaylorExp}
+\vec f(\vec x)^t = \vec f(\vec{x_0})^t + J(\vec{x_0}) \cdot \left(\vec x - \vec{x_0} \right)^t + \mathcal{O} \left( \| \vec x \| ^2 \right)
+\end{equation}
+
+where $J(\vec{x_0})$ is the jacobian matrix evaluated at $\vec{x_0}$. Using the skew symmetric decomposition described in equation \ref{eq:SkewSymDec}, we can rewrite \ref{eq:TaylorExp} as:
+
+\begin{equation}
+\label{eq:TaylorExpDecomposed}
+\vec f(\vec x)^t = \vec f(\vec{x_0})^t + J_{Symm}(\vec{x_0}) \cdot \left(\vec x - \vec{x_0} \right)^t + J_{Skew}(\vec{x_0}) \cdot \left(\vec x - \vec{x_0} \right)^t+ \mathcal{O} \left( \| \vec x \| ^2 \right)
+\end{equation}
+
+This trick is interesting because it represents a natural decomposition of the field $\vec f(\vec x)$ in a gradient and a non-gradient term. More specifically, the only non-gradient term is the last one\footnote{This is deeply related with the Helmholtz decomposition: it is proven that, for a huge range of easy to fulfil conditions, any field can be decomposed as $\vec f (\vec x) = - \vec \nabla V (\vec x) + \vec \nabla \times \vec A (\vec x )$, where $V$ and $\vec A$ are known as scalar and vector potentials. Both of them have a straightforward natural interpretation, and are widely used, for instance, in electromagnetism and fluid dynamics}.
+
+\begin{equation}
+\label{eq:TaylorExpDecomposedAndGradient}
+\vec f(\vec x)^t = - \vec \nabla V(\vec{x})^t + J_{Skew}(\vec{x_0}) \cdot \left(\vec x - \vec{x_0} \right)^t+ \mathcal{O} \left( \| \vec x \| ^2 \right)
+\end{equation}
+
+This means that systems like \ref{eq:TaylorExp} are only gradient when their jacobians are symmetric and, thus, the skew component is a matrix of zeros.
+
+Additionally, $V(\vec x)$ can be computed analytically:
+
+\begin{equation}
+\label{eq:Potential}
+V(\vec{x})^t = V(\vec{x_0})^t - \vec f(\vec x_0) \cdot \left(\vec x - \vec{x_0} \right)^t - \frac{1}{2} \left(\vec x - \vec{x_0} \right) \cdot J_{Symm} (\vec{x_0}) \cdot \left(\vec x - \vec{x_0} \right)^t
+\end{equation}
+
+\subsection{Numerical algorithm}
+\label{subsec:NumericalAlgorithm}
+The previous ideas open the possibility of an easy to implement numerical method using the following steps:
+
+\begin{enumerate}
+\item Create a grid in the phase plane $\left\lbrace \vec x_i \right\rbrace$
+\item Calculate the jacobian $J(\vec{x_i})$ in each grid point
+\item Decompose each jacobian in its skew $J_{Skew}(\vec{x_i})$ and symmetric $J_{Symm}(\vec{x_i})$ components
+\item Assign potential 0 to the first point in the grid
+\item Use each $J_{Symm}$ to compute the (pseudo)potential point by point, using equation $\ref{eq:Potential}$
+\item Use the values of $J_{Skew}(\vec{x_i})$ as a measure of the quality of the approximation point by point (the higher the values in the skew matrix relative to the symmetric ones, the worse)
+\end{enumerate}
+
+\subsubsection{One dimensional case}
+\label{subsubsec:1Dcase}
+In the one-dimensional case it's always possible to find an exact scalar potential.
+
+\begin{equation}
+\label{eq:Field1D}
+f(x) = f(x_i) + J(x_i) \cdot (x - x_i) : x \in [x_i, x_{i+1})
+\end{equation}
+
+\begin{equation}
+\label{eq:Potential1D}
+V(x) = V(x_i) - f(x_i) \cdot (x - x_i) - \frac{1}{2} J(x_i) \cdot (x - x_i)^2 : x \in [x_i, x_{i+1})
+\end{equation}
+
+Equation \ref{eq:Potential1D} is a recursion relation, so it requires an initialization value:
+
+\begin{equation}
+\label{eq:Potential1DInit}
+V(x_0) = V_0
+\end{equation}
+
+This allows to calculate the potential in any point of the grid using:
+
+\begin{equation}
+\label{eq:Potential1DGrid}
+V(x_i) = V(x_0) - \sum_{n = 0}^{i-1} \left( f(x_n) \cdot (x_{n+1} - x_n) + \frac{1}{2} J(x_n) \cdot (x_{n+1} - x_n)^2 \right)
+\end{equation}
+
+If the grid has been constructed with a constant step $\Delta x$, equation \ref{eq:Potential1DGrid} can be simplified as:
+
+\begin{equation}
+\label{eq:Potential1DGridSimp}
+V(x_i) = V(x_0) - \Delta x \sum_{n = 0}^{i-1} \left( f(x_n) + \frac{1}{2} J(x_n) \cdot \Delta x \right)
+\end{equation}
+
+Notice that equations \ref{eq:Potential1DGrid} and \ref{eq:Potential1DGridSimp} are just algebraic relationships allowing to compute the potential at any node of the grid. Furthermore, equation \ref{eq:Potential1D} can be used to interpolate between the nodes.
+
+It can be useful to define the auxiliary function:
+\begin{equation}
+\label{eq:Increment1D}
+\Delta V(x_i, x_{i+1}) = -\int_{x_i}^{x_{i+1}} f(s) \cdot ds = - f(x_i) \cdot (x_{i+1} - x_i) - \frac{1}{2} J(x_i) \cdot (x_{i+1} - x_i)^2
+\end{equation}
+
+so the recursion relation reads:
+\begin{equation}
+\label{eq:Potential1DGridWithIncrement}
+V(x_i) = V(x_0) + \sum_{n = 0}^{i-1} \Delta V(x_n, x_{n+1})
+\end{equation}
+
 
 ## Results
 - Case studies
