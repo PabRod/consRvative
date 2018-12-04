@@ -40,6 +40,8 @@ With knowledge becoming progressively more interdisciplinary, the relevance of s
 [comment1]: <> (Proved to be succesful)
 One particularly successful visualization method is that of the stability landscape, also known as the rolling marble or ball-in-a-cup diagrams (@Beisner2003), and deeply related to the physical concept of scalar potential (@Zhou) and the mathematical of Lyapunov function (@Strogatz1994). Stability landscapes have proven to be a successful tool to understand and explain certain non-trivial concepts about dynamical systems, such as those of multistability, basin of attraction and even bifurcation, in a remarkably intuitive way (@Beisner2003, @Scheffer2001).
 
+![Example of a stability landscape from @Scheffer2001. The upper side of the figure shows the stability landscape of a one dimensional system for different values of a bifurcation parameter. The lower side shows the bifurcation diagram.](img/sl.jpg)
+
 [comment2]: <> (Why does it work?)
 The main reason for the success of this picture comes from the fact that stability landscapes are built as an analogy with our most familiar dynamical system: movement. Particularly, the movement of a marble along a curved surface under the influence of its own weight and a strong frictional force. It is important to stress the fact that under this picture there's not such a thing as inertia. The accurate analogy is that of a marble rolling in a surface while submerged inside a very viscous fluid (@Strogatz1994, @Pawlowski2006). This explains why our intuition, based in what we know about movement in our everyday life, works so well here. 
 
