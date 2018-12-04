@@ -71,37 +71,32 @@ From an operational point of view, the surface $V(x,y)$ exists (and thus can be 
 
 ### Generalization
 
-Relationship $\ref{eq:2D}$ and condition $\ref{eq:2Dcond}$ can be straightforwardly generalized to a different number of dimensions. For instance, for a three dimensional system the dynamical equation becomes $\ref{eq:3D}$ and the condition involves all crossed derivatives (see $\ref{eq:3Dcond}$).
-
-\begin{equation}
-\label{eq:3D}
-  \begin{cases}
-    \frac{dx}{dt} = f(x,y,z) = - \frac{\partial V}{\partial x} \\
-    \frac{dy}{dt} = g(x,y,z) = - \frac{\partial V}{\partial y} \\
-    \frac{dz}{dt} = h(x,y,z) = - \frac{\partial V}{\partial z}
-  \end{cases}
-\end{equation}
-
-\begin{equation}
-\label{eq:3Dcond}
-\begin{cases}
-\frac{\partial f}{\partial y}(x,y,z) = \frac{\partial g}{\partial x}(x,y,z) \\
-\frac{\partial g}{\partial z}(x,y,z) = \frac{\partial h}{\partial y}(x,y,z) \\
-\frac{\partial h}{\partial x}(x,y,z) = \frac{\partial f}{\partial z}(x,y,z)
-\end{cases}
-\end{equation}
-
-Using vector notation and the nabla operator $\vec \nabla$ both the dynamical equation and the condition can be written compactly for any number of dimensions(see equation $\ref{eq:anyD}$ and condition $\ref{eq:anyDcond}$).
+Dynamics in equation $\ref{eq:2D}$ and the condition for the crossed derivatives $\ref{eq:2Dcond}$ can be straightforwardly generalized (see equations $\ref{eq:anyD}$ and $\ref{eq:anyDcond}$) to systems with an arbitrary number of state variables $\vec x = (x_1, ..., x_n)$.
 
 \begin{equation}
 \label{eq:anyD}
-  \frac{d\vec x}{dt} = \vec f(\vec x) = - \vec{\nabla{V}}
+  \frac{d x_i}{dt} = f_i(\vec x) = -\frac{\partial V}{\partial x_i} : i = 1..n
 \end{equation}
 
 \begin{equation}
 \label{eq:anyDcond}
+  \frac{\partial f_i}{\partial g_j} = \frac{\partial f_j}{\partial g_i} : i \neq j
+\end{equation}
+
+It is important to note that the number of equations $N$ contained in condition $\ref{eq:anyDcond}$ grows with the dimensionality of the system $D$, particularly following the series of triangular numbers $N = \frac{1}{2}(D-1)D$. Thus, the higher the dimensionality, the harder is to fulfill condition $\ref{eq:anyDcond}$. As a side effect, we see that in one dimensional systems the condition contains $0$ equations and is thus automatically fulfilled, meaning that one dimensional systems always have a well defined landscape.
+
+Using vector notation and the nabla operator $\vec \nabla$ both the dynamical equation and the condition can be written compactly for any number of dimensions(see equation $\ref{eq:vec}$ and condition $\ref{eq:vecCond}$). 
+
+\begin{equation}
+\label{eq:vec}
+  \frac{d\vec x}{dt} = \vec f(\vec x) = - \vec{\nabla{V}}
+\end{equation}
+
+\begin{equation}
+\label{eq:vecCond}
   \vec \nabla \times \vec f(\vec x) = \vec 0
 \end{equation}
+
 
 The nabla operator is used to generalize the concept of derivative to functions with more than one argument. For more information see @Marsden2003 or any other introductory text about vector calculus. During the rest of this paper we'll focus only in the two dimensional case shown in equation $\ref{eq:2D}$. There are two reasons for this choice. The first is that two-dimensional flows are the simpler systems that can lack a stability landscape (or equivalently: one-dimensional systems always have one). The second reason is that, being interested in visualization, we want to focus on _"surfaces"_ like $y = V(x)$ (i.e.: curves) and $z = V(x,y)$ (i.e.: surfaces), and not in hypersurfaces with too many dimensions to plot like $u = V(x,y,z)$. We made this choice motivated by didactical considerations despite the algorithm we developed can handle general n-dimensional flows.
 
