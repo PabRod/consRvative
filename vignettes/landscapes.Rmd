@@ -86,7 +86,7 @@ Flows satisfying equation $\ref{eq:2Dcond}$ are known as conservative, irrotatio
 
 \begin{equation}
 \label{eq:2Dint}
-V(x,y) = V(x_0, y_0) - \int^{x}_{x_0} \int^{y}_{y_0} \left( f(\xi,\eta) d\xi + g(\xi,\eta) d\eta \right)
+V(x,y) = V(x_0, y_0) - \int^{x}_{x_0} f(\xi, y_0) d\xi - \int^{y}_{y_0} g(x, \eta) d\eta
 \end{equation}
 
 ### Generalization
@@ -133,13 +133,11 @@ V(\vec x) = V(\vec x_0) - \int_\Gamma \vec f(\vec x) d\vec x
 
 The nabla operator is used to generalize the concept of derivative to functions with more than one argument. For more information see @Marsden2003 or any other introductory text about vector calculus. During the rest of this paper we'll focus only in the two dimensional case shown in equation $\ref{eq:2D}$. There are two reasons for this choice. The first is that two-dimensional flows are the simpler systems that can lack a stability landscape (or equivalently: one-dimensional systems always have one). The second reason is that, being interested in visualization, we want to focus on _"surfaces"_ like $y = V(x)$ (i.e.: curves) and $z = V(x,y)$ (i.e.: surfaces), and not in hypersurfaces with too many dimensions to plot like $u = V(x,y,z)$. We made this choice motivated by didactical considerations despite the algorithm we developed can handle general n-dimensional flows.
 
-## Summary table
-
-|           |              1 dimension              |                                    n dimensions                                    |                with matrix notation                |
-|:---------:|:-------------------------------------:|:----------------------------------------------------------------------------------:|:--------------------------------------------------:|
-|   Flow    |            $f(x) = -V'(x)$            |            $f_i(\vec x) = -\frac{\partial V}{\partial x_i} : i = 1..n$             |        $\vec f(\vec x) = -\vec{\nabla{V}}$         |
-| Condition |                 none                  | $\frac{\partial f_i}{\partial g_j} = \frac{\partial f_j}{\partial g_i} : i \neq j$ |    $\vec \nabla \times \vec f(\vec x) = \vec 0$    |
-| Potential | $V(x_0) - \int^{x}_{x_0} f(\xi) d\xi$ |             $V(\vec x_0) - \int_\Gamma \sum_{i=1}^n f_i(\vec x) dx_i$              | $V(\vec x_0) - \int_\Gamma \vec f(\vec x) d\vec x$ |
+|           |                           1 dimension |                                                                       n dimensions |                               with matrix notation |
+|:----------|--------------------------------------:|-----------------------------------------------------------------------------------:|---------------------------------------------------:|
+| Flow      |                       $f(x) = -V'(x)$ |                        $f_i(\vec x) = -\frac{\partial V}{\partial x_i} : i = 1..n$ |                $\vec f(\vec x) = -\vec{\nabla{V}}$ |
+| Condition |                                  none | $\frac{\partial f_i}{\partial g_j} = \frac{\partial f_j}{\partial g_i} : i \neq j$ |       $\vec \nabla \times \vec f(\vec x) = \vec 0$ |
+| Potential | $V(x_0) - \int^{x}_{x_0} f(\xi) d\xi$ |                          $V(\vec x_0) - \int_\Gamma \sum_{i=1}^n f_i(\vec x) dx_i$ | $V(\vec x_0) - \int_\Gamma \vec f(\vec x) d\vec x$ |
 
 ## Methods
 The method we propose is based on the numerical decomposition of our field in two components, a conservative or gradient part and a non-conservative or curl part:
