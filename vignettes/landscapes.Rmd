@@ -132,7 +132,7 @@ Any sufficiently smooth and continuous vector field $\vec f(\vec x)$ can be appr
 
 \begin{equation}
 \label{eq:TaylorExp}
-\vec f(\vec x)^t = \vec f(\vec{x_0})^t + J(\vec{x_0}) \cdot \Delta \vec x^t + \mathcal{O} \left( \| \vec x \| ^2 \right)
+\vec f(\vec x) = \vec f(\vec{x_0}) + J(\vec{x_0}) \cdot \Delta \vec x + \mathcal{O} \left( \| \vec x \| ^2 \right)
 \end{equation}
 
 where $J(\vec{x_0})$ is the jacobian matrix evaluated at the approximation point $\vec{x_0}$ and $\Delta \vec x$ is defined as the vector distance to the approximation point, that is, $\Delta \vec x = \vec x - \vec{x_0}$.
@@ -141,14 +141,14 @@ Using the skew symmetric decomposition described in equation \ref{eq:SkewSymDec}
 
 \begin{equation}
 \label{eq:TaylorExpDecomposed}
-\vec f(\vec x)^t = \vec f(\vec{x_0})^t + J_{Symm}(\vec{x_0}) \cdot \Delta \vec x^t + J_{Skew}(\vec{x_0}) \cdot \Delta \vec x^t+ \mathcal{O} \left( \| \vec x \| ^2 \right)
+\vec f(\vec x) = \vec f(\vec{x_0}) + J_{Symm}(\vec{x_0}) \cdot \Delta \vec x + J_{Skew}(\vec{x_0}) \cdot \Delta \vec x+ \mathcal{O} \left( \| \vec x \| ^2 \right)
 \end{equation}
 
 This trick is interesting because it represents a natural decomposition of the field $\vec f(\vec x)$ in a gradient and a non-gradient term. More specifically, the only non-gradient term is the last one\footnote{This is deeply related with the Helmholtz decomposition: it is proven that, for a huge range of easy to fulfil conditions, any field can be decomposed as $\vec f (\vec x) = - \vec \nabla V (\vec x) + \vec \nabla \times \vec A (\vec x )$, where $V$ and $\vec A$ are known as scalar and vector potentials. Both of them have a straightforward natural interpretation, and are widely used, for instance, in electromagnetism and fluid dynamics}.
 
 \begin{equation}
 \label{eq:TaylorExpDecomposedAndGradient}
-\vec f(\vec x)^t = - \vec \nabla V(\vec{x})^t + J_{Skew}(\vec{x_0}) \cdot \Delta \vec x^t + \mathcal{O} \left( \| \vec x \| ^2 \right)
+\vec f(\vec x) = - \vec \nabla V(\vec{x}) + J_{Skew}(\vec{x_0}) \cdot \Delta \vec x + \mathcal{O} \left( \| \vec x \| ^2 \right)
 \end{equation}
 
 This means that systems like \ref{eq:TaylorExp} are only gradient when their jacobians are symmetric and, thus, the skew component is a matrix of zeros.
@@ -157,7 +157,7 @@ Additionally, $V(\vec x)$ can be computed analytically by direct integration:
 
 \begin{equation}
 \label{eq:Potential}
-V(\vec{x})^t = V(\vec{x_0})^t - \vec f(\vec x_0) \cdot \Delta \vec x^t - \frac{1}{2} \Delta \vec x \cdot J_{Symm} (\vec{x_0}) \cdot \Delta \vec x^t + \mathcal{O} \left( \| \vec x \| ^3 \right)
+V(\vec{x}) = V(\vec{x_0}) - \vec f(\vec x_0) \cdot \Delta \vec x - \frac{1}{2} \Delta \vec x^t \cdot J_{Symm} (\vec{x_0}) \cdot \Delta \vec x + \mathcal{O} \left( \| \vec x \| ^3 \right)
 \end{equation}
 
 \subsection{Numerical algorithm}
