@@ -8,8 +8,12 @@ output:
     keep_tex: yes
     toc: false
     citation_package: natbib
-  md_document:
-  html_vignette: default
+  html_document:
+    theme: united
+    smart: true
+    fig_width: 4
+    fig_height: 4
+    fig_caption: true
 documentclass: article
 classoption: onecolumn, a4paper
 fontsize: 10pt
@@ -60,13 +64,13 @@ From a mathematical point of view, the relationship between the surface $V(x,y)$
 \end{equation}
 
 [comment3]: <> (Limitations)
-Like with any other analogy, it is important to be aware of its limitations. The most important one is the fact that, for general flows $f(x,y)$ and $g(x,y)$, it doesn't exist such a surface $V(x,y)$ satisfying equation $\ref{eq:2D}$. To get an intutive feeling of why this is true, picture a flow with a stable cyclic attractor. We need a surface where our marble can rotate in a closed loop while always going downhill. The kind of surface that only exists on M.C. Escher's paintings.
+Like with any other analogy, it is important to be aware of its limitations. The most important one is the fact that, for general flows $f(x,y)$ and $g(x,y)$, it doesn't exist such a surface $V(x,y)$ satisfying equation $\ref{eq:2D}$. To get an intutive feeling of why this is true, picture a flow with a stable cyclic attractor. We need a surface where our marble can rotate in a closed loop while always going downhill. The kind of surface that only exists on M.C. Escher's paintings (see, for instance, @escher).
 
 From an operational point of view, the surface $V(x,y)$ exists (and thus can be computed) if and only if the crossed derivatives of the elements of the flow are point-to-point identical (equation $\ref{eq:2Dcond}$). Flows satisfying this equation are known as irrotational or gradient flows.
 
 \begin{equation}
 \label{eq:2Dcond}
-\frac{\partial f}{\partial y}(x,y) = \frac{\partial g}{\partial x}(x,y)
+\frac{\partial f}{\partial y} = \frac{\partial g}{\partial x}
 \end{equation}
 
 ### Generalization
