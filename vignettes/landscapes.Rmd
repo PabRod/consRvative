@@ -1,7 +1,7 @@
 ---
 title: "Stability landscapes for weakly non-gradient flows"
 author: "Pablo Rodríguez-Sánchez, Marten Scheffer & Egbert van Nes"
-abstract: "Stability landscapes, usually identified with the physical concept of scalar potential, are useful tools for understanding dynamical systems. Unfortunately, the conditions for those potentials to be well defined (and thus, meaningful) are quite restrictive for higher dimensional systems. Here we present a numerical method for decomposing dynamical systems of any size in two terms, one that has an associated potential (the gradient term), and another one that lacks it (the curl term). If the magnitude of the curl part is locally small compared to the gradient part, we can still make approximate use of the concept of stability landscape. The curl to gradient ratio can be used as a local measure of the error introduced by our approximation."
+abstract: "Stability landscapes, usually identified with the physical concept of scalar potential, are useful tools for understanding dynamical systems described by autonomous differential equations. Unfortunately, the conditions for those potentials to be well defined (and thus, meaningful) are quite restrictive for systems of two or more dimensions. Here we present a numerical method for decomposing dynamical systems of any size in two terms, one that has an associated potential (the gradient term), and another one that lacks it (the curl term). If the magnitude of the curl part is locally small compared to the gradient part, we can still make approximate use of the concept of stability landscape. The curl to gradient ratio can be used as a local measure of the error introduced by our approximation."
 date: "`r Sys.Date()`"
 output:
   pdf_document:
@@ -15,7 +15,7 @@ output:
     fig_height: 4
     fig_caption: true
 documentclass: article
-classoption: twocolumn, a4paper
+classoption: onecolumn, a4paper
 fontsize: 10pt
 bibliography: landscapes.bib
 nocite: |
@@ -43,11 +43,11 @@ knitr::opts_chunk$set(
 ```
 
 # Introduction
-With knowledge becoming progressively more interdisciplinary, the relevance of science communication is increasing fast. Mathematical concepts are among the hardest topics to communicate to non-expert audiences, policy makers, and even to professionals from the so-called _soft sciences_. Visual methods are known to be, when applicable, successful ways of teaching and communicating mathematical results to non-specialists.
+With knowledge becoming progressively more interdisciplinary, the relevance of science communication is increasing fast. Mathematical concepts are among the hardest topics to communicate to non-expert audiences, policy makers, and even to professionals from the so-called _soft sciences_. Visual methods are known to be, when applicable, successful ways of introducing mathematical concepts and results to non-specialists.
 
 ## Stability landscape figures
 [comment1]: <> (Proved to be succesful)
-One particularly successful visualization method is that of the stability landscape, also known as the rolling marble or ball-in-a-cup diagram (@Beisner2003). The idea is deeply related to the physical concept of scalar potential (@Zhou) and the mathematical of Lyapunov function (@Strogatz1994). Stability landscapes have proven to be a successful tool to understand and explain certain non-trivial concepts about dynamical systems, such as those of multistability, basin of attraction and even bifurcation, in a remarkably intuitive way (see @Beisner2003, @Scheffer2001 and figure $\ref{fig:aew}$).
+One particularly successful visualization method is that of the stability landscape, also known as the rolling marble or ball-in-a-cup diagram (@Beisner2003). The idea is deeply related to the physical concept of scalar potential (@Zhou) and the mathematical of Lyapunov function (@Strogatz1994). Stability landscapes have proven to be a successful tool to understand and explain certain non-trivial concepts about dynamical systems described by autonomous differential equations in a remarkably intuitive way. Examples of those concepts are multistability, basin of attraction or even bifurcation and hystheresis (see @Beisner2003, @Scheffer2001 and figure $\ref{fig:aew}$).
 
 \begin{figure}[h]
 	\begin{center}
@@ -60,10 +60,10 @@ One particularly successful visualization method is that of the stability landsc
 [comment2]: <> (Why does it work?)
 The main reason for the success of this picture comes from the fact that stability landscapes are built as an analogy with our most familiar dynamical system: movement. Particularly, the movement of a marble along a curved surface under the influence of its own weight and a strong frictional force. It is important to stress the fact that under this picture there's not such a thing as inertia. The accurate analogy is that of a marble rolling in a surface while submerged inside a very viscous fluid (@Strogatz1994, @Pawlowski2006). This explains why our intuition, based in what we know about movement in our everyday life, works so well here.
 
-In stability landscapes the position of the marble represents the state of the system at a given time. With this picture in mind, the shape of the surface summarizes the underlying dynamical equations, being the slope the driver of the movement. Under this picture, the peaks on the undulated surface represent unstable equilibrium states and the wells represent stable equilibrium states. Different basins of attraction are separated by _mountain ridges_ in the surface. Summarizing: the marble naturally rolls downhill to the lowest point of its basin of attraction.
+In stability landscapes the position of the marble represents the state of the system at a given time. With this picture in mind, the shape of the surface summarizes the underlying dynamical equations, being the slope the driver of the movement. The peaks on the undulated surface represent unstable equilibrium states and the wells represent stable equilibrium states. Different basins of attraction are separated by _mountain ridges_ in the surface. Summarizing: the marble naturally rolls downhill to the lowest point of its basin of attraction.
 
 [comment3]: <> (Limitations)
-Like with any other analogy, it is important to be aware of its limitations. The most important one is the fact that, for flows of more than one dimension, such a surface doesn't exist in general. To get an intutive feeling of why this is true, picture a flow with a stable cyclic attractor. We need a surface where our marble can rotate in a closed loop while always going downhill. The kind of surface that only exists on M.C. Escher's surrealistic paintings (see figure $\ref{fig:escher}$).
+Like with any other analogy, it is important to be aware of its limitations. The most important one is the fact that, for flows of more than one dimension, such a surface doesn't exist in general. To get an intutive feeling of why this is true, picture a flow with a stable cyclic attractor. We need a surface where our marble can roll in a closed loop while always going downhill. The kind of surface that only exists on M.C. Escher's surrealistic paintings (see figure $\ref{fig:escher}$).
 
 \begin{figure}[h]
 	\begin{center}
@@ -94,7 +94,7 @@ Such a surface $V(x,y)$ exists (and thus can be computed) if and only if the cro
 \frac{\partial f}{\partial y} = \frac{\partial g}{\partial x}
 \end{equation}
 
-Flows satisfying equation $\ref{eq:2Dcond}$ are known as conservative, irrotational or gradient flows (cf. section 8.3 of @Marsden2003). It is important to note that equation $\ref{eq:2Dcond}$ is an equality of functions, meaning that both of them are point-to-point identical. If an only if condition $\ref{eq:2Dcond}$ holds, we can use a line integral (@Marsden2003, section 7.2) to invert $\ref{eq:2D}$ and thus calculate $V(x,y)$ using the flow equations $f(x,y)$ and $g(x,y)$ as an input (equation $\ref{eq:2Dint}$).
+Flows satisfying equation $\ref{eq:2Dcond}$ are known as conservative, irrotational or gradient flows (cf. section 8.3 of @Marsden2003). It is important to note that equation $\ref{eq:2Dcond}$ is an equality of functions, meaning that both of them are point-to-point identical. If an only if condition $\ref{eq:2Dcond}$ holds, we can use a line integral (@Marsden2003, section 7.2) to invert $\ref{eq:2D}$ and calculate $V(x,y)$ using the flow equations $f(x,y)$ and $g(x,y)$ as an input (equation $\ref{eq:2Dint}$).
 
 \begin{equation}
 \label{eq:2Dint}
@@ -128,7 +128,9 @@ where the line integral in $\ref{eq:anyDint}$ is computed along any[^1] curve $\
 
 [^1]: Condition $\ref{eq:anyDcond}$ guarantees that the result is independent of the shape of the chosen curve.
 
-It is important to note that the number of equations $N$ contained in condition $\ref{eq:anyDcond}$ grows with the dimensionality of the system $D$, particularly following the series of triangular numbers $N = \frac{1}{2}(D-1)D$. Thus, the higher the dimensionality, the harder is to fulfill condition $\ref{eq:anyDcond}$. As a side effect, we see that in one dimensional systems the condition contains $0$ equations and is thus automatically fulfilled, meaning that one dimensional systems always have a well defined landscape.
+It is important to note that the number of equations $N$ contained in condition $\ref{eq:anyDcond}$ grows with the dimensionality of the system $D$, particularly following the series of triangular numbers $N = \frac{1}{2}(D-1)D$. Thus, the higher the dimensionality, the harder is to fulfill condition $\ref{eq:anyDcond}$. As a side effect, we see that in one dimensional systems the condition contains $0$ equations and is thus automatically fulfilled, meaning that one dimensional systems always have a well defined stability landscape.
+
+## With vector notation
 
 Using vector notation and the nabla operator $\vec \nabla$ both the dynamical equation and the condition can be written compactly for any number of dimensions. Particularly, if and only if our flow equations $\frac{d\vec{x}}{dt} = \vec f(\vec x)$ satisfy the condition:
 
@@ -151,26 +153,28 @@ and such a surface can be computed using:
 V(\vec x) = V(\vec x_0) - \int_\Gamma \vec f(\vec x) \cdot d\vec x
 \end{equation}
 
-The nabla operator is used to generalize the concept of derivative to functions with more than one argument. For more information see @Marsden2003 or any other introductory text about vector calculus. During the rest of this paper we'll focus only in the two dimensional case shown in equation $\ref{eq:2D}$. There are two reasons for this choice. The first is that two-dimensional flows are the simpler systems that can lack a stability landscape (or equivalently: one-dimensional systems always have one). The second reason is that, being interested in visualization, we want to focus on _"surfaces"_ like $y = V(x)$ (i.e.: curves) and $z = V(x,y)$ (i.e.: surfaces), and not in hypersurfaces with too many dimensions to plot like $u = V(x,y,z)$. We made this choice motivated by didactical considerations despite the algorithm we developed can handle general n-dimensional flows.
+The nabla operator is used to generalize the concept of derivative to functions with more than one argument. For more information see @Marsden2003 or any other introductory text about vector calculus. 
+
+During the rest of this paper we'll focus only in the two dimensional case shown in equation $\ref{eq:2D}$. There are two reasons for this choice. The first is that two-dimensional flows are the simpler systems that can lack a stability landscape (or equivalently: one-dimensional systems always have one). The second reason is that, being interested in visualization, we want to focus on _"surfaces"_ like $y = V(x)$ (i.e.: curves) and $z = V(x,y)$ (i.e.: surfaces), and not in hypersurfaces with too many dimensions to plot like $u = V(x,y,z)$. We made this choice motivated by didactical considerations despite the algorithm we developed can handle general n-dimensional flows.
 
 # Methods
-The method we propose is based on the numerical decomposition of our field in two components, a conservative or gradient part and a non-conservative or curl part:
+The method we propose is based on the decomposition of our field in a conservative or gradient part and a non-conservative or curl part (see equation $\ref{eq:FieldDecomposition}$).
 
 \begin{equation}
 \label{eq:FieldDecomposition}
-\vec f (\vec x) = \vec f_{gradient} (\vec x) + \vec f_{curl} (\vec x)
+\vec f (\vec x) = \vec f_{grad} (\vec x) + \vec f_{curl} (\vec x)
 \end{equation}
 
-$\vec f_{gradient} (\vec x)$ captures all the part of the system that can be associated to a scalar potential, while $\vec f_{curl} (\vec x)$ represents the deviation from this ideal, conservative case. We'll use $\vec f_{gradient} (\vec x)$ to compute a scalar potential, which we will call pseudopotential. The absolute error of this approach will be given by $\parallel \vec f_{curl} (\vec x) \parallel$.
+$\vec f_{grad} (\vec x)$ captures all the part of the system that can be associated to a scalar potential, while $\vec f_{curl} (\vec x)$ represents the deviation from this ideal, conservative case. We'll use $\vec f_{gradient} (\vec x)$ to compute a scalar potential, which we will call pseudopotential. The absolute error of this approach will be given by $\parallel \vec f_{curl} (\vec x) \parallel$. The next steps show an easy way of achieve such a decomposition.
 
 The reader is probably familiar with the concept of linearization, also known as Taylor expansion. Any sufficiently smooth and continuous vector field $\vec f(\vec x)$ can be approximated around the point $\vec{x_0}$ using equation $\ref{eq:TaylorExp}$, where $J(\vec{x_0})$ is the jacobian matrix evaluated at the approximation point $\vec{x_0}$ and $\Delta \vec x$ is defined as the vector distance to the approximation point, that is, $\Delta \vec x = \vec x - \vec{x_0}$.
 
 \begin{equation}
 \label{eq:TaylorExp}
-\vec f(\vec x) = \vec f(\vec{x_0}) + J(\vec{x_0}) \cdot \Delta \vec x
+\vec f(\vec x) \approx \vec f(\vec{x_0}) + J(\vec{x_0}) \cdot \Delta \vec x
 \end{equation}
 
-As usual in linearization, we have neglected the terms of order $2$ and higher in equation $\ref{eq:TaylorExp}$. This approximation is valid in the surroundings of $\vec{x_0}$. In that situation, the condition $\ref{eq:anyDcond}$ becomes a very simple restriction on the jacobian matrix (see equation $\ref{eq:jaccond}$): for the system to be gradient, its jacobian has to be symmetric.
+As usual in linearization, we have neglected the terms of order $2$ and higher in equation $\ref{eq:TaylorExp}$. This approximation is valid in the surroundings of $\vec{x_0}$. For an equation like $\ref{eq:TaylorExp}$, the condition $\ref{eq:anyDcond}$ becomes a very simple restriction on the jacobian matrix (see equation $\ref{eq:jaccond}$): for the system to be gradient, its jacobian has to be symmetric.
 
 \begin{equation}
 \label{eq:jaccond}
@@ -191,35 +195,52 @@ Using the skew symmetric decomposition described in equation \ref{eq:SkewSymDec}
 
 \begin{equation}
 \label{eq:TaylorExpDecomposed}
-\vec f(\vec x) = \vec f(\vec{x_0}) + J_{Symm}(\vec{x_0}) \cdot \Delta \vec x + J_{Skew}(\vec{x_0}) \cdot \Delta \vec x
+\vec f(\vec x) \approx \vec f(\vec{x_0}) + J_{Symm}(\vec{x_0}) \cdot \Delta \vec x + J_{Skew}(\vec{x_0}) \cdot \Delta \vec x
 \end{equation}
 
-This represents a natural decomposition of the field $\vec f(\vec x)$ in a gradient and a non-gradient term. More specifically, the only non-gradient term is the one containing the skew part of the jacobian[^2]. The gradient term $\vec f(\vec{x_0}) + J_{Symm}(\vec{x_0}) \cdot \Delta \vec x$ can thus be associated to a (pseudo)stability landscape (see equation $\ref{eq:TaylorExpDecomposedAndGradient}$).
+As we have seen from condition $\ref{eq:jaccond}$, the only term that is not gradient is the one containing $J_{Skew}$. Equation $\ref{eq:TaylorExpDecomposed}$ represents a natural, well-defined and operational way of writing our field $\vec f(\vec x)$ decomposed as in equation $\ref{eq:FieldDecomposition}$, that is, as the sum of a gradient and a non-gradient term[^2] (see $\ref{eq:decomposition}$).
 
-[^2]: This is deeply related with the Helmholtz decomposition: it is proven that, for a huge range of easy to fulfil conditions, any field can be decomposed as $\vec f (\vec x) = - \vec \nabla V (\vec x) + \vec \nabla \times \vec A (\vec x )$, where $V$ and $\vec A$ are known as scalar and vector potentials. Both of them have a straightforward natural interpretation, and are widely used, for instance, in electromagnetism and fluid dynamics.
+[^2]: This decomposition is related with the Helmholtz decomposition: it is proven that, for a huge range of easy to fulfil conditions, any field can be decomposed as $\vec f (\vec x) = - \vec \nabla V (\vec x) + \vec \nabla \times \vec A (\vec x )$, where $V$ and $\vec A$ are known as scalar and vector potentials. Both of them have a straightforward natural interpretation, and are widely used, for instance, in electromagnetism and fluid dynamics.
 
 \begin{equation}
-\label{eq:TaylorExpDecomposedAndGradient}
-\vec f(\vec x) = - \vec \nabla V(\vec{x}) + J_{Skew}(\vec{x_0}) \cdot \Delta \vec x
+\label{eq:decomposition}
+  \begin{cases}
+    \vec f_{grad} (\vec x) \approx \vec f(\vec{x_0}) + J_{Symm}(\vec{x_0}) \cdot \Delta \vec x \\
+    \vec f_{curl} (\vec x) \approx J_{Skew}(\vec{x_0}) \cdot \Delta \vec x
+  \end{cases}
 \end{equation}
 
-Additionally, $V(\vec x)$ can be computed analytically by direct integration (see $\ref{eq:vecInt}$).
+The gradient term can thus be associated to a stability landscape $V(\vec x)$, whose shape can be computed analytically using a line integral (see $\ref{eq:vecInt}$). Its integrated expression is given in equation $\ref{eq:Potential}$.
 
 \begin{equation}
 \label{eq:Potential}
-V(\vec{x}) = V(\vec{x_0}) - \vec f(\vec x_0) \cdot \Delta \vec x - \frac{1}{2} \Delta \vec x^t \cdot J_{Symm} (\vec{x_0}) \cdot \Delta \vec x
+V(\vec{x}) \approx  V(\vec{x_0}) - \vec f(\vec x_0) \cdot \Delta \vec x - \frac{1}{2} \Delta \vec x^t \cdot J_{Symm} (\vec{x_0}) \cdot \Delta \vec x
+\end{equation}
+
+Using this potential $V(\vec x)$, we can rewrite our dynamical system as in equation $\ref{eq:MainResult}$.
+
+\begin{equation}
+\label{eq:MainResult}
+\vec f(\vec x) \approx -\vec \nabla V + \vec f_{curl}(\vec x)
+\end{equation}
+
+The stability landscape described in $\ref{eq:Potential}$ not only has been derived from a linearized system, but also completely neglects the effects of the curl part of the flow. It is, thus, an approximation, and as with any other approximation we need a way to estimate its error. From equation $\ref{eq:MainResult}$ it is apparent that we can use $\vec f_{curl} (\vec x)$ as an approximation of the local error introduced by our algorithm ($\ref{eq:error}$).
+
+\begin{equation}
+\label{eq:error}
+err(\vec x_0) \approx \| \vec f_{curl}(\vec x_0) \| \sim \| J_{Skew}(\vec{x_0}) \|
 \end{equation}
 
 \subsection{Numerical algorithm}
 \label{subsec:NumericalAlgorithm}
-The previous ideas open the possibility of an easy to implement numerical method using the following steps:
+The previous ideas open the possibility of an easy to implement numerical algorithm that uses the previous ideas iterativelly. The pseudocode reads as follows:
 
 \begin{enumerate}
 \item Create a grid in the phase plane $\left\lbrace \vec x_i \right\rbrace$
 \item Calculate the jacobian $J(\vec{x_i})$ in each grid point
 \item Decompose each jacobian in its skew $J_{Skew}(\vec{x_i})$ and symmetric $J_{Symm}(\vec{x_i})$ components
 \item Assign potential 0 to the first point in the grid
-\item Use each $J_{Symm}$ to compute the (pseudo)potential point by point, using equation $\ref{eq:Potential}$
+\item Use each $J_{Symm}$ to compute the (pseudo)potential point by point, using equation $\ref{eq:Potential}$ and imposing continuity
 \item Use the values of $J_{Skew}(\vec{x_i})$ as a measure of the quality of the approximation point by point (the higher the values in the skew matrix relative to the symmetric ones, the worse)
 \end{enumerate}
 
