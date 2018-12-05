@@ -73,7 +73,7 @@ Like with any other analogy, it is important to be aware of its limitations. The
 	\label{fig:escher}
 \end{figure}
 
-Another intuitive approach is the following: if we want to summarize, for instance, a two dimensional flow in a single surface, the height at each point of such a surface should contain the information about the derivatives of both states. That is, one number, height, codes two numbers. The process of computing the surface is a process of information compression, and it is known from mathematics that only gradient fields allow this kind of compression. In one dimensional systems there is no compression of information (one number, height, corresponds to one number, the derivative of the only state), and this is one of the reasons stability landscapes of one dimensional systems can always be computed.
+An alternative intuitive approach is the following: if we want to summarize, for instance, a two dimensional flow in a single surface, the height at each point of such a surface should contain the information about the derivatives of both states. That is, one number, height, codes two numbers. The process of computing the surface is a process of information compression, and it is known from mathematics that only gradient fields allow this kind of compression. In one dimensional systems there is no compression of information (one number, height, corresponds to one number, the derivative of the only state), and this is one of the reasons stability landscapes of one dimensional systems can always be computed.
 
 ## Mathematical background
 
@@ -286,9 +286,12 @@ V(x_i) = V(x_0) + \sum_{n = 0}^{i-1} \Delta V(x_n, x_{n+1})
 ## Competition model
 
 # Discussion
-- Power of visualization and intuition
-- Limits of visualization and intuition
-- Peters projection and geometrical limits
-- Why did we abandon the phase plane?
+Visualization is a helpful tool for processing large amounts of information.
+
+The use of stability landscapes as a helping tool to understand one-dimensional dynamical systems achieved great success, specially in interdisciplinary research communities. A generalization to two-dimensional systems seemed to be a logical next step. Unfortunately, as we have seen, there are subtle reasons that make two (and higher) dimensional systems fundamentally different from the one-dimensional case. The generalization, straightforward as it may look, is actually impossible for most dynamical equations.
+
+In this paper we presented one possible trick 
+
+The concept of potential is a cornerstone of physics. For instance, we know that the time evolution of several physical systems is governed by a potential function. Such a function can be related with physical concepts like the potential energy, so its use goes way further than visualization. Generic stability landscapes lack this straightforward interpretation, and in most cases are just no more (and no less) than a visual aid. It may be worth reconsidering why do we prefer the idea of stability landscape over the good-old phase plane figure. It is true that the latter is slightly less intuitive than the stability landscape, but it has a very desirable property: existence under general circumstances.
 
 # References
