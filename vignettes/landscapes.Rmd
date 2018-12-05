@@ -103,24 +103,30 @@ V(x,y) = V(x_0, y_0) - \int^{x}_{x_0} f(\xi, y_0) d\xi - \int^{y}_{y_0} g(x, \et
 
 ## Generalization
 
-Dynamics in equation $\ref{eq:2D}$ and the condition for the crossed derivatives $\ref{eq:2Dcond}$ can be straightforwardly generalized (see equations $\ref{eq:anyD}$ and $\ref{eq:anyDcond}$) to systems with an arbitrary number of state variables $\vec x = (x_1, ..., x_n)$.
+Dynamics in equation $\ref{eq:2D}$ and the condition for the crossed derivatives $\ref{eq:2Dcond}$ can be straightforwardly generalized (see equations $\ref{eq:anyD}$ and $\ref{eq:anyDcond}$) to systems with an arbitrary number of state variables $\vec x = (x_1, ..., x_n)$. Particularly,
 
-\begin{equation}
-\label{eq:anyD}
-  \frac{d x_i}{dt} = f_i(\vec x) = -\frac{\partial V}{\partial x_i} : i = 1..n
-\end{equation}
+if
 
 \begin{equation}
 \label{eq:anyDcond}
   \frac{\partial f_i}{\partial x_j} = \frac{\partial f_j}{\partial x_i} : i \neq j
 \end{equation}
 
-Where once again condition $\ref{eq:anyDcond}$ is a requirement for  $\ref{eq:anyD}$ to make sense. If that's the case the potential is given by equation $\ref{eq:anyDint}$, where the line integral is computed along the curve $\Gamma$ joining the points $\vec x_0$ and $\vec x$.
+then there is a surface $V(\vec x)$ verifying:
+
+\begin{equation}
+\label{eq:anyD}
+  \frac{d x_i}{dt} = f_i(\vec x) = -\frac{\partial V}{\partial x_i} : i = 1..n
+\end{equation}
+
+and such a surface can be computed using:
 
 \begin{equation}
 \label{eq:anyDint}
 V(\vec x) = V(\vec x_0) - \int_\Gamma \sum_{i=1}^n f_i(\vec x) dx_i
 \end{equation}
+
+where the line integral in $\ref{eq:anyDint}$ is computed along the curve $\Gamma$ joining the points $\vec x_0$ and $\vec x$.
 
 It is important to note that the number of equations $N$ contained in condition $\ref{eq:anyDcond}$ grows with the dimensionality of the system $D$, particularly following the series of triangular numbers $N = \frac{1}{2}(D-1)D$. Thus, the higher the dimensionality, the harder is to fulfill condition $\ref{eq:anyDcond}$. As a side effect, we see that in one dimensional systems the condition contains $0$ equations and is thus automatically fulfilled, meaning that one dimensional systems always have a well defined landscape.
 
