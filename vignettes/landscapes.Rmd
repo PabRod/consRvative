@@ -69,7 +69,7 @@ Like with any other analogy, it is important to be aware of its limitations. The
 	\begin{center}
 		\includegraphics[width=0.5\columnwidth]{img/escher.jpg}
 	\end{center}
-	\caption{M.C. Escher's \textit{Klimmen en dalen}. Lithography, 1960.}
+	\caption{Detail of M.C. Escher's \textit{Klimmen en dalen}. Lithography, 1960.}
 	\label{fig:escher}
 \end{figure}
 
@@ -170,7 +170,7 @@ The reader is probably familiar with the concept of linearization, also known as
 \vec f(\vec x) \approx \vec f(\vec{x_0}) + J(\vec{x_0}) \cdot \Delta \vec x + \mathcal{O} \left( \| \vec \Delta x \| ^2 \right)
 \end{equation}
 
-If we compute equation $\ref{eq:TaylorExp}$ in the surroundings of $\vec{x_0}$ we can safely neglect the terms of order $2$ and higher. In that situation, the condition $\ref{eq:anyDcond}$ becomes a very simple restriction on the jacobian matrix (see equation $\ref{eq:jaccond}$): for the system to be conservative, its jacobian has to be symmetric.
+If we compute equation $\ref{eq:TaylorExp}$ in the surroundings of $\vec{x_0}$ we can safely neglect the terms of order $2$ and higher. In that situation, the condition $\ref{eq:anyDcond}$ becomes a very simple restriction on the jacobian matrix (see equation $\ref{eq:jaccond}$): for the system to be gradient, its jacobian has to be symmetric.
 
 \begin{equation}
 \label{eq:jaccond}
@@ -191,16 +191,14 @@ Using the skew symmetric decomposition described in equation \ref{eq:SkewSymDec}
 \vec f(\vec x) = \vec f(\vec{x_0}) + J_{Symm}(\vec{x_0}) \cdot \Delta \vec x + J_{Skew}(\vec{x_0}) \cdot \Delta \vec x + \mathcal{O} \left( \| \vec \Delta x \| ^2 \right)
 \end{equation}
 
-This trick is interesting because it represents a natural decomposition of the field $\vec f(\vec x)$ in a gradient and a non-gradient term. More specifically, the only non-gradient term is the one containing the skew part of the jacobian\footnote{This is deeply related with the Helmholtz decomposition: it is proven that, for a huge range of easy to fulfil conditions, any field can be decomposed as $\vec f (\vec x) = - \vec \nabla V (\vec x) + \vec \nabla \times \vec A (\vec x )$, where $V$ and $\vec A$ are known as scalar and vector potentials. Both of them have a straightforward natural interpretation, and are widely used, for instance, in electromagnetism and fluid dynamics}.
+This represents a natural decomposition of the field $\vec f(\vec x)$ in a gradient and a non-gradient term. More specifically, the only non-gradient term is the one containing the skew part of the jacobian\footnote{This is deeply related with the Helmholtz decomposition: it is proven that, for a huge range of easy to fulfil conditions, any field can be decomposed as $\vec f (\vec x) = - \vec \nabla V (\vec x) + \vec \nabla \times \vec A (\vec x )$, where $V$ and $\vec A$ are known as scalar and vector potentials. Both of them have a straightforward natural interpretation, and are widely used, for instance, in electromagnetism and fluid dynamics}. The gradient term $\vec f(\vec{x_0}) + J_{Symm}(\vec{x_0}) \cdot \Delta \vec x$ can thus be associated to a (pseudo)stability landscape (see equation $\ref{eq:TaylorExpDecomposedAndGradient}$).
 
 \begin{equation}
 \label{eq:TaylorExpDecomposedAndGradient}
 \vec f(\vec x) = - \vec \nabla V(\vec{x}) + J_{Skew}(\vec{x_0}) \cdot \Delta \vec x + \mathcal{O} \left( \| \vec \Delta x \| ^2 \right)
 \end{equation}
 
-This means that systems like \ref{eq:TaylorExp} are only gradient when their jacobians are symmetric and, thus, the skew component is a matrix of zeros.
-
-Additionally, $V(\vec x)$ can be computed analytically by direct integration:
+Additionally, $V(\vec x)$ can be computed analytically by direct integration (see $\ref{eq:vecInt}$).
 
 \begin{equation}
 \label{eq:Potential}
