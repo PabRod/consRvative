@@ -298,6 +298,25 @@ V(x_i) = V(x_0) + \sum_{n = 0}^{i-1} \Delta V(x_n, x_{n+1})
 # Results
 
 ## A synthetic example
+We tested our algorithm against a field of the form given in $\ref{eq:TestField}$, where $p_x$ and $p_y$ are non-gradient perturbations. When those perturbations are zero, the field becomes gradient and corresponds with a four-well potential. Our algorithm rendered it succesfully (cf. figure $\ref{fig:synthetic}$).
+
+\begin{equation}
+\label{eq:TestField}
+  \begin{cases}
+    f(x,y) = -x (x^2 - 1) + p_x(x,y)\\
+    g(x,y) = -y (y^2 - 1) + p_y(x,y)
+  \end{cases}
+\end{equation}
+
+When non-zero perturbations are introduced, the error obtained correlates with the regions of the plane $(x,y)$ were the perturbations are maximum. If the perturbations are weak relative to the gradient term, a four-well potential is still recognizable $\ref{fig:synthetic}$.
+
+\begin{figure}
+	\begin{center}
+		\includegraphics[width=1.00\columnwidth]{img/synthetic.png}
+	\end{center}
+	\caption{In all three figures the red and blue lines represent the nullclines of $x$ and $y$, respectivelly. Several trajectories are plotted in black. The contour plot in figure a) shows the potential calculated for the gradient case (i.e.: $p_x(x,y) = p_y(x,y) = 0$). As expected, the stable equilibria correspond to the wells. The contour plot in figure b) also shows the potential, but now a perturbation has been introduced. It can be noticed that the shape of the potential has been distorted. Indeed, the two equilibria at the upper side of the plot fall slightly outside the closest well. The equilibria at the botton, to the contrary, fit perfectly centered in their corresponding wells. Figure c) shows the estimated error of our computed potential. This figure warns us against trusting too much the potential we obtained in the upper and central region, and guarantees us that elsewhere it will work fine. Notice that the two upper equilibria lie in a region where the error is clearly non zero. The two lower ones, on the contrary, lie on a region where the error is very close to zero, so we can safely use the previously derived potential to visualize them.}
+	\label{fig:synthetic}
+\end{figure}
 
 ## Competition model
 
