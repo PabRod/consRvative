@@ -351,14 +351,14 @@ This allows to calculate the potential in any point of the grid using:
 
 \begin{equation}
 \label{eq:Potential1DGrid}
-V(x_i) = V(x_0) - \sum_{n = 0}^{i-1} \left( f(x_n) \cdot (x_{n+1} - x_n) + \frac{1}{2} J(x_n) \cdot (x_{n+1} - x_n)^2 \right)
+V(x_i) = V(x_0) - \sum_{n = 1}^{i} \left( f(x_{n-1}) \cdot (x_n - x_{n-1}) + \frac{1}{2} J(x_{n-1}) \cdot (x_n - x_{n-1})^2 \right)
 \end{equation}
 
 If the grid has been constructed with a constant step $\Delta x$, equation \ref{eq:Potential1DGrid} can be simplified as:
 
 \begin{equation}
 \label{eq:Potential1DGridSimp}
-V(x_i) = V(x_0) - \Delta x \sum_{n = 0}^{i-1} \left( f(x_n) + \frac{1}{2} J(x_n) \cdot \Delta x \right)
+V(x_i) = V(x_0) - \Delta x \sum_{n = 1}^i \left( f(x_{n-1}) + \frac{1}{2} J(x_{n-1}) \cdot \Delta x \right)
 \end{equation}
 
 Notice that equations \ref{eq:Potential1DGrid} and \ref{eq:Potential1DGridSimp} are just algebraic relationships allowing to compute the potential at any node of the grid. Furthermore, equation \ref{eq:Potential1D} can be used to interpolate between the nodes.
@@ -366,13 +366,13 @@ Notice that equations \ref{eq:Potential1DGrid} and \ref{eq:Potential1DGridSimp} 
 It can be useful to define the auxiliary function:
 \begin{equation}
 \label{eq:Increment1D}
-\Delta V(x_i, x_{i+1}) = -\int_{x_i}^{x_{i+1}} f(s) \cdot ds = - f(x_i) \cdot (x_{i+1} - x_i) - \frac{1}{2} J(x_i) \cdot (x_{i+1} - x_i)^2
+\Delta V(x_i; x_{i-1}) = -\int_{x_{i-1}}^{x_i} f(s) \cdot ds \approx - f(x_{i-1}) \cdot (x_i - x_{i-1}) - \frac{1}{2} J(x_{i-1}) \cdot (x_i - x_{i-1})^2
 \end{equation}
 
 so the recursion relation reads:
 \begin{equation}
 \label{eq:Potential1DGridWithIncrement}
-V(x_i) = V(x_0) + \sum_{n = 0}^{i-1} \Delta V(x_n, x_{n+1})
+V(x_i) = V(x_0) + \sum_{k = 1}^{i} \Delta V(x_k; x_{k-1})
 \end{equation}
 
 Reading equation $\ref{eq:Increment1D}$ from a geometrical perspective, we see that our numerical method gets reduced to the trapezoidal rule for numerical integration when applied to one-dimensional systems.
