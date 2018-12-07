@@ -244,8 +244,69 @@ The previous ideas open the possibility of an easy to implement numerical algori
 \item Use the values of $J_{Skew}(\vec{x_i})$ as a measure of the quality of the approximation point by point (the higher the values in the skew matrix relative to the symmetric ones, the worse)
 \end{enumerate}
 
-\subsubsection{One dimensional case}
-\label{subsubsec:1Dcase}
+## Code package
+In the spirit of reproducible research, we published an _R_ package that applies the abovementioned algorithm. It is freely available at: TBA.
+
+# Results
+
+## A synthetic example
+We tested our algorithm against a field of the form given in $\ref{eq:TestField}$, where $p_x$ and $p_y$ are non-gradient perturbations. When we chose those perturbations to be zero, the field becomes gradient and corresponds with a four-well potential. Our algorithm rendered it succesfully (cf. figure $\ref{fig:synthetic}$).
+
+\begin{equation}
+\label{eq:TestField}
+  \begin{cases}
+    f(x,y) = -x (x^2 - 1) + p_x(x,y)\\
+    g(x,y) = -y (y^2 - 1) + p_y(x,y)
+  \end{cases}
+\end{equation}
+
+When non-zero perturbations are introduced, the error obtained correlates with the regions of the plane $(x,y)$ were we defined the perturbations to be maximum. If the perturbations are locally weak relative to the gradient term, a four-well potential is still recognizable $\ref{fig:synthetic}$.
+
+\begin{figure}[h]
+	\begin{center}
+		\includegraphics[width=1.00\columnwidth]{img/synthetic.png}
+	\end{center}
+	\caption{In all three figures the red and blue lines represent the nullclines of $x$ and $y$, respectivelly. Several trajectories are plotted in black. The contour plot in figure a) shows the potential calculated for the gradient case (i.e.: $p_x(x,y) = p_y(x,y) = 0$). As expected, the stable equilibria correspond to the wells. The contour plot in figure b) also shows the potential, but now a perturbation has been introduced. It can be noticed that the shape of the potential has been distorted. Indeed, the two equilibria at the upper side of the plot fall slightly outside the closest well. The equilibria at the botton, to the contrary, fit perfectly centered in their corresponding wells. Figure c) shows the estimated error of our computed potential. This figure warns us against trusting too much the potential we obtained in the upper and central region, and guarantees us that elsewhere it will work fine. Notice that the two upper equilibria lie in a region where the error is clearly non zero. The two lower ones, on the contrary, lie on a region where the error is very close to zero, so we can safely use the previously derived potential to visualize them.}
+	\label{fig:synthetic}
+\end{figure}
+
+## A biological example
+
+### A simple regulatory gene network
+A bistable network model can be described by a set of equations like $\ref{eq:Waddington}$ (see @Bhattacharya2011).
+
+\begin{equation}
+  \label{eq:Waddington}
+  \begin{cases}
+    \frac{dx}{dt} = b_x - r_x x + \frac{a_x}{k_x + y^n} \\
+    \frac{dy}{dt} = b_y - r_y y + \frac{a_y}{k_y + x^n}
+  \end{cases}
+\end{equation}
+
+Despite this flow is clearly non-gradient, our algorithm correctly predicts the existance of two wells (see figure $\ref{fig:Waddington}$). When the role of $x$ and $y$ is not symmetrical in equation $\ref{eq:Waddington}$, the algorithm proposed in @Bhattacharya2011 cannot guarantee continuity simultaneously at the separatrix and at the vicinity of the equilibrium points.
+
+\begin{figure}[h]
+	\begin{center}
+		\includegraphics[width=1.00\columnwidth]{img/waddington.png}
+	\end{center}
+	\caption{In both figures the red and blue lines represent the nullclines of $x$ and $y$, respectivelly. Several trajectories are plotted in black. The contour plot in figure a) shows the potential calculated for the simple gene regulatory network described in equation $\ref{eq:Waddington}$. The stable equilibria correspond to the wells. Figure b) shows the estimated error of our computed potential.}
+	\label{fig:Waddington}
+\end{figure}
+
+# Discussion
+Visualization is a helpful tool for processing large amounts of information.
+
+The use of stability landscapes as a helping tool to understand one-dimensional dynamical systems achieved great success, specially in interdisciplinary research communities. A generalization to two-dimensional systems seemed to be a logical next step. Unfortunately, as we have seen, there are subtle reasons that make two (and higher) dimensional systems fundamentally different from the one-dimensional case. The generalization, straightforward as it may look, is actually impossible for most dynamical equations.
+
+In this paper we presented one possible trick 
+
+The concept of potential is a cornerstone of physics. For instance, we know that the time evolution of several physical systems is governed by a potential function. Such a function can be related with physical concepts like the potential energy, so its use goes way further than visualization. Generic stability landscapes lack this straightforward link with measurable quantities, and in most cases are just no more (and no less) than a visual aid. It may be worth reconsidering why do we prefer the idea of stability landscape over the good-old phase plane figure. It is true that the latter is slightly less intuitive than the stability landscape, but it has a very desirable property: existence under general circumstances.
+
+\newpage
+
+# Appendix
+
+### One dimensional case
 In the one-dimensional case it's always possible to find an exact scalar potential.
 
 \begin{equation}
@@ -293,64 +354,6 @@ so the recursion relation reads:
 V(x_i) = V(x_0) + \sum_{n = 0}^{i-1} \Delta V(x_n, x_{n+1})
 \end{equation}
 
-## Code package
-
-# Results
-
-## A synthetic example
-We tested our algorithm against a field of the form given in $\ref{eq:TestField}$, where $p_x$ and $p_y$ are non-gradient perturbations. When those perturbations are zero, the field becomes gradient and corresponds with a four-well potential. Our algorithm rendered it succesfully (cf. figure $\ref{fig:synthetic}$).
-
-\begin{equation}
-\label{eq:TestField}
-  \begin{cases}
-    f(x,y) = -x (x^2 - 1) + p_x(x,y)\\
-    g(x,y) = -y (y^2 - 1) + p_y(x,y)
-  \end{cases}
-\end{equation}
-
-When non-zero perturbations are introduced, the error obtained correlates with the regions of the plane $(x,y)$ were the perturbations are maximum. If the perturbations are weak relative to the gradient term, a four-well potential is still recognizable $\ref{fig:synthetic}$.
-
-\begin{figure}[h]
-	\begin{center}
-		\includegraphics[width=1.00\columnwidth]{img/synthetic.png}
-	\end{center}
-	\caption{In all three figures the red and blue lines represent the nullclines of $x$ and $y$, respectivelly. Several trajectories are plotted in black. The contour plot in figure a) shows the potential calculated for the gradient case (i.e.: $p_x(x,y) = p_y(x,y) = 0$). As expected, the stable equilibria correspond to the wells. The contour plot in figure b) also shows the potential, but now a perturbation has been introduced. It can be noticed that the shape of the potential has been distorted. Indeed, the two equilibria at the upper side of the plot fall slightly outside the closest well. The equilibria at the botton, to the contrary, fit perfectly centered in their corresponding wells. Figure c) shows the estimated error of our computed potential. This figure warns us against trusting too much the potential we obtained in the upper and central region, and guarantees us that elsewhere it will work fine. Notice that the two upper equilibria lie in a region where the error is clearly non zero. The two lower ones, on the contrary, lie on a region where the error is very close to zero, so we can safely use the previously derived potential to visualize them.}
-	\label{fig:synthetic}
-\end{figure}
-
-## A biological example
-
-### A simple regulatory gene network
-A bistable network model can be described by a set of equations like $\ref{eq:Waddington}$ (see @Bhattacharya2011).
-
-\begin{equation}
-  \label{eq:Waddington}
-  \begin{cases}
-    \frac{dx}{dt} = b_x - r_x x + \frac{a_x}{k_x + y^n} \\
-    \frac{dy}{dt} = b_y - r_y y + \frac{a_y}{k_y + x^n}
-  \end{cases}
-\end{equation}
-
-Despite this flow is clearly non-gradient, our algorithm correctly predicts the existance of two wells (see figure $\ref{fig:Waddington}$). When the role of $x$ and $y$ is not symmetrical in equation $\ref{eq:Waddington}$, the algorithm proposed in @Bhattacharya2011 cannot guarantee continuity simultaneously at the separatrix and at the vicinity of the equilibrium points.
-
-\begin{figure}[h]
-	\begin{center}
-		\includegraphics[width=1.00\columnwidth]{img/waddington.png}
-	\end{center}
-	\caption{In both figures the red and blue lines represent the nullclines of $x$ and $y$, respectivelly. Several trajectories are plotted in black. The contour plot in figure a) shows the potential calculated for the simple gene regulatory network described in equation $\ref{eq:Waddington}$. The stable equilibria correspond to the wells. Figure b) shows the estimated error of our computed potential.}
-	\label{fig:Waddington}
-\end{figure}
-
-
-# Discussion
-Visualization is a helpful tool for processing large amounts of information.
-
-The use of stability landscapes as a helping tool to understand one-dimensional dynamical systems achieved great success, specially in interdisciplinary research communities. A generalization to two-dimensional systems seemed to be a logical next step. Unfortunately, as we have seen, there are subtle reasons that make two (and higher) dimensional systems fundamentally different from the one-dimensional case. The generalization, straightforward as it may look, is actually impossible for most dynamical equations.
-
-In this paper we presented one possible trick 
-
-The concept of potential is a cornerstone of physics. For instance, we know that the time evolution of several physical systems is governed by a potential function. Such a function can be related with physical concepts like the potential energy, so its use goes way further than visualization. Generic stability landscapes lack this straightforward interpretation, and in most cases are just no more (and no less) than a visual aid. It may be worth reconsidering why do we prefer the idea of stability landscape over the good-old phase plane figure. It is true that the latter is slightly less intuitive than the stability landscape, but it has a very desirable property: existence under general circumstances.
-
-\newpage
+Reading equation $\ref{eq:Increment1D}$ from a geometrical perspective, we see that our numerical method gets reduced to the trapezoidal rule for numerical integration when applied to one-dimensional systems.
 
 # References
