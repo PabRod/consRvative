@@ -1,5 +1,5 @@
 ---
-title: "How to climb Escher's ladder. Stability landscapes for weakly non-gradient flows"
+title: "Climbing Escher's ladder, or how to compute stability landscapes for weakly non-gradient flows"
 author: "Pablo Rodríguez-Sánchez, Marten Scheffer & Egbert van Nes"
 abstract: "Stability landscapes, usually identified with the physical concept of scalar potential, are useful tools for understanding dynamical systems described by autonomous differential equations. Unfortunately, the conditions for those potentials to be well defined (and thus, meaningful) are quite restrictive for systems of two or more dimensions. Here we present a numerical method for decomposing dynamical systems of any size in two terms, one that has an associated potential (the gradient term), and another one that lacks it (the curl term). If the magnitude of the curl part is locally small compared to the gradient part, we can still make approximate use of the concept of stability landscape. The curl to gradient ratio can be used as a local measure of the error introduced by our approximation."
 date: "`r Sys.Date()`"
@@ -264,6 +264,58 @@ The abovementioned ideas can be applied to the numerical computation of the (pse
 \end{enumerate}
 
 By introducing a grid, we expect the linearization error to decrease with square of the grid's step size. The more fundamental error due to ignoring the curl component of our field cannot be affected by the grid's step choice, but at least the algorithm provides us with a measure of its magnitude point-by-point.
+
+## Two dimensional example
+
+For instance, to calculate the value of $V$ at the point $(x_3, y_2)$ of a grid, we should begin by assigning $0$ to the potential at $V(x_0, y_0)$. Then, we need a trajectory that goes from $(x_0,y_0)$ to $(x_3, y_2)$, stopping in the intermediate grid points (see figure).
+
+
+```{r steps, fig.width = 4, fig.height = 3, fig.align = 'center'}
+library(ggplot2)
+d=data.frame(x=c(0,1,2,3,3), y=c(0,0,0,0,1), vx=c(1,2,3,3,3), vy=c(0, 0, 0, 1, 2))
+
+ggplot() + 
+geom_segment(data=d, mapping=aes(x=x, y=y, xend=vx, yend=vy), arrow=arrow(), size=2, color="black") + 
+geom_point(data=d, mapping=aes(x=x, y=y), size=4, shape=21, fill="white") +
+geom_point(data=d, mapping=aes(x=vx, y=vy), size=4, shape=21, fill="white") +
+scale_x_continuous(breaks=c(0, 1, 2, 3), labels=c("x_0", "x_1", "x_2", "x_3")) +
+scale_y_continuous(breaks=c(0, 1, 2, 3), labels=c("y_0", "y_1", "y_2", "y_3")) +
+theme(panel.grid.minor.x = element_blank()) +
+theme(panel.grid.minor.y = element_blank())
+```
+
+In the first step we go from $(x_0, y_0)$ to $(x_1, y_0)$. The new potential is thus (using $\ref{eq:Iterator}$):
+
+\begin{equation}
+\label{eq:IteratorEx1}
+V(x_1, y_0) \approx V(x_0, y_0) + \Delta V(x_1, y_0; x_0, y_0)
+\end{equation}
+
+The next two steps continue in the horizontal direction, all the way to $(x_3, y_0)$. The value of the potential there is:
+
+\begin{equation}
+\label{eq:IteratorEx2}
+V(x_3, y_0) \approx V(x_0, y_0) + \Delta V(x_1, y_0; x_0, y_0) + \Delta V(x_2, y_0; x_1, y_0) + \Delta V(x_3, y_0; x_2, y_0)
+\end{equation}
+
+Now, to reach our destination $(x_3, y_2)$ we have to move in the vertical direction:
+
+\begin{equation}
+\label{eq:IteratorEx3}
+\begin{split}
+V(x_3, y_2) \approx V(x_0, y_0) + \Delta V(x_1, y_0; x_0, y_0) + \Delta V(x_2, y_0; x_1, y_0) + \Delta V(x_3, y_0; x_2, y_0) + \\
++ \Delta V(x_3, y_1; x_3, y_0) + \Delta V(x_3, y_2; x_3, y_1)
+\end{split}
+\end{equation}
+
+Generalizing the previous example we see that, for a generic point $(x_i, y_j)$, we can compute the approximate potential using the closed formula $\ref{eq:NumericalRecipe}$.
+
+\begin{equation}
+\label{eq:NumericalRecipe}
+V(x_i, y_j) = V(x_0, y_0) + \sum_{k = 1}^i \Delta V(x_k, y_0; x_{k-1}, y_0) + \sum_{l = 1}^j \Delta V(x_i, y_l; x_i, y_{l-1})
+\end{equation}
+
+The attentive reader may have noticed that formula $\ref{eq:NumericalRecipe}$ has been derived sweeping first in the horizontal direction and next in the vertical one. Of course, we can choose different paths of summation. Because we are building our potential neglecting the curl part of our flow, we know by Green's theorem that our results will converge to the same solution regardless of the chosen path.
 
 ## Code package
 In the spirit of reproducible research, we published an _R_ package that applies the abovementioned algorithm. It is freely available at: TBA.
