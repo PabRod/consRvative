@@ -51,7 +51,7 @@ One particularly successful visualization method is that of the stability landsc
 	\begin{center}
 		\includegraphics[width=0.5\columnwidth]{img/sl.jpg}
 	\end{center}
-	\caption{Example of a stability landscape from @Scheffer2001. The upper side of the figure shows the stability landscape of a one dimensional system for different values of a bifurcation parameter. The lower side shows the bifurcation diagram. This diagram proved to be a succesful tool for explaining an advanced concept in bifurcation theory such as the Fold bifurcation.}
+	\caption{Example of a stability landscape from @Scheffer2001. The upper side of the figure shows the stability landscape of a one-dimensional system for different values of a bifurcation parameter. The lower side shows the bifurcation diagram. This diagram proved to be a succesful tool for explaining an advanced concept in bifurcation theory such as the Fold bifurcation.}
 	\label{fig:aew}
 \end{figure}
 
@@ -128,7 +128,7 @@ V(\vec x) = V(\vec x_0) - \int_\Gamma \sum_{i=1}^n f_i(\vec x) dx_i
 
 where the line integral in $\ref{eq:anyDint}$ is computed along any curve $\Gamma$ joining the points $\vec x_0$ and $\vec x$.
 
-It is important to note that the number of equations $N$ contained in condition $\ref{eq:anyDcond}$ grows with the dimensionality of the system $D$, particularly following the series of triangular numbers $N = \frac{1}{2}(D-1)D$. Thus, the higher the dimensionality, the harder is to fulfill condition $\ref{eq:anyDcond}$. As a side effect, we see that in one dimensional systems the condition contains $0$ equations and is thus automatically fulfilled, meaning that one dimensional systems always have a well defined stability landscape.
+It is important to note that the number of equations $N$ contained in condition $\ref{eq:anyDcond}$ grows with the dimensionality of the system $D$, particularly following the series of triangular numbers $N = \frac{1}{2}(D-1)D$. Thus, the higher the dimensionality, the harder is to fulfill condition $\ref{eq:anyDcond}$. As a side effect, we see that in one-dimensional systems the condition contains $0$ equations and is thus automatically fulfilled, meaning that one-dimensional systems always have a well defined stability landscape.
 
 ## With vector notation
 
@@ -261,7 +261,7 @@ The abovementioned ideas can be applied to the numerical computation of the (pse
 
 By introducing a grid, we expect the linearization error to decrease with square of the grid's step size. The more fundamental error due to ignoring the curl component of our flow cannot be affected by the grid's step choice, but at least the algorithm provides us with a measure of its magnitude point-by-point.
 
-## Two dimensional example
+## Two-dimensional example
 
 For instance, to calculate the value of $V$ at the point $(x_3, y_2)$ of a grid, we should begin by assigning $0$ to the potential at $V(x_0, y_0)$. Then, we need a trajectory that goes from $(x_0,y_0)$ to $(x_3, y_2)$, stopping in the intermediate grid points (see figure $\ref{fig:path}$).
 
@@ -375,13 +375,13 @@ The algorithm we present here is an attempt to preserve as much as possible from
 - Reliability. At each step the local error is computed and stored, providing, so to say, a map of which part of our stability landscape are dangerous to visit.
 - Speed. The rendering of a printing quality surface can be performed in no more than a few minutes in a personal laptop.
 
-After pointing out all the difficulties of calculating potentials for higher dimensional systems, maybe it is worth to ask ourselves the question: do we really need them? The concept of potential is paramount in physics. We know that the time evolution of several physical systems is governed by a potential function. In physics, potentials can be related with measurable concepts like energy, so its use goes way further than visualization. Generic stability landscapes lack this straightforward link with measurable quantities, and in most cases are just no more (and no less) than a visual aid. It may be worth reconsidering why do we prefer the idea of stability landscape over the good-old phase plane figure. It is true that the latter is slightly less intuitive than the stability landscape, but it has a very desirable property: existence under general circumstances.
+After pointing out all the difficulties of calculating potentials for higher-dimensional systems, maybe it is worth to ask ourselves the question: do we really need them? The concept of potential is paramount in physics. We know that the time evolution of several physical systems is governed by a potential function. In physics, potentials can be related with measurable concepts like energy, so its use goes way further than visualization. Generic stability landscapes lack this straightforward link with measurable quantities, and in most cases are just no more (and no less) than a visual aid. It may be worth reconsidering why do we prefer the idea of stability landscape over the good-old phase plane figure. It is true that the latter is slightly less intuitive than the stability landscape, but it has a very desirable property: existence under general circumstances.
 
 \newpage
 
 # Appendix
 
-### One dimensional case
+### One-dimensional case
 In the one-dimensional case it's always possible to find an exact scalar potential.
 
 \begin{equation}
@@ -466,8 +466,6 @@ The perpetual oscillation of a rolling marble while submerged in a very viscous 
 Perpetual oscillation is, by virtue of the Poincaré-Bendixson theorem (@Strogatz1994), only possible in systems with two or more dimensions.
 
 ### From information theory
-If we want to summarize, for instance, a two dimensional flow in a single surface, the height at each point of such a surface should contain the information about the derivatives of both states. That is, one number, height, codes two numbers. The process of computing the surface is a process of information compression, and it is known from mathematics that only gradient flows allow this kind of compression. In one dimensional systems there is no compression of information (one number, height, corresponds to one number, the derivative of the only state), and this is one of the reasons stability landscapes of one dimensional systems can always be computed.
-
-\newpage
+If we want to summarize, for instance, a two-dimensional flow in a single surface, the height at each point of such a surface should contain the information about the derivatives of both states. That is, one number, height, codes two numbers. The process of computing the surface is a process of information compression, and it is known from mathematics that only gradient flows allow this kind of compression. In one-dimensional systems there is no compression of information (one number, height, corresponds to one number, the derivative of the only state), and this is one of the reasons stability landscapes of one-dimensional systems can always be computed.
 
 # References
