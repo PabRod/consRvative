@@ -45,7 +45,13 @@ knitr::opts_chunk$set(
 # Introduction
 With knowledge becoming progressively more interdisciplinary, the relevance of science communication is increasing fast. Mathematical concepts are among the hardest topics to communicate to non-expert audiences, policy makers, and even to professionals from the so-called _soft sciences_. Visual methods are known to be, when applicable, successful ways of introducing mathematical concepts and results to non-specialists.
 
-One particularly successful visualization method is that of the stability landscape, also known as the rolling marble or ball-in-a-cup diagram (@Beisner2003). The concept is deeply related to the mathematical idea of Lyapunov function, of which the physical concept of potential is a particular case (@Strogatz1994). Stability landscapes have proven to be a successful tool to understand and explain certain non-trivial concepts about dynamical systems described by autonomous differential equations in a remarkably intuitive way. Examples of those concepts are multistability, basin of attraction and even bifurcation and hystheresis (see @Beisner2003, @Scheffer2001).
+One particularly successful visualization method is that of the stability landscape, also known as the rolling marble or ball-in-a-cup diagram (@Beisner2003). In stability landscapes (e.g.: figure $\ref{fig:aew}$) the horizontal position of the marble represents the state of the system at a given time. With this picture in mind, the shape of the surface represents the underlying dynamical equations, being the slope the driver of the movement. The peaks on the undulated surface represent unstable equilibrium states and the wells represent stable equilibria. Different basins of attraction are separated by _mountain ridges_ in the surface. Summarizing: the marble naturally rolls downhill to the lowest point of its basin of attraction. 
+
+Stability landscapes have proven to be a successful tool to understand and explain certain non-trivial concepts about dynamical systems described by autonomous differential equations in a remarkably intuitive way. Examples of those concepts are multistability, basin of attraction and even bifurcation and hystheresis (see @Beisner2003, @Scheffer2001).
+
+The main reason for the success of this picture arises from the fact that stability landscapes are built as an analogy with our most familiar dynamical system: movement. Particularly, the movement of a marble along a curved surface under the influence of its own weight and a strong frictional force[^1]. The stability landscape corresponds then with the physical concept of potential (@Strogatz1994). This explains why our intuition, based in what we know about movement in our everyday life, works so well reading this diagrams.
+
+[^1]: It is important to stress the fact that under this picture there's not such a thing as inertia (@Beisner2003). The accurate analogy is that of a marble rolling in a surface while submerged inside a very viscous fluid (@Strogatz1994).
 
 \begin{figure}[h]
 	\begin{center}
@@ -55,13 +61,7 @@ One particularly successful visualization method is that of the stability landsc
 	\label{fig:aew}
 \end{figure}
 
-The main reason for the success of this picture arises from the fact that stability landscapes are built as an analogy with our most familiar dynamical system: movement. Particularly, the movement of a marble along a curved surface under the influence of its own weight and a strong frictional force[^1]. This explains why our intuition, based in what we know about movement in our everyday life, works so well here.
-
-[^1]: It is important to stress the fact that under this picture there's not such a thing as inertia (@Beisner2003). The accurate analogy is that of a marble rolling in a surface while submerged inside a very viscous fluid (@Strogatz1994).
-
-In stability landscapes (e.g.: figure $\ref{fig:aew}$) the horizontal position of the marble represents the state of the system at a given time. With this picture in mind, the shape of the surface represents the underlying dynamical equations, being the slope the driver of the movement. The peaks on the undulated surface represent unstable equilibrium states and the wells represent stable equilibria. Different basins of attraction are separated by _mountain ridges_ in the surface. Summarizing: the marble naturally rolls downhill to the lowest point of its basin of attraction.
-
-Like with any other analogy, it is important to be aware of its limitations. The most important one is the fact that, for flows of more than one dimension, such a surface doesn't exist in general. To get an intutive feeling of why this is true, picture a flow with a stable cyclic attractor. We need a surface where our marble can roll in a closed loop while always going downhill. The kind of surface that only exists on M.C. Escher's surrealistic paintings (see figure $\ref{fig:escher}$).
+Like with any other analogy, it is important to be aware of its limitations. The most important one is the fact that, for flows of more than one dimension, such a potential doesn't exist in general. To get an intutive feeling of why this is true, picture a flow with a stable cyclic attractor. We need our potential to have the shape of a surface where our marble can roll in a closed loop while always going downhill. The kind of surface that only exists on M.C. Escher's surrealistic paintings (see figure $\ref{fig:escher}$).
 
 \begin{figure}[h]
 	\begin{center}
@@ -73,7 +73,7 @@ Like with any other analogy, it is important to be aware of its limitations. The
 
 In this work we present a detailed overview of the conditions that a flow has to fulfill to be associated with a potential. Next, we center our attention in flows that fail to fulfill those conditions, and we introduce an algorithm to decompose those flows as the sum of a gradient and a curl part. Each part can be used, respectivelly, to compute an associated potential and to measure the local error introduced by our picture.
 
-For those users less familiar with mathematics or programming, we provide a ready to use _R_ package that implements the algorithm described in the present paper.
+For those readers less familiar with mathematics or programming, we provide a ready to use _R_ package that implements the algorithm described in the present paper.
 
 ## Mathematical background
 
@@ -87,7 +87,7 @@ From a mathematical point of view, the relationship between a two-dimensional sc
   \end{cases}
 \end{equation}
 
-Such a surface $V(x,y)$ exists if and only if the crossed derivatives of the elements of the flow are equal (equation $\ref{eq:2Dcond}$). Flows satisfying equation $\ref{eq:2Dcond}$ are known as conservative, irrotational or gradient flows (cf. section 8.3 of @Marsden2003).
+Such a potential $V(x,y)$ exists if and only if the crossed derivatives of the elements of the flow are equal (equation $\ref{eq:2Dcond}$). Flows satisfying equation $\ref{eq:2Dcond}$ are known as conservative, irrotational or gradient flows (cf. section 8.3 of @Marsden2003).
 
 \begin{equation}
 \label{eq:2Dcond}
