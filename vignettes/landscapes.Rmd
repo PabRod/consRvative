@@ -311,7 +311,7 @@ Generalizing the previous example we see that, for a generic point $(x_i, y_j)$,
 V(x_i, y_j) = V(x_0, y_0) + \sum_{k = 1}^i \Delta V(x_k, y_0; x_{k-1}, y_0) + \sum_{l = 1}^j \Delta V(x_i, y_l; x_i, y_{l-1})
 \end{equation}
 
-The attentive reader may have noticed that formula $\ref{eq:NumericalRecipe}$ has been derived sweeping first in the horizontal direction and next in the vertical one. Of course, we can choose different paths of summation. Because we are building our potential neglecting the curl part of our flow, we know by Green's theorem that our results will converge to the same solution regardless of the chosen path.
+The attentive reader may have noticed that formula $\ref{eq:NumericalRecipe}$ has been derived sweeping first in the horizontal direction and next in the vertical one. Of course, we can choose different paths of summation. Because we are building our potential neglecting the curl part of our flow, we know that our results will converge to the same solution regardless of the chosen path.
 
 ## Code package
 In the spirit of reproducible research, we published an _R_ package that applies the abovementioned algorithm. It is freely available at: TBA.
@@ -352,7 +352,9 @@ A bistable network model can be described by a set of equations like $\ref{eq:Wa
   \end{cases}
 \end{equation}
 
-Despite this flow is clearly non-gradient, our algorithm correctly predicts the existance of two wells (see figure $\ref{fig:Waddington}$). When the role of $x$ and $y$ is not symmetrical in equation $\ref{eq:Waddington}$, the algorithm proposed in @Bhattacharya2011 cannot guarantee continuity simultaneously at the separatrix and at the vicinity of the equilibrium points.
+The parameters used are identical to those in equations 6 and 7 of @Bhattacharya2011, with the exception of $By$ and $foldXY$, that we modified in order to induce an assymetry in the the dynamics (we used $By = 0.05$ and $foldXY = 1.75$).
+
+Despite this flow is clearly non-gradient, our algorithm correctly predicts the existence of two wells (see figure $\ref{fig:Waddington}$).
 
 \begin{figure}[h]
 	\begin{center}
@@ -435,6 +437,16 @@ Reading equation $\ref{eq:Increment1D}$ from a geometrical perspective, we notic
 
 # Some loose thoughts
 
+## About the R package
+I've implemented the pseudopotential algorithm in Matlab, as part of a suite of visualization tools for dynamical systems I am planning to publish at some point. My plan for this paper is to translate this function alone to _R_ and publish it as a package. The translation should not take much time.
+
+## Glossary
+I am using as almost synonyms the terms:
+
+- Potential (also classical potential, scalar potential and sometimes pseudopotential)
+- Stability landscape
+- Surface
+
 ## About notation
 It will be advisable to follow a consistent notation for vector flows and its analysis in the final version of this document. Here I show a brief summary of the pros and cons of the three of them (see also accompanying figure):
 
@@ -467,5 +479,8 @@ Perpetual oscillation is, by virtue of the Poincaré-Bendixson theorem (@Strogat
 
 ### From information theory
 If we want to summarize, for instance, a two-dimensional flow in a single surface, the height at each point of such a surface should contain the information about the derivatives of both states. That is, one number, height, codes two numbers. The process of computing the surface is a process of information compression, and it is known from mathematics that only gradient flows allow this kind of compression. In one-dimensional systems there is no compression of information (one number, height, corresponds to one number, the derivative of the only state), and this is one of the reasons stability landscapes of one-dimensional systems can always be computed.
+
+## Links with Helmholtz decomposition
+Our method is a simplifed algorithmic approach to Helmholtz gradient-curl decomposition, widely used in electromagnetism and fluid dynamics. 
 
 # References
