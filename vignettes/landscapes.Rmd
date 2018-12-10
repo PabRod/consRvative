@@ -1,7 +1,7 @@
 ---
 title: "Climbing Escher's ladder, or how to compute stability landscapes for weakly non-gradient flows"
 author: "Pablo Rodríguez-Sánchez, Marten Scheffer & Egbert van Nes"
-abstract: "Stability landscapes, usually identified with the physical concept of potential, are useful tools for understanding dynamical systems described by autonomous differential equations. Unfortunately, the conditions for those potentials to exist are quite restrictive for systems of two or more dimensions. Here we present a numerical method for decomposing dynamical systems of any size in two terms, one that has an associated potential (the gradient term), and another one that lacks it (the curl term). If the magnitude of the curl term is locally small compared to the gradient part, we can still make approximate use of the concept of potential. The curl to gradient ratio can be used as a local measure of the error introduced by our approximation. Both the algorithm and a ready-to-use implementation in the form of an R package are provided."
+abstract: "Stability landscapes, usually identified with the physical concept of potential, are useful tools for understanding dynamical systems described by autonomous differential equations. Unfortunately, the conditions for those potentials to exist are quite restrictive for systems of two or more dimensions. Here we present a numerical method for decomposing dynamical systems of any size in two terms, one that has an associated potential (the gradient term), and another one that lacks it (the curl term). In those regions where the magnitude of the curl term is small compared to the gradient part, we can still make approximate use of the concept of potential. The curl to gradient ratio can be used as a local measure of the error introduced by our approximation. Both the algorithm and a ready-to-use implementation in the form of an R package are provided."
 date: "`r Sys.Date()`"
 output:
   pdf_document:
@@ -45,13 +45,13 @@ knitr::opts_chunk$set(
 # Introduction
 With knowledge becoming progressively more interdisciplinary, the relevance of science communication is increasing fast. Mathematical concepts are among the hardest topics to communicate to non-expert audiences, policy makers, and even to professionals from the so-called _soft sciences_. Visual methods are known to be, when applicable, successful ways of introducing mathematical concepts and results to non-specialists.
 
-One particularly successful visualization method is that of the stability landscape, also known as the rolling marble or ball-in-a-cup diagram (@Beisner2003). The concept is deeply related to the mathematical idea of Lyapunov function, of which the physical concept of potential is a particular case (@Strogatz1994). Stability landscapes have proven to be a successful tool to understand and explain certain non-trivial concepts about dynamical systems described by autonomous differential equations in a remarkably intuitive way. Examples of those concepts are multistability, basin of attraction or even bifurcation and hystheresis (see @Beisner2003, @Scheffer2001).
+One particularly successful visualization method is that of the stability landscape, also known as the rolling marble or ball-in-a-cup diagram (@Beisner2003). The concept is deeply related to the mathematical idea of Lyapunov function, of which the physical concept of potential is a particular case (@Strogatz1994). Stability landscapes have proven to be a successful tool to understand and explain certain non-trivial concepts about dynamical systems described by autonomous differential equations in a remarkably intuitive way. Examples of those concepts are multistability, basin of attraction and even bifurcation and hystheresis (see @Beisner2003, @Scheffer2001).
 
 \begin{figure}[h]
 	\begin{center}
 		\includegraphics[width=0.5\columnwidth]{img/sl.jpg}
 	\end{center}
-	\caption{Example of a stability landscape from @Scheffer2001. The upper side of the figure shows the stability landscape of a one-dimensional system for different values of a bifurcation parameter. The lower side shows the bifurcation diagram. This diagram proved to be a succesful tool for explaining an advanced concept in bifurcation theory such as the Fold bifurcation.}
+	\caption{Example of a stability landscape from $\cite{Scheffer2001}$. The upper side of the figure shows the stability landscape of a one-dimensional system for different values of a bifurcation parameter. The lower side shows the bifurcation diagram. This diagram proved to be a succesful tool for explaining an advanced concept in bifurcation theory such as the Fold bifurcation.}
 	\label{fig:aew}
 \end{figure}
 
@@ -87,7 +87,7 @@ From a mathematical point of view, the relationship between a two-dimensional sc
   \end{cases}
 \end{equation}
 
-Such a surface $V(x,y)$ exists (and thus can be computed) if and only if the crossed derivatives of the elements of the flow are equal (equation $\ref{eq:2Dcond}$). Flows satisfying equation $\ref{eq:2Dcond}$ are known as conservative, irrotational or gradient flows (cf. section 8.3 of @Marsden2003).
+Such a surface $V(x,y)$ exists if and only if the crossed derivatives of the elements of the flow are equal (equation $\ref{eq:2Dcond}$). Flows satisfying equation $\ref{eq:2Dcond}$ are known as conservative, irrotational or gradient flows (cf. section 8.3 of @Marsden2003).
 
 \begin{equation}
 \label{eq:2Dcond}
@@ -101,7 +101,7 @@ If an only if condition $\ref{eq:2Dcond}$ holds, we can use a line integral (@Ma
 V(x,y) = V(x_0, y_0) - \int^{x}_{x_0} f(\xi, y_0) d\xi - \int^{y}_{y_0} g(x, \eta) d\eta
 \end{equation}
 
-The condition for potentials to exist (equation $\ref{eq:2Dcond}$) is entirelly equivalent (cf. section 7.2 of @Marsden2003) to the path independence of any line integral between two points inside this flow. If the condition is not fulfilled, the potential calculated depends crucially on the chosen integration path. This is an arbitrary choice and thus, the computed potential becomes an artifact with no natural meaning.
+The attentive reader may have raised her or his eyebrow after reading the word _chosen_ applied to an integration path. In fact, we can introduce this arbitrary choice without affecting the final result. The condition for potentials to exist (equation $\ref{eq:2Dcond}$) is entirelly equivalent (cf. section 7.2 of @Marsden2003) to the path independence of any line integral between two points inside this flow. If the condition was not fulfilled, the calculated potential will have depended crucially on the chosen integration path. Being an arbitrary choice, the computed potential will have been an artifact with no natural meaning.
 
 ## Generalization
 
@@ -112,14 +112,14 @@ Dynamics in equation $\ref{eq:2D}$ and the condition for the crossed derivatives
   \frac{\partial f_i}{\partial x_j} = \frac{\partial f_j}{\partial x_i} : i \neq j
 \end{equation}
 
-then exists a surface $V(\vec x)$ verifying:
+then exists a potential $V(\vec x)$ verifying:
 
 \begin{equation}
 \label{eq:anyD}
   f_i(\vec x) = -\frac{\partial V}{\partial x_i} : i = 1..n
 \end{equation}
 
-and such a surface can be computed using:
+and such a potential can be computed using:
 
 \begin{equation}
 \label{eq:anyDint}
@@ -128,7 +128,9 @@ V(\vec x) = V(\vec x_0) - \int_\Gamma \sum_{i=1}^n f_i(\vec x) dx_i
 
 where the line integral in $\ref{eq:anyDint}$ is computed along any curve $\Gamma$ joining the points $\vec x_0$ and $\vec x$.
 
-It is important to note that the number of equations $N$ contained in condition $\ref{eq:anyDcond}$ grows with the dimensionality of the system $D$, particularly following the series of triangular numbers $N = \frac{1}{2}(D-1)D$. Thus, the higher the dimensionality, the harder is to fulfill condition $\ref{eq:anyDcond}$. As a side effect, we see that in one-dimensional systems the condition contains $0$ equations and is thus automatically fulfilled, meaning that one-dimensional systems always have a well defined stability landscape.
+The method we'll present in the next section lies in the fact that the conditions $\ref{eq:anyDcond}$ are equalities between functions, that is, both cross derivatives have to be equal at each point $\vec x$. Their difference, thus, will not remain constant in the whole phase space. In general, there will be regions where the conditions $\ref{eq:anyDcond}$ are, at least, approximately fulfilled. Those regions will admit an approximate potential.
+
+It is important to note that the number of equations ($N$) contained in condition $\ref{eq:anyDcond}$ grows with the dimensionality of the system ($D$), particularly following the series of triangular numbers $N = \frac{1}{2}(D-1)D$. Thus, the higher the dimensionality, the harder it gets to fulfill condition $\ref{eq:anyDcond}$. As a side effect, we see that in one-dimensional systems the condition contains $0$ equations and is thus automatically fulfilled, meaning that one-dimensional systems always have a well defined stability landscape.
 
 ## With vector notation
 
@@ -139,47 +141,47 @@ Using vector notation and the nabla operator $\vec \nabla$ both the dynamical eq
   \vec \nabla \times \vec f(\vec x) = \vec 0
 \end{equation}
 
-then exists a surface $V(\vec x)$ verifying:
+then exists a potential $V(\vec x)$ verifying:
 
 \begin{equation}
 \label{eq:vec}
   \frac{d\vec x}{dt} = \vec f(\vec x) = - \vec{\nabla{V}}
 \end{equation}
 
-and such a surface can be computed using:
+and such a potential can be computed using:
 
 \begin{equation}
 \label{eq:vecInt}
 V(\vec x) = V(\vec x_0) - \int_\Gamma \vec f(\vec x) \cdot d\vec x
 \end{equation}
 
-The nabla operator is used to generalize the concept of derivative to functions with more than one argument. For more information see @Marsden2003 or any other introductory text about vector calculus.
+The nabla operator and the line integral are used to generalize, respectivelly, the key concepts of derivative and definite integral to functions with more than one argument. For more information see @Marsden2003 or any other introductory text about vector calculus.
 
 # Methods
-The method we propose is based on the decomposition of our flow in a conservative or gradient part and a non-conservative or curl part (see equation $\ref{eq:FieldDecomposition}$).
+The method we propose is based on the decomposition of a flow in a conservative or gradient part and a non-conservative or curl part (see equation $\ref{eq:FieldDecomposition}$).
 
 \begin{equation}
 \label{eq:FieldDecomposition}
 \vec f (\vec x) = \vec f_{grad} (\vec x) + \vec f_{curl} (\vec x)
 \end{equation}
 
-$\vec f_{grad} (\vec x)$ captures all the part of the system that can be associated to a scalar potential, while $\vec f_{curl} (\vec x)$ represents the deviation from this ideal, gradient case. We'll use $\vec f_{gradient} (\vec x)$ to compute a scalar potential, which we will call pseudopotential. The absolute error of this approach will be given by $\parallel \vec f_{curl} (\vec x) \parallel$. The next steps show an easy way of achieving such a decomposition.
+$\vec f_{grad} (\vec x)$ captures all the part of the system that can be associated to a scalar potential, while $\vec f_{curl} (\vec x)$ represents the deviation from this ideal case. We'll use $\vec f_{gradient} (\vec x)$ to compute a scalar potential. The absolute error of this approach will be given by $\parallel \vec f_{curl} (\vec x) \parallel$. In those regions where the gradient term is stronger than the curl term, the previously calculated potential will represent an acceptable approximation of the underlying dynamics. The next steps show an easy way of achieving such a decomposition.
 
-The reader is probably familiar with the concept of linearization, also known as Taylor expansion. Any sufficiently smooth and continuous flow $\vec f(\vec x)$ can be approximated around the point $\vec{x_0}$ using equation $\ref{eq:TaylorExp}$, where $J(\vec{x_0})$ is the jacobian matrix evaluated at the approximation point $\vec{x_0}$ and $\Delta \vec x$ is defined as the vector distance to the approximation point, that is, $\Delta \vec x = \vec x - \vec{x_0}$.
+The reader is probably familiar with the concept of linearization, also known as Taylor expansion. Any sufficiently smooth and continuous flow $\vec f(\vec x)$ can be approximated around the point $\vec{x_0}$ using equation $\ref{eq:TaylorExp}$, where $J(\vec{x_0})$ is the jacobian matrix evaluated at the approximation point $\vec{x_0}$ and $\Delta \vec x$ is defined as the distance to the approximation point, that is, $\Delta \vec x = \vec x - \vec{x_0}$, written as a column vector.
 
 \begin{equation}
 \label{eq:TaylorExp}
 \vec f(\vec x) \approx \vec f(\vec{x_0}) + J(\vec{x_0}) \cdot \Delta \vec x
 \end{equation}
 
-As usual in linearization, we have neglected the terms of order $2$ and higher in equation $\ref{eq:TaylorExp}$. This approximation is valid in the surroundings of $\vec{x_0}$. For an equation like $\ref{eq:TaylorExp}$, the condition $\ref{eq:anyDcond}$ becomes a very simple restriction on the jacobian matrix: for the system to be gradient, its jacobian has to be symmetric (i.e.: equal to its transpose, see equation $\ref{eq:jaccond}$).
+As usual in linearization, we have neglected the terms of order $2$ and higher in equation $\ref{eq:TaylorExp}$. This approximation is valid in the surroundings of $\vec{x_0}$. For an equation like $\ref{eq:TaylorExp}$, the condition $\ref{eq:anyDcond}$ becomes a very simple restriction on the jacobian matrix: for the system to be gradient, its jacobian has to be symmetric (see equation $\ref{eq:jaccond}, where $t$ represents transposition$).
 
 \begin{equation}
 \label{eq:jaccond}
 J = J^t
 \end{equation}
 
-We know from basic linear algebra that any square matrix $M$ can be uniquely decomposed as the sum of a skew and a symmetric matrix (see equation $\ref{eq:SkewSymDec}$, where $t$ represents transposition).
+We know from basic linear algebra that any square matrix $M$ can be uniquely decomposed as the sum of a skew and a symmetric matrix (see equation $\ref{eq:SkewSymDec}$).
 
 \begin{equation}
 \label{eq:SkewSymDec}
@@ -248,7 +250,7 @@ Provided we know the value of the potential at one point $\vec x_{previous}$, eq
 V(\vec x_{next}) \approx V(\vec x_{previous}) + \Delta V(\vec x_{next}, \vec x_{previous})
 \end{equation}
 
-The abovementioned ideas can be applied to the numerical computation of the (pseudo)potential over a grid of points by following this list of steps:
+The abovementioned ideas can be applied to the numerical computation of the approximate potential over a grid of points by following this list of steps:
 
 \begin{enumerate}
   \item Create a grid in the phase plane $\left\lbrace \vec x_i \right\rbrace$
@@ -259,14 +261,14 @@ The abovementioned ideas can be applied to the numerical computation of the (pse
   \item Use the values of $J_{Skew}(\vec{x_i})$ as a measure of the quality of the approximation point by point.
 \end{enumerate}
 
-By introducing a grid, we expect the linearization error to decrease with square of the grid's step size. The more fundamental error due to ignoring the curl component of our flow cannot be affected by the grid's step choice, but the algorithm provides us with a measure of its magnitude point-by-point.
+By introducing a grid, we expect the linearization error to decrease with the square of the grid's step size. The more fundamental error due to ignoring the curl component of our flow cannot be affected by the grid's step choice, but the algorithm provides us with a measure of its magnitude point-by-point.
 
 ## Two-dimensional example
 
 For instance, to calculate the value of $V$ at the point $(x_3, y_2)$ of a grid, we should begin by assigning $0$ to the potential at $V(x_0, y_0)$. Then, we need a trajectory that goes from $(x_0,y_0)$ to $(x_3, y_2)$, stopping in the intermediate grid points (see figure $\ref{fig:path}$).
 
 
-```{r steps, fig.width = 4, fig.height = 3, fig.align = 'center', fig.cap = "\\label{fig:path} Path used to go from point $(x_0,y_0)$ to $(x_3, y_2)$. Note that this is not the only possible path. Our algorithm converges to the same pseudopotential regardless of the path chosen thanks to neglecting the skew part of the jacobian in our linearization process."}
+```{r steps, fig.width = 4, fig.height = 3, fig.align = 'center', fig.cap = "\\label{fig:path} Path used to go from point $(x_0,y_0)$ to $(x_3, y_2)$. Note that this is not the only possible path. Our algorithm converges to the same potential regardless of the path chosen thanks to neglecting the skew part of the jacobian in our linearization process."}
 library(ggplot2)
 d=data.frame(x=c(0,1,2,3,3), y=c(0,0,0,0,1), vx=c(1,2,3,3,3), vy=c(0, 0, 0, 1, 2))
 
@@ -308,10 +310,12 @@ Generalizing the previous example we see that, for a generic point $(x_i, y_j)$,
 
 \begin{equation}
 \label{eq:NumericalRecipe}
+\boxed{
 V(x_i, y_j) = V(x_0, y_0) + \sum_{k = 1}^i \Delta V(x_k, y_0; x_{k-1}, y_0) + \sum_{l = 1}^j \Delta V(x_i, y_l; x_i, y_{l-1})
+}
 \end{equation}
 
-The attentive reader may have noticed that formula $\ref{eq:NumericalRecipe}$ has been derived sweeping first in the horizontal direction and next in the vertical one. Of course, we can choose different paths of summation. Because we are building our potential neglecting the curl part of our flow, we know that our results will converge to the same solution regardless of the chosen path.
+Formula $\ref{eq:NumericalRecipe}$ has been derived sweeping first in the horizontal direction and next in the vertical one. Of course, we can choose different paths of summation. Because we are building our potential neglecting the curl part of our flow, we know that our results will converge to the same solution regardless of the chosen path.
 
 ## Code package
 In the spirit of reproducible research, we published an _R_ package that applies the abovementioned algorithm. It is freely available at: TBA.
@@ -319,7 +323,7 @@ In the spirit of reproducible research, we published an _R_ package that applies
 # Results
 
 ## A synthetic example
-We tested our algorithm against a flow of the form given in $\ref{eq:TestField}$, where $p_x$ and $p_y$ are non-gradient perturbations. When we chose those perturbations to be zero, the flow becomes gradient and corresponds with a four-well potential. Our algorithm rendered it succesfully (cf. figure $\ref{fig:synthetic}$).
+We tested our algorithm against a flow of the form given in $\ref{eq:TestField}$, where $p_x$ and $p_y$ are non-gradient perturbations. When we chose those perturbations to be zero, the flow becomes gradient and corresponds with a four-well potential. Our algorithm rendered it succesfully (cf. figure $\ref{fig:synthetic}$, left panel).
 
 \begin{equation}
 \label{eq:TestField}
@@ -329,13 +333,13 @@ We tested our algorithm against a flow of the form given in $\ref{eq:TestField}$
   \end{cases}
 \end{equation}
 
-When non-zero perturbations are introduced, the error obtained correlates with the two perpendicular stripes of the plane $(x,y)$ were we defined the perturbations to be maximum. If the perturbations are locally weak relative to the gradient term, a four-well potential is still recognizable $\ref{fig:synthetic}$.
+When non-zero perturbations are introduced a four-well potential is still recognizable (figure $\ref{fig:synthetic}$, central panel). The error obtained correlates with the two perpendicular stripes of the plane $(x,y)$ were we defined the perturbations to be maximum (figure $\ref{fig:synthetic}$, right panel).
 
 \begin{figure}[h]
 	\begin{center}
 		\includegraphics[width=1.00\columnwidth]{img/synthetic.png}
 	\end{center}
-	\caption{In all three figures the red and blue lines represent the nullclines of $x$ and $y$, respectivelly. Several trajectories are plotted in black. The contour plot in figure a) shows the potential calculated for the gradient case (i.e.: $p_x(x,y) = p_y(x,y) = 0$). As expected, the stable equilibria correspond to the wells. The contour plot in figure b) also shows the potential, but now a non gradient term has been introduced. It can be noticed that the shape of the potential has been distorted. Notice also that the two equilibria at the upper side of the plot fall slightly outside their closest well. The equilibria at the bottom, to the contrary, fit perfectly centered in their corresponding wells. Figure c) shows the estimated error of our computed potential. This figure warns us against trusting too much the potential we obtained in the upper and central region, and guarantees us that elsewhere it will work fine. Notice that the two upper equilibria lie in a region where the error is clearly non zero. The two lower ones, on the contrary, lie on a region where the error is negligible, so we can safely use the previously derived potential to visualize them. This goes in accordance with our previous observation about the slight mismatch between equilibria and potential wells in the upper part of the figure.}
+	\caption{In all three figures the red and blue lines represent the nullclines of $x$ and $y$, respectivelly. Several trajectories are plotted in black. The contour plot in figure a) shows the potential calculated for the gradient case (i.e.: $p_x(x,y) = p_y(x,y) = 0$). As expected, the stable equilibria correspond to the wells. The contour plot in figure b) also shows the potential, but now a non gradient term has been introduced. It can be noticed that the shape of the potential has been distorted. Notice also that the two equilibria at the upper side of the plot fall slightly outside their closest well. The equilibria at the bottom, to the contrary, fit perfectly centered in their corresponding wells. Figure c) shows the estimated error of our computed potential. This figure warns us against trusting the potential we obtained in the upper and central region, and guarantees us that elsewhere it will work fine. Notice that the two upper equilibria lie in a region where the error is clearly non zero. The two lower ones, on the contrary, lie on a region where the error is negligible, so we can safely use the previously derived potential to visualize them. This goes in accordance with our previous observation about the slight mismatch between equilibria and potential wells in the upper part of the figure.}
 	\label{fig:synthetic}
 \end{figure}
 
@@ -369,7 +373,7 @@ The use of stability landscapes as a helping tool to understand one-dimensional 
 
 The method proposed by @Bhattacharya2011, for instance, avoids the problem of path dependence of line integrals by integrating along trajectories. The price paid is that this algorithm cannot guarantee simultaneous continuity at all equilibria and along separatrices unless the underlying dynamics have a high degree of symmetry.
 
-A more theoretical review of pseudopotential computation, for a mathematically oriented audience, can be found in @Zhou.
+A more theoretical review of potential and pseudopotential functions computation, for a mathematically oriented audience, can be found in @Zhou.
 
 The algorithm we present here is an attempt to preserve as much as possible from the classical potential theory. Indeed, it calculates the closest classical potential to our problem, and the exact one when it exists. The price we pay is to calculate a potential that, in general, is only locally meaningful. The estimated error lets us know where does this happen. Additionaly, our algorithm provides:
 
@@ -384,26 +388,30 @@ After pointing out all the difficulties of calculating potentials for higher-dim
 # Appendix
 
 ### One-dimensional case
-In the one-dimensional case it's always possible to find an exact scalar potential.
+In the one-dimensional case it's always possible to find an exact scalar potential by direct integration.
+
+\begin{equation}
+\label{eq:easycase}
+f(x) = -\frac{dV}{dx} \implies V(x) = -\int_{x_0}^x f(s) ds 
+\end{equation}
+
+But, what happens if we apply our algorithm?
+
+Around each grid point $x_{n-1}$, our flow will look like:
 
 \begin{equation}
 \label{eq:Field1D}
-f(x) = f(x_i) + J(x_i) \cdot (x - x_i) : x \in [x_i, x_{i+1})
+f(x) = f(x_{n-1}) + J(x_{n-1}) \cdot (x - x_{n-1}) : x \in [x_{n-1}, x_{n})
 \end{equation}
+
+and the potential can be approximated with:
 
 \begin{equation}
 \label{eq:Potential1D}
-V(x) = V(x_i) - f(x_i) \cdot (x - x_i) - \frac{1}{2} J(x_i) \cdot (x - x_i)^2 : x \in [x_i, x_{i+1})
+V(x) = V(x_{n-1}) - f(x_{n-1}) \cdot (x - x_{n-1}) - \frac{1}{2} J(x_{n-1}) \cdot (x - x_{n-1})^2 : x \in [x_{n-1}, x_{n})
 \end{equation}
 
-Equation \ref{eq:Potential1D} is a recursion relation, so it requires an initialization value:
-
-\begin{equation}
-\label{eq:Potential1DInit}
-V(x_0) = V_0
-\end{equation}
-
-This allows to calculate the potential in any point of the grid using:
+After assigning $V(x_0) = V_0$ as initial value, we can use $\ref{eq:Potential1DGrid}$ to calculate the potential in any point of the grid.
 
 \begin{equation}
 \label{eq:Potential1DGrid}
@@ -422,28 +430,30 @@ Notice that equations \ref{eq:Potential1DGrid} and \ref{eq:Potential1DGridSimp} 
 It can be useful to define the auxiliary function:
 \begin{equation}
 \label{eq:Increment1D}
-\Delta V(x_i; x_{i-1}) = -\int_{x_{i-1}}^{x_i} f(s) \cdot ds \approx - f(x_{i-1}) \cdot (x_i - x_{i-1}) - \frac{1}{2} J(x_{i-1}) \cdot (x_i - x_{i-1})^2
+\Delta V(x_n; x_{n-1}) \equiv - f(x_{n-1}) \cdot (x_n - x_{n-1}) - \frac{1}{2} J(x_{n-1}) \cdot (x_n - x_{n-1})^2
 \end{equation}
 
 so the recursion relation reads:
 \begin{equation}
 \label{eq:Potential1DGridWithIncrement}
-V(x_i) = V(x_0) + \sum_{k = 1}^{i} \Delta V(x_k; x_{k-1})
+\boxed{
+V(x_i) = V(x_0) + \sum_{n = 1}^{i} \Delta V(x_n; x_{n-1})
+}
 \end{equation}
 
-Reading equation $\ref{eq:Increment1D}$ from a geometrical perspective, we notice that our numerical method gets reduced to the trapezoidal rule for numerical integration when applied to one-dimensional systems.
+It can be shown graphically that equation $\ref{eq:Increment1D}$ approximates the analytical solution given in $\ref{eq:easycase}$.
 
 \newpage
 
 # Some loose thoughts
 
 ## About the R package
-I've implemented the pseudopotential algorithm in Matlab, as part of a suite of visualization tools for dynamical systems I am planning to publish at some point. My plan for this paper is to translate this function alone to _R_ and publish it as a package. The translation should not take much time.
+I've implemented the algorithm in Matlab, as part of a suite of visualization tools for dynamical systems I am planning to publish at some point. My plan for this paper is to translate this function alone to _R_ and publish it as a package. The translation should not take much time.
 
 ## Glossary
 I am using as almost synonyms the terms:
 
-- Potential (also classical potential, scalar potential and sometimes pseudopotential)
+- Potential (also classical potential and scalar potential)
 - Stability landscape
 - Surface
 
