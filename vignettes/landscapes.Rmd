@@ -87,19 +87,21 @@ From a mathematical point of view, the relationship between a two-dimensional sc
   \end{cases}
 \end{equation}
 
-Such a surface $V(x,y)$ exists (and thus can be computed) if and only if the crossed derivatives of the elements of the flow are equal (equation $\ref{eq:2Dcond}$). Flows satisfying equation $\ref{eq:2Dcond}$ are known as conservative, irrotational or gradient flows. These flows have an important property: the value of a line integral inside such a flow only depends on the starting and ending point of the integration curve, and not in its shape (cf. section 8.3 of @Marsden2003).
+Such a surface $V(x,y)$ exists (and thus can be computed) if and only if the crossed derivatives of the elements of the flow are equal (equation $\ref{eq:2Dcond}$). Flows satisfying equation $\ref{eq:2Dcond}$ are known as conservative, irrotational or gradient flows (cf. section 8.3 of @Marsden2003).
 
 \begin{equation}
 \label{eq:2Dcond}
 \frac{\partial f}{\partial y} = \frac{\partial g}{\partial x}
 \end{equation}
 
-It is important to note that equation $\ref{eq:2Dcond}$ is an equality of functions, meaning that both of them are point-to-point identical. If an only if condition $\ref{eq:2Dcond}$ holds, we can use a line integral (@Marsden2003, section 7.2) to invert $\ref{eq:2D}$ and calculate $V(x,y)$ using the flow equations $f(x,y)$ and $g(x,y)$ as an input. An example of this inversion is equation $\ref{eq:2Dint}$, where we have chosen an integration path composed of a horizontal and a vertical line.
+If an only if condition $\ref{eq:2Dcond}$ holds, we can use a line integral (@Marsden2003, section 7.2) to invert $\ref{eq:2D}$ and calculate $V(x,y)$ using the flow equations $f(x,y)$ and $g(x,y)$ as an input. An example of this inversion is equation $\ref{eq:2Dint}$, where we have chosen an integration path composed of a horizontal and a vertical line.
 
 \begin{equation}
 \label{eq:2Dint}
 V(x,y) = V(x_0, y_0) - \int^{x}_{x_0} f(\xi, y_0) d\xi - \int^{y}_{y_0} g(x, \eta) d\eta
 \end{equation}
+
+The condition for potentials to exist (equation $\ref{eq:2Dcond}$) is entirelly equivalent (cf. section 7.2 of @Marsden2003) to the path independence of any line integral between two points inside this field. If the condition is not fulfilled, the potential calculated depends crucially on the chosen integration path. This is an arbitrary choice and thus, the computed potential becomes an artifact with no natural meaning.
 
 ## Generalization
 
@@ -152,8 +154,6 @@ V(\vec x) = V(\vec x_0) - \int_\Gamma \vec f(\vec x) \cdot d\vec x
 \end{equation}
 
 The nabla operator is used to generalize the concept of derivative to functions with more than one argument. For more information see @Marsden2003 or any other introductory text about vector calculus. 
-
-During the rest of this paper we'll focus only in the two dimensional case shown in equation $\ref{eq:2D}$. There are two reasons for this choice. The first is that two-dimensional flows are the simpler systems that can lack a stability landscape (or equivalently: one-dimensional systems always have one). The second reason is that, being interested in visualization, we want to focus on _"surfaces"_ like $y = V(x)$ (i.e.: curves) and $z = V(x,y)$ (i.e.: surfaces), and not in hypersurfaces with too many dimensions to plot like $u = V(x,y,z)$. We made this choice motivated by didactical considerations despite the algorithm we developed can handle general n-dimensional flows.
 
 # Methods
 The method we propose is based on the decomposition of our field in a conservative or gradient part and a non-conservative or curl part (see equation $\ref{eq:FieldDecomposition}$).
@@ -367,13 +367,15 @@ The use of stability landscapes as a helping tool to understand one-dimensional 
 
 The method proposed by @Bhattacharya2011, for instance, avoids the problem of path dependence of line integrals by integrating along trajectories. The price paid is that this algorithm cannot guarantee simultaneous continuity at all equilibria and along separatrices unless the underlying dynamics have a high degree of symmetry.
 
-The algorithm we present is an attempt to preserve as much as possible from the classical potential theory (indeed, it reconstructs the classical potential when it does exist). The price we pay is to calculate a potential that, in general, is only locally meaningful. The estimated error lets us know where does this happen. Our claim that our algorithm can be a contribution to the field rests on three pillars:
+A more theoretical review of pseudopotential computation, for a mathematically oriented audience, can be found in @Zhou.
 
-- It is simple. The mathematical background required is covered by any introductory course in vector calculus. Additionally, we provide the algorithm in a ready to use _R_ package.
-- It is reliable. At each step the local error is computed and stored, providing, so to say, a map of which part of our stability landscape are dangerous to visit.
-- It is fast. The rendering of a printing quality surface can be performed in no more than a few minutes in a personal laptop.
+The algorithm we present here is an attempt to preserve as much as possible from the classical potential theory. Indeed, it calculates the closest classical potential to our problem, and the exact one when it exists. The price we pay is to calculate a potential that, in general, is only locally meaningful. The estimated error lets us know where does this happen. Additionaly, our algorithm provides:
 
-After pointing out all the difficulties of calculating potentials for higher dimensional systems, maybe it is worth to ask ourselves the question: do we really need them? The concept of potential is a cornerstone of physics. We know that the time evolution of several physical systems is governed by a potential function. In physics, potentials can be related with measurable concepts like energy, so its use goes way further than visualization. Generic stability landscapes lack this straightforward link with measurable quantities, and in most cases are just no more (and no less) than a visual aid. It may be worth reconsidering why do we prefer the idea of stability landscape over the good-old phase plane figure. It is true that the latter is slightly less intuitive than the stability landscape, but it has a very desirable property: existence under general circumstances.
+- Simplicity. The mathematical background required is covered by any introductory course in vector calculus. Additionally, we provide the algorithm in a ready to use _R_ package.
+- Reliability. At each step the local error is computed and stored, providing, so to say, a map of which part of our stability landscape are dangerous to visit.
+- Speed. The rendering of a printing quality surface can be performed in no more than a few minutes in a personal laptop.
+
+After pointing out all the difficulties of calculating potentials for higher dimensional systems, maybe it is worth to ask ourselves the question: do we really need them? The concept of potential is paramount in physics. We know that the time evolution of several physical systems is governed by a potential function. In physics, potentials can be related with measurable concepts like energy, so its use goes way further than visualization. Generic stability landscapes lack this straightforward link with measurable quantities, and in most cases are just no more (and no less) than a visual aid. It may be worth reconsidering why do we prefer the idea of stability landscape over the good-old phase plane figure. It is true that the latter is slightly less intuitive than the stability landscape, but it has a very desirable property: existence under general circumstances.
 
 \newpage
 
@@ -429,10 +431,34 @@ V(x_i) = V(x_0) + \sum_{k = 1}^{i} \Delta V(x_k; x_{k-1})
 
 Reading equation $\ref{eq:Increment1D}$ from a geometrical perspective, we notice that our numerical method gets reduced to the trapezoidal rule for numerical integration when applied to one-dimensional systems.
 
-# Some loose ideas
-Here I write some ideas that may or may be not part of the final manuscript, but I consider worth keeping in mind.
+\newpage
 
-## Why the existence of a potential fails for more than 1 dimension? Intuitive approaches
+# Some loose thoughts
+
+## About notation
+It will be advisable to follow a consistent notation for vector flows and its analysis in the final version of this document. Here I show a brief summary of the pros and cons of the three of them (see also accompanying figure):
+
+### Explicit notation
+- Focus only on 2D systems. Provided we are focused in visualization, this is not a problem
+- Understandable for readers from different backgrounds
+- The mechanics of the algorithm look less clear
+- Big and (arguably) ugly
+
+### Tensor notation
+- Valid for systems of any size
+- Understandable for readers from different backgrounds
+- The matrix product appears hidden as a sum of products
+- Big and (arguably) ugly
+
+### Vector notation
+- Valid for systems of any size
+- Less understandable for readers from different backgrounds
+- The mechanics of the algorithm are clear
+- Pretty and compact
+
+![Summary of the three possible notations](img/blackboard.png)
+
+## Why the existence of a potential fails for more than 1 dimension? Alternative approaches
 
 ### From mechanics
 The perpetual oscillation of a rolling marble while submerged in a very viscous fluid is impossible. This rules out the existence of potentials for systems with cyclic attractors.
@@ -441,5 +467,7 @@ Perpetual oscillation is, by virtue of the Poincaré-Bendixson theorem (@Strogat
 
 ### From information theory
 If we want to summarize, for instance, a two dimensional flow in a single surface, the height at each point of such a surface should contain the information about the derivatives of both states. That is, one number, height, codes two numbers. The process of computing the surface is a process of information compression, and it is known from mathematics that only gradient fields allow this kind of compression. In one dimensional systems there is no compression of information (one number, height, corresponds to one number, the derivative of the only state), and this is one of the reasons stability landscapes of one dimensional systems can always be computed.
+
+\newpage
 
 # References
