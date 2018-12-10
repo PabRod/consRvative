@@ -101,7 +101,7 @@ If an only if condition $\ref{eq:2Dcond}$ holds, we can use a line integral (@Ma
 V(x,y) = V(x_0, y_0) - \int^{x}_{x_0} f(\xi, y_0) d\xi - \int^{y}_{y_0} g(x, \eta) d\eta
 \end{equation}
 
-The condition for potentials to exist (equation $\ref{eq:2Dcond}$) is entirelly equivalent (cf. section 7.2 of @Marsden2003) to the path independence of any line integral between two points inside this field. If the condition is not fulfilled, the potential calculated depends crucially on the chosen integration path. This is an arbitrary choice and thus, the computed potential becomes an artifact with no natural meaning.
+The condition for potentials to exist (equation $\ref{eq:2Dcond}$) is entirelly equivalent (cf. section 7.2 of @Marsden2003) to the path independence of any line integral between two points inside this flow. If the condition is not fulfilled, the potential calculated depends crucially on the chosen integration path. This is an arbitrary choice and thus, the computed potential becomes an artifact with no natural meaning.
 
 ## Generalization
 
@@ -156,7 +156,7 @@ V(\vec x) = V(\vec x_0) - \int_\Gamma \vec f(\vec x) \cdot d\vec x
 The nabla operator is used to generalize the concept of derivative to functions with more than one argument. For more information see @Marsden2003 or any other introductory text about vector calculus. 
 
 # Methods
-The method we propose is based on the decomposition of our field in a conservative or gradient part and a non-conservative or curl part (see equation $\ref{eq:FieldDecomposition}$).
+The method we propose is based on the decomposition of our flow in a conservative or gradient part and a non-conservative or curl part (see equation $\ref{eq:FieldDecomposition}$).
 
 \begin{equation}
 \label{eq:FieldDecomposition}
@@ -165,7 +165,7 @@ The method we propose is based on the decomposition of our field in a conservati
 
 $\vec f_{grad} (\vec x)$ captures all the part of the system that can be associated to a scalar potential, while $\vec f_{curl} (\vec x)$ represents the deviation from this ideal, conservative case. We'll use $\vec f_{gradient} (\vec x)$ to compute a scalar potential, which we will call pseudopotential. The absolute error of this approach will be given by $\parallel \vec f_{curl} (\vec x) \parallel$. The next steps show an easy way of achieve such a decomposition.
 
-The reader is probably familiar with the concept of linearization, also known as Taylor expansion. Any sufficiently smooth and continuous vector field $\vec f(\vec x)$ can be approximated around the point $\vec{x_0}$ using equation $\ref{eq:TaylorExp}$, where $J(\vec{x_0})$ is the jacobian matrix evaluated at the approximation point $\vec{x_0}$ and $\Delta \vec x$ is defined as the vector distance to the approximation point, that is, $\Delta \vec x = \vec x - \vec{x_0}$.
+The reader is probably familiar with the concept of linearization, also known as Taylor expansion. Any sufficiently smooth and continuous flow $\vec f(\vec x)$ can be approximated around the point $\vec{x_0}$ using equation $\ref{eq:TaylorExp}$, where $J(\vec{x_0})$ is the jacobian matrix evaluated at the approximation point $\vec{x_0}$ and $\Delta \vec x$ is defined as the vector distance to the approximation point, that is, $\Delta \vec x = \vec x - \vec{x_0}$.
 
 \begin{equation}
 \label{eq:TaylorExp}
@@ -196,9 +196,9 @@ Using the skew symmetric decomposition described in equation \ref{eq:SkewSymDec}
 \vec f(\vec x) \approx \vec f(\vec{x_0}) + J_{Symm}(\vec{x_0}) \cdot \Delta \vec x + J_{Skew}(\vec{x_0}) \cdot \Delta \vec x
 \end{equation}
 
-As we have seen from condition $\ref{eq:jaccond}$, the only term that is not gradient is the one containing $J_{Skew}$. Equation $\ref{eq:TaylorExpDecomposed}$ represents a natural, well-defined and operational way of writing our field $\vec f(\vec x)$ decomposed as in equation $\ref{eq:FieldDecomposition}$, that is, as the sum of a gradient and a non-gradient term[^3] (see $\ref{eq:decomposition}$).
+As we have seen from condition $\ref{eq:jaccond}$, the only term that is not gradient is the one containing $J_{Skew}$. Equation $\ref{eq:TaylorExpDecomposed}$ represents a natural, well-defined and operational way of writing our flow $\vec f(\vec x)$ decomposed as in equation $\ref{eq:FieldDecomposition}$, that is, as the sum of a gradient and a non-gradient term[^3] (see $\ref{eq:decomposition}$).
 
-[^3]: This decomposition is related with the Helmholtz decomposition: it is proven that, for a huge range of easy to fulfil conditions, any field can be decomposed as $\vec f (\vec x) = - \vec \nabla V (\vec x) + \vec \nabla \times \vec A (\vec x )$, where $V$ and $\vec A$ are known as scalar and vector potentials. Both of them have a straightforward natural interpretation, and are widely used, for instance, in electromagnetism and fluid dynamics.
+[^3]: This decomposition is related with the Helmholtz decomposition: it is proven that, for a huge range of easy to fulfil conditions, any flow can be decomposed as $\vec f (\vec x) = - \vec \nabla V (\vec x) + \vec \nabla \times \vec A (\vec x )$, where $V$ and $\vec A$ are known as scalar and vector potentials. Both of them have a straightforward natural interpretation, and are widely used, for instance, in electromagnetism and fluid dynamics.
 
 \begin{equation}
 \label{eq:decomposition}
@@ -259,7 +259,7 @@ The abovementioned ideas can be applied to the numerical computation of the (pse
   \item Use the values of $J_{Skew}(\vec{x_i})$ as a measure of the quality of the approximation point by point.
 \end{enumerate}
 
-By introducing a grid, we expect the linearization error to decrease with square of the grid's step size. The more fundamental error due to ignoring the curl component of our field cannot be affected by the grid's step choice, but at least the algorithm provides us with a measure of its magnitude point-by-point.
+By introducing a grid, we expect the linearization error to decrease with square of the grid's step size. The more fundamental error due to ignoring the curl component of our flow cannot be affected by the grid's step choice, but at least the algorithm provides us with a measure of its magnitude point-by-point.
 
 ## Two dimensional example
 
@@ -319,7 +319,7 @@ In the spirit of reproducible research, we published an _R_ package that applies
 # Results
 
 ## A synthetic example
-We tested our algorithm against a field of the form given in $\ref{eq:TestField}$, where $p_x$ and $p_y$ are non-gradient perturbations. When we chose those perturbations to be zero, the field becomes gradient and corresponds with a four-well potential. Our algorithm rendered it succesfully (cf. figure $\ref{fig:synthetic}$).
+We tested our algorithm against a flow of the form given in $\ref{eq:TestField}$, where $p_x$ and $p_y$ are non-gradient perturbations. When we chose those perturbations to be zero, the flow becomes gradient and corresponds with a four-well potential. Our algorithm rendered it succesfully (cf. figure $\ref{fig:synthetic}$).
 
 \begin{equation}
 \label{eq:TestField}
@@ -466,7 +466,7 @@ The perpetual oscillation of a rolling marble while submerged in a very viscous 
 Perpetual oscillation is, by virtue of the Poincaré-Bendixson theorem (@Strogatz1994), only possible in systems with two or more dimensions.
 
 ### From information theory
-If we want to summarize, for instance, a two dimensional flow in a single surface, the height at each point of such a surface should contain the information about the derivatives of both states. That is, one number, height, codes two numbers. The process of computing the surface is a process of information compression, and it is known from mathematics that only gradient fields allow this kind of compression. In one dimensional systems there is no compression of information (one number, height, corresponds to one number, the derivative of the only state), and this is one of the reasons stability landscapes of one dimensional systems can always be computed.
+If we want to summarize, for instance, a two dimensional flow in a single surface, the height at each point of such a surface should contain the information about the derivatives of both states. That is, one number, height, codes two numbers. The process of computing the surface is a process of information compression, and it is known from mathematics that only gradient flows allow this kind of compression. In one dimensional systems there is no compression of information (one number, height, corresponds to one number, the derivative of the only state), and this is one of the reasons stability landscapes of one dimensional systems can always be computed.
 
 \newpage
 
