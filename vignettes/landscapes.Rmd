@@ -4,7 +4,7 @@ author: "Pablo Rodríguez-Sánchez, Marten Scheffer & Egbert van Nes"
 abstract: "Stability landscapes, usually identified with the physical concept of potential, are useful tools for understanding dynamical systems described by autonomous differential equations. Unfortunately, the conditions for those potentials to exist are quite restrictive for systems of two or more dimensions. Here we present a numerical method for decomposing dynamical systems of any size in two terms, one that has an associated potential (the gradient term), and another one that lacks it (the curl term). In those regions where the magnitude of the curl term is small compared to the gradient part, we can still make approximate use of the concept of potential. The curl to gradient ratio can be used as a local measure of the error introduced by our approximation. Both the algorithm and a ready-to-use implementation in the form of an R package are provided."
 date: "`r Sys.Date()`"
 output:
-  pdf_document:
+  bookdown::pdf_book:
     keep_tex: yes
     toc: false
     citation_package: natbib
@@ -14,6 +14,10 @@ output:
     fig_width: 4
     fig_height: 4
     fig_caption: true
+  pdf_document:
+    keep_tex: yes
+    toc: false
+    citation_package: natbib
 documentclass: article
 classoption: onecolumn, a4paper
 fontsize: 10pt
@@ -53,23 +57,19 @@ The main reason for the success of this picture arises from the fact that stabil
 
 [^1]: It is important to stress the fact that under this picture there's not such a thing as inertia (@Beisner2003). The accurate analogy is that of a marble rolling in a surface while submerged inside a very viscous fluid (@Strogatz1994).
 
-\begin{figure}[h]
-	\begin{center}
-		\includegraphics[width=0.5\columnwidth]{img/sl.jpg}
-	\end{center}
-	\caption{Example of a stability landscape from $\cite{Scheffer2001}$. The upper side of the figure shows the stability landscape of a one-dimensional system for different values of a bifurcation parameter. The lower side shows the bifurcation diagram. This diagram proved to be a succesful tool for explaining an advanced concept in bifurcation theory such as the Fold bifurcation.}
-	\label{fig:aew}
-\end{figure}
+```{r aew, fig.cap = '(ref:wur)', fig.align = 'center'}
+knitr::include_graphics('img/sl.jpg')
+```
 
-Like with any other analogy, it is important to be aware of its limitations. The most important one is the fact that, for flows of more than one dimension, such a potential doesn't exist in general. To get an intutive feeling of why this is true, picture a flow with a stable cyclic attractor. We need our potential to have the shape of a surface where our marble can roll in a closed loop while always going downhill. The kind of surface that only exists on M.C. Escher's surrealistic paintings (see figure $\ref{fig:escher}$).
+(ref:wur) Example of a stability landscape from @Scheffer2001. The upper side of the figure shows the stability landscape of a one-dimensional system for different values of a bifurcation parameter. The lower side shows the bifurcation diagram. This diagram proved to be a succesful tool for explaining an advanced concept in bifurcation theory such as the Fold bifurcation.
 
-\begin{figure}[h]
-	\begin{center}
-		\includegraphics[width=0.5\columnwidth]{img/escher.jpg}
-	\end{center}
-	\caption{Detail of M.C. Escher's \textit{Klimmen en dalen}. Lithography, 1960. In this surface, the walkers can walk in a closed loop that permanently goes downhill. Unfortunately, such a surface only exists in the imagination of surrealist painters.}
-	\label{fig:escher}
-\end{figure}
+Like with any other analogy, it is important to be aware of its limitations. The most important one is the fact that, for flows of more than one dimension, such a potential doesn't exist in general. To get an intutive feeling of why this is true, picture a flow with a stable cyclic attractor. We need our potential to have the shape of a surface where our marble can roll in a closed loop while always going downhill. The kind of surface that only exists on M.C. Escher's surrealistic paintings (see figure \@ref(fig:escher)).
+
+```{r escher, fig.cap = '(ref:escher)', out.width = "250px", fig.align = 'center'}
+knitr::include_graphics('img/escher.jpg')
+```
+
+(ref:escher) Detail of M.C. Escher's _Klimmen en dalen_. Lithography, 1960. In this surface, the walkers can walk in a closed loop that permanently goes downhill. Unfortunately, such a surface only exists in the imagination of surrealist painters.
 
 In this work we present a detailed overview of the conditions that a flow has to fulfill to be associated with a potential. Next, we center our attention in flows that fail to fulfill those conditions, and we introduce an algorithm to decompose those flows as the sum of a gradient and a curl part. Each part can be used, respectivelly, to compute an associated potential and to measure the local error introduced by our picture.
 
@@ -265,10 +265,10 @@ By introducing a grid, we expect the linearization error to decrease with the sq
 
 ## Two-dimensional example
 
-For instance, to calculate the value of $V$ at the point $(x_3, y_2)$ of a grid, we should begin by assigning $0$ to the potential at $V(x_0, y_0)$. Then, we need a trajectory that goes from $(x_0,y_0)$ to $(x_3, y_2)$, stopping in the intermediate grid points (see figure $\ref{fig:path}$).
+For instance, to calculate the value of $V$ at the point $(x_3, y_2)$ of a grid, we should begin by assigning $0$ to the potential at $V(x_0, y_0)$. Then, we need a trajectory that goes from $(x_0,y_0)$ to $(x_3, y_2)$, stopping in the intermediate grid points (see figure \@ref(fig:steps)).
 
 
-```{r steps, fig.width = 4, fig.height = 3, fig.align = 'center', fig.cap = "\\label{fig:path} Path used to go from point $(x_0,y_0)$ to $(x_3, y_2)$. Note that this is not the only possible path. Our algorithm converges to the same potential regardless of the path chosen thanks to neglecting the skew part of the jacobian in our linearization process."}
+```{r steps, fig.width = 4, fig.height = 3, fig.align = 'center', fig.cap = '(ref:steps)'}
 library(ggplot2)
 d=data.frame(x=c(0,1,2,3,3), y=c(0,0,0,0,1), vx=c(1,2,3,3,3), vy=c(0, 0, 0, 1, 2))
 
@@ -281,6 +281,8 @@ scale_y_continuous(breaks=c(0, 1, 2, 3), labels=c("y_0", "y_1", "y_2", "y_3")) +
 theme(panel.grid.minor.x = element_blank()) +
 theme(panel.grid.minor.y = element_blank())
 ```
+
+(ref:steps) Path used to go from point $(x_0,y_0)$ to $(x_3, y_2)$. Note that this is not the only possible path. Our algorithm converges to the same potential regardless of the path chosen thanks to neglecting the skew part of the jacobian in our linearization process.
 
 In the first step we go from $(x_0, y_0)$ to $(x_1, y_0)$. The new potential is thus (using $\ref{eq:Iterator}$):
 
@@ -333,15 +335,13 @@ We tested our algorithm against a flow of the form given in $\ref{eq:TestField}$
   \end{cases}
 \end{equation}
 
-When non-zero perturbations are introduced a four-well potential is still recognizable (figure $\ref{fig:synthetic}$, central panel). The error obtained correlates with the two perpendicular stripes of the plane $(x,y)$ were we defined the perturbations to be maximum (figure $\ref{fig:synthetic}$, right panel).
+When non-zero perturbations are introduced a four-well potential is still recognizable (figure $\ref{fig:synthetic}$, central panel). The error obtained correlates with the two perpendicular stripes of the plane $(x,y)$ were we defined the perturbations to be maximum (figure \@ref(fig:synthetic), right panel).
 
-\begin{figure}[h]
-	\begin{center}
-		\includegraphics[width=1.00\columnwidth]{img/synthetic.png}
-	\end{center}
-	\caption{In all three figures the red and blue lines represent the nullclines of $x$ and $y$, respectivelly. Several trajectories are plotted in black. The contour plot in figure a) shows the potential calculated for the gradient case (i.e.: $p_x(x,y) = p_y(x,y) = 0$). As expected, the stable equilibria correspond to the wells. The contour plot in figure b) also shows the potential, but now a non gradient term has been introduced. It can be noticed that the shape of the potential has been distorted. Notice also that the two equilibria at the upper side of the plot fall slightly outside their closest well. The equilibria at the bottom, to the contrary, fit perfectly centered in their corresponding wells. Figure c) shows the estimated error of our computed potential. This figure warns us against trusting the potential we obtained in the upper and central region, and guarantees us that elsewhere it will work fine. Notice that the two upper equilibria lie in a region where the error is clearly non zero. The two lower ones, on the contrary, lie on a region where the error is negligible, so we can safely use the previously derived potential to visualize them. This goes in accordance with our previous observation about the slight mismatch between equilibria and potential wells in the upper part of the figure.}
-	\label{fig:synthetic}
-\end{figure}
+```{r synthetic, fig.cap = '(ref:synthetic)', out.width = '450px', fig.align = 'center'}
+knitr::include_graphics('img/synthetic.png')
+```
+
+(ref:synthetic) In all three figures the red and blue lines represent the nullclines of $x$ and $y$, respectivelly. Several trajectories are plotted in black. The contour plot in figure a) shows the potential calculated for the gradient case (i.e.: $p_x(x,y) = p_y(x,y) = 0$). As expected, the stable equilibria correspond to the wells. The contour plot in figure b) also shows the potential, but now a non gradient term has been introduced. It can be noticed that the shape of the potential has been distorted. Notice also that the two equilibria at the upper side of the plot fall slightly outside their closest well. The equilibria at the bottom, to the contrary, fit perfectly centered in their corresponding wells. Figure c) shows the estimated error of our computed potential. This figure warns us against trusting the potential we obtained in the upper and central region, and guarantees us that elsewhere it will work fine. Notice that the two upper equilibria lie in a region where the error is clearly non zero. The two lower ones, on the contrary, lie on a region where the error is negligible, so we can safely use the previously derived potential to visualize them. This goes in accordance with our previous observation about the slight mismatch between equilibria and potential wells in the upper part of the figure.
 
 ## A biological example
 
@@ -358,15 +358,13 @@ A bistable network model can be described by a set of equations like $\ref{eq:Wa
 
 The parameters used are identical to those in equations 6 and 7 of @Bhattacharya2011, with the exception of $By$ and $foldXY$, that we modified in order to induce an assymetry in the the dynamics (we used $By = 0.05$ and $foldXY = 1.75$).
 
-Despite this flow is clearly non-gradient, our algorithm correctly predicts the existence of two wells (see figure $\ref{fig:Waddington}$).
+Despite this flow is clearly non-gradient, our algorithm correctly predicts the existence of two wells (see figure \@ref(fig:Waddington)).
 
-\begin{figure}[h]
-	\begin{center}
-		\includegraphics[width=1.00\columnwidth]{img/waddington.png}
-	\end{center}
-	\caption{In both figures the red and blue lines represent the nullclines of $x$ and $y$, respectivelly. Several trajectories are plotted in black. The contour plot in figure a) shows the potential calculated for the simple gene regulatory network described in equation $\ref{eq:Waddington}$. The stable equilibria correspond to the wells. Figure b) shows the estimated error of our computed potential.}
-	\label{fig:Waddington}
-\end{figure}
+```{r, Waddington, fig.cap = '(ref:waddington)', out.width = '400px', fig.align = 'center'}
+knitr::include_graphics('img/waddington.png')
+```
+
+(ref:waddington) In both figures the red and blue lines represent the nullclines of $x$ and $y$, respectivelly. Several trajectories are plotted in black. The contour plot in figure a) shows the potential calculated for the simple gene regulatory network described in equation $\ref{eq:Waddington}$. The stable equilibria correspond to the wells. Figure b) shows the estimated error of our computed potential.
 
 # Discussion
 The use of stability landscapes as a helping tool to understand one-dimensional dynamical systems achieved great success, specially in interdisciplinary research communities. A generalization of the idea of scalar potential to two-dimensional systems seemed to be a logical next step. Unfortunately, as we have seen, there are subtle reasons that make two (and higher) dimensional systems fundamentally different from the one-dimensional case. The generalization, straightforward as it may look, is actually impossible for most dynamical equations. As a consequence, any attempt of computing stability landscapes for high-dimensional systems should, neccessarily, drop some desirable properties of classical scalar potentials.
