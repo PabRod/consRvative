@@ -14,10 +14,6 @@ output:
     fig_width: 4
     fig_height: 4
     fig_caption: true
-  pdf_document:
-    keep_tex: yes
-    toc: false
-    citation_package: natbib
 documentclass: article
 classoption: onecolumn, a4paper
 fontsize: 10pt
@@ -77,35 +73,35 @@ For those readers less familiar with mathematics or programming, we provide a re
 
 ## Mathematical background
 
-From a mathematical point of view, the relationship between a two-dimensional scalar potential $V(x,y)$ and the dynamics it creates is given by equation $\ref{eq:2D}$.
+From a mathematical point of view, the relationship between a two-dimensional scalar potential $V(x,y)$ and the dynamics it creates is given by equation \@ref(eq:2D).
 
 \begin{equation}
-\label{eq:2D}
   \begin{cases}
     \frac{dx}{dt} = f(x,y) = - \frac{\partial V}{\partial x} \\
     \frac{dy}{dt} = g(x,y) = - \frac{\partial V}{\partial y}
   \end{cases}
+  (\#eq:2D)
 \end{equation}
 
-Such a potential $V(x,y)$ exists if and only if the crossed derivatives of the elements of the flow are equal (equation $\ref{eq:2Dcond}$). Flows satisfying equation $\ref{eq:2Dcond}$ are known as conservative, irrotational or gradient flows (cf. section 8.3 of @Marsden2003).
+Such a potential $V(x,y)$ exists if and only if the crossed derivatives of the elements of the flow are equal (equation \@ref(eq:2Dcond)). Flows satisfying equation \@ref(eq:2Dcond) are known as conservative, irrotational or gradient flows (cf. section 8.3 of @Marsden2003).
 
 \begin{equation}
-\label{eq:2Dcond}
 \frac{\partial f}{\partial y} = \frac{\partial g}{\partial x}
+(\#eq:2Dcond)
 \end{equation}
 
-If an only if condition $\ref{eq:2Dcond}$ holds, we can use a line integral (@Marsden2003, section 7.2) to invert $\ref{eq:2D}$ and calculate $V(x,y)$ using the flow equations $f(x,y)$ and $g(x,y)$ as an input. An example of this inversion is equation $\ref{eq:2Dint}$, where we have chosen an integration path composed of a horizontal and a vertical line.
+If an only if condition \@ref(eq:2Dcond) holds, we can use a line integral (@Marsden2003, section 7.2) to invert \@ref(eq:2D) and calculate $V(x,y)$ using the flow equations $f(x,y)$ and $g(x,y)$ as an input. An example of this inversion is equation $\ref{eq:2Dint}$, where we have chosen an integration path composed of a horizontal and a vertical line.
 
 \begin{equation}
 \label{eq:2Dint}
 V(x,y) = V(x_0, y_0) - \int^{x}_{x_0} f(\xi, y_0) d\xi - \int^{y}_{y_0} g(x, \eta) d\eta
 \end{equation}
 
-The attentive reader may have raised her or his eyebrow after reading the word _chosen_ applied to an integration path. In fact, we can introduce this arbitrary choice without affecting the final result. The condition for potentials to exist (equation $\ref{eq:2Dcond}$) is entirelly equivalent (cf. section 7.2 of @Marsden2003) to the path independence of any line integral between two points inside this flow. If the condition was not fulfilled, the calculated potential will have depended crucially on the chosen integration path. Being an arbitrary choice, the computed potential will have been an artifact with no natural meaning.
+The attentive reader may have raised her or his eyebrow after reading the word _chosen_ applied to an integration path. In fact, we can introduce this arbitrary choice without affecting the final result. The condition for potentials to exist (equation \@ref(eq:2Dcond)) is entirelly equivalent (cf. section 7.2 of @Marsden2003) to the path independence of any line integral between two points inside this flow. If the condition was not fulfilled, the calculated potential will have depended crucially on the chosen integration path. Being an arbitrary choice, the computed potential will have been an artifact with no natural meaning.
 
 ## Generalization
 
-Dynamics in equation $\ref{eq:2D}$ and the condition for the crossed derivatives $\ref{eq:2Dcond}$ can be straightforwardly generalized (see equations $\ref{eq:anyD}$ and $\ref{eq:anyDcond}$) to systems with an arbitrary number of state variables $\vec x = (x_1, ..., x_n)$. Particularly, if and only if our flow equations $\frac{dx_i}{dt} = f_i(\vec x)$ satisfy the condition:
+Dynamics in equation \@ref(eq:2D) and the condition for the crossed derivatives \@ref(eq:2Dcond) can be straightforwardly generalized (see equations $\ref{eq:anyD}$ and $\ref{eq:anyDcond}$) to systems with an arbitrary number of state variables $\vec x = (x_1, ..., x_n)$. Particularly, if and only if our flow equations $\frac{dx_i}{dt} = f_i(\vec x)$ satisfy the condition:
 
 \begin{equation}
 \label{eq:anyDcond}
