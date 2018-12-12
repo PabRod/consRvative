@@ -16,3 +16,4 @@ inst/doc
 *.fls
 *.out
 vignettes/libs/
+*cache*
