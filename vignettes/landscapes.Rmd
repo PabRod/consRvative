@@ -4,16 +4,16 @@ author: "Pablo Rodríguez-Sánchez, Marten Scheffer & Egbert van Nes"
 abstract: "Stability landscapes, usually identified with the physical concept of potential, are useful tools for understanding dynamical systems described by autonomous differential equations. Unfortunately, the conditions for those potentials to exist are quite restrictive for systems of two or more dimensions. Here we present a numerical method for decomposing dynamical systems of any size in two terms, one that has an associated potential (the gradient term), and another one that lacks it (the curl term). In those regions where the magnitude of the curl term is small compared to the gradient part, we can still make approximate use of the concept of potential. The curl to gradient ratio can be used as a local measure of the error introduced by our approximation. Both the algorithm and a ready-to-use implementation in the form of an R package are provided."
 date: "`r Sys.Date()`"
 output:
+  bookdown::pdf_book:
+    keep_tex: yes
+    toc: false
+    citation_package: natbib
   html_document:
     theme: united
     smart: true
     fig_width: 4
     fig_height: 4
     fig_caption: true
-  bookdown::pdf_book:
-    keep_tex: yes
-    toc: false
-    citation_package: natbib
 documentclass: article
 classoption: onecolumn, a4paper
 fontsize: 10pt
@@ -90,7 +90,7 @@ Such a potential $V(x,y)$ exists if and only if the crossed derivatives of the e
 (\#eq:2Dcond)
 \end{equation}
 
-If an only if condition \@ref(eq:2Dcond) holds, we can use a line integral (@Marsden2003, section 7.2) to invert \@ref(eq:2D) and calculate $V(x,y)$ using the flow equations $f(x,y)$ and $g(x,y)$ as an input. An example of this inversion is equation $\ref{eq:2Dint}$, where we have chosen an integration path composed of a horizontal and a vertical line.
+If an only if condition \@ref(eq:2Dcond) holds, we can use a line integral (@Marsden2003, section 7.2) to invert \@ref(eq:2D) and calculate $V(x,y)$ using the flow equations $f(x,y)$ and $g(x,y)$ as an input. An example of this inversion is equation \@ref(eq:2Dint), where we have chosen an integration path composed of a horizontal and a vertical line.
 
 \begin{equation}
 V(x,y) = V(x_0, y_0) - \int^{x}_{x_0} f(\xi, y_0) d\xi - \int^{y}_{y_0} g(x, \eta) d\eta
@@ -101,7 +101,7 @@ The attentive reader may have raised her or his eyebrow after reading the word _
 
 ## Generalization
 
-Dynamics in equation \@ref(eq:2D) and the condition for the crossed derivatives \@ref(eq:2Dcond) can be straightforwardly generalized (see equations $\ref{eq:anyD}$ and $\ref{eq:anyDcond}$) to systems with an arbitrary number of state variables $\vec x = (x_1, ..., x_n)$. Particularly, if and only if our flow equations $\frac{dx_i}{dt} = f_i(\vec x)$ satisfy the condition:
+Dynamics in equation \@ref(eq:2D) and the condition for the crossed derivatives \@ref(eq:2Dcond) can be straightforwardly generalized (see equations \@ref(eq:anyD) and \@ref(eq:anyDcond) to systems with an arbitrary number of state variables $\vec x = (x_1, ..., x_n)$. Particularly, if and only if our flow equations $\frac{dx_i}{dt} = f_i(\vec x)$ satisfy the condition:
 
 \begin{equation}
   \frac{\partial f_i}{\partial x_j} = \frac{\partial f_j}{\partial x_i} : i \neq j
@@ -122,11 +122,11 @@ V(\vec x) = V(\vec x_0) - \int_\Gamma \sum_{i=1}^n f_i(\vec x) dx_i
 (\#eq:anyDint)
 \end{equation}
 
-where the line integral in $\ref{eq:anyDint}$ is computed along any curve $\Gamma$ joining the points $\vec x_0$ and $\vec x$.
+where the line integral in \@ref(eq:anyDint) is computed along any curve $\Gamma$ joining the points $\vec x_0$ and $\vec x$.
 
-The method we'll present in the next section lies in the fact that the conditions $\ref{eq:anyDcond}$ are equalities between functions, that is, both cross derivatives have to be equal at each point $\vec x$. Their difference, thus, will not remain constant in the whole phase space. In general, there will be regions where the conditions $\ref{eq:anyDcond}$ are, at least, approximately fulfilled. Those regions will admit an approximate potential.
+The method we'll present in the next section lies in the fact that the conditions \@ref(eq:anyDcond) are equalities between functions, that is, both cross derivatives have to be equal at each point $\vec x$. Their difference, thus, will not remain constant in the whole phase space. In general, there will be regions where the conditions \@ref(eq:anyDcond) are, at least, approximately fulfilled. Those regions will admit an approximate potential.
 
-It is important to note that the number of equations ($N$) contained in condition $\ref{eq:anyDcond}$ grows with the dimensionality of the system ($D$), particularly following the series of triangular numbers $N = \frac{1}{2}(D-1)D$. Thus, the higher the dimensionality, the harder it gets to fulfill condition $\ref{eq:anyDcond}$. As a side effect, we see that in one-dimensional systems the condition contains $0$ equations and is thus automatically fulfilled, meaning that one-dimensional systems always have a well defined stability landscape.
+It is important to note that the number of equations ($N$) contained in condition \@ref(eq:anyDcond) grows with the dimensionality of the system ($D$), particularly following the series of triangular numbers $N = \frac{1}{2}(D-1)D$. Thus, the higher the dimensionality, the harder it gets to fulfill condition \@ref(eq:anyDcond). As a side effect, we see that in one-dimensional systems the condition contains $0$ equations and is thus automatically fulfilled, meaning that one-dimensional systems always have a well defined stability landscape.
 
 ## With vector notation
 
@@ -154,7 +154,7 @@ V(\vec x) = V(\vec x_0) - \int_\Gamma \vec f(\vec x) \cdot d\vec x
 The nabla operator and the line integral are used to generalize, respectivelly, the key concepts of derivative and definite integral to functions with more than one argument. For more information see @Marsden2003 or any other introductory text about vector calculus.
 
 # Methods
-The method we propose is based on the decomposition of a flow in a conservative or gradient part and a non-conservative or curl part (see equation $\ref{eq:FieldDecomposition}$).
+The method we propose is based on the decomposition of a flow in a conservative or gradient part and a non-conservative or curl part (see equation \@ref(eq:FieldDecomposition)).
 
 \begin{equation}
 \vec f (\vec x) = \vec f_{grad} (\vec x) + \vec f_{curl} (\vec x)
@@ -163,21 +163,21 @@ The method we propose is based on the decomposition of a flow in a conservative 
 
 $\vec f_{grad} (\vec x)$ captures all the part of the system that can be associated to a scalar potential, while $\vec f_{curl} (\vec x)$ represents the deviation from this ideal case. We'll use $\vec f_{gradient} (\vec x)$ to compute a scalar potential. The absolute error of this approach will be given by $\parallel \vec f_{curl} (\vec x) \parallel$. In those regions where the gradient term is stronger than the curl term, the previously calculated potential will represent an acceptable approximation of the underlying dynamics. The next steps show an easy way of achieving such a decomposition.
 
-The reader is probably familiar with the concept of linearization, also known as Taylor expansion. Any sufficiently smooth and continuous flow $\vec f(\vec x)$ can be approximated around the point $\vec{x_0}$ using equation $\ref{eq:TaylorExp}$, where $J(\vec{x_0})$ is the jacobian matrix evaluated at the approximation point $\vec{x_0}$ and $\Delta \vec x$ is defined as the distance to the approximation point, that is, $\Delta \vec x = \vec x - \vec{x_0}$, written as a column vector.
+The reader is probably familiar with the concept of linearization, also known as Taylor expansion. Any sufficiently smooth and continuous flow $\vec f(\vec x)$ can be approximated around the point $\vec{x_0}$ using equation \@ref(eq:TaylorExp), where $J(\vec{x_0})$ is the jacobian matrix evaluated at the approximation point $\vec{x_0}$ and $\Delta \vec x$ is defined as the distance to the approximation point, that is, $\Delta \vec x = \vec x - \vec{x_0}$, written as a column vector.
 
 \begin{equation}
 \vec f(\vec x) \approx \vec f(\vec{x_0}) + J(\vec{x_0}) \cdot \Delta \vec x
 (\#eq:TaylorExp)
 \end{equation}
 
-As usual in linearization, we have neglected the terms of order $2$ and higher in equation $\ref{eq:TaylorExp}$. This approximation is valid in the surroundings of $\vec{x_0}$. For an equation like $\ref{eq:TaylorExp}$, the condition $\ref{eq:anyDcond}$ becomes a very simple restriction on the jacobian matrix: for the system to be gradient, its jacobian has to be symmetric (see equation $\ref{eq:jaccond}, where $t$ represents transposition$).
+As usual in linearization, we have neglected the terms of order $2$ and higher in equation \@ref(eq:TaylorExp). This approximation is valid in the surroundings of $\vec{x_0}$. For an equation like \@ref(eq:TaylorExp), the condition \@ref(eq:anyDcond) becomes a very simple restriction on the jacobian matrix: for the system to be gradient, its jacobian has to be symmetric (see equation \@ref(eq:jaccond), where $t$ represents transposition).
 
 \begin{equation}
 J = J^t
 (\#eq:jaccond)
 \end{equation}
 
-We know from basic linear algebra that any square matrix $M$ can be uniquely decomposed as the sum of a skew and a symmetric matrix (see equation $\ref{eq:SkewSymDec}$).
+We know from basic linear algebra that any square matrix $M$ can be uniquely decomposed as the sum of a skew and a symmetric matrix (see equation \@ref(eq:SkewSymDec)).
 
 \begin{equation}
   \begin{cases}
@@ -187,14 +187,14 @@ We know from basic linear algebra that any square matrix $M$ can be uniquely dec
 (\#eq:SkewSymDec)
 \end{equation}
 
-Using the skew symmetric decomposition described in equation \ref{eq:SkewSymDec}, we can rewrite \ref{eq:TaylorExp} as:
+Using the skew symmetric decomposition described in equation \@ref(eq:SkewSymDec), we can rewrite \@ref(eq:TaylorExp) as:
 
 \begin{equation}
 \vec f(\vec x) \approx \vec f(\vec{x_0}) + J_{Symm}(\vec{x_0}) \cdot \Delta \vec x + J_{Skew}(\vec{x_0}) \cdot \Delta \vec x
 (\#eq:TaylorExpDecomposed)
 \end{equation}
 
-As we have seen from condition $\ref{eq:jaccond}$, the only term that is not gradient is the one containing $J_{Skew}$. Equation $\ref{eq:TaylorExpDecomposed}$ represents a natural, well-defined and operational way of writing our flow $\vec f(\vec x)$ decomposed as in equation $\ref{eq:FieldDecomposition}$, that is, as the sum of a gradient and a non-gradient term[^3] (see $\ref{eq:decomposition}$).
+As we have seen from condition \@ref(eq:jaccond), the only term that is not gradient is the one containing $J_{Skew}$. Equation \@ref(eq:TaylorExpDecomposed) represents a natural, well-defined and operational way of writing our flow $\vec f(\vec x)$ decomposed as in equation \@ref(eq:FieldDecomposition), that is, as the sum of a gradient and a non-gradient term[^3] (see \@ref(eq:decomposition)).
 
 [^3]: This decomposition is related with the Helmholtz decomposition: it is proven that, for a huge range of easy to fulfil conditions, any flow can be decomposed as $\vec f (\vec x) = - \vec \nabla V (\vec x) + \vec \nabla \times \vec A (\vec x )$, where $V$ and $\vec A$ are known as scalar and vector potentials. Both of them have a straightforward natural interpretation, and are widely used, for instance, in electromagnetism and fluid dynamics.
 
@@ -206,23 +206,23 @@ As we have seen from condition $\ref{eq:jaccond}$, the only term that is not gra
 (\#eq:decomposition)
 \end{equation}
 
-The gradient term can thus be associated to a potential $V(\vec x)$, whose shape can be computed analytically using a line integral (see $\ref{eq:vecInt}$). Its integrated expression is given in equation $\ref{eq:Potential}$.
+The gradient term can thus be associated to a potential $V(\vec x)$, whose shape can be computed analytically using a line integral (see \@ref(eq:vecInt)). Its integrated expression is given in equation \@ref(eq:Potential).
 
 \begin{equation}
-\boxed{
+\boxed{ 
   V(\vec{x}) \approx  V(\vec{x_0}) - \vec f(\vec x_0) \cdot \Delta \vec x - \frac{1}{2} \Delta \vec x^t \cdot J_{Symm} (\vec{x_0}) \cdot \Delta \vec x
 }
 (\#eq:Potential)
 \end{equation}
 
-Using this potential $V(\vec x)$, we can rewrite our dynamical system as in equation $\ref{eq:MainResult}$. Due to the approximations used, this result will only be true on the vicinity of $\vec{x_0}$.
+Using this potential $V(\vec x)$, we can rewrite our dynamical system as in equation \@ref(eq:MainResult). Due to the approximations used, this result will only be true on the vicinity of $\vec{x_0}$.
 
 \begin{equation}
 \vec f(\vec x) \approx -\vec \nabla V + \vec f_{curl}(\vec x)
 (\#eq:MainResult)
 \end{equation}
 
-The stability landscape described in $\ref{eq:Potential}$ not only has been derived from a linearized system, but also completely neglects the effects of the curl part of the flow. As with any other approximation we need a way to estimate its error. From equation $\ref{eq:MainResult}$ it is apparent that we can use $\vec f_{curl} (\vec x)$ as an approximation of the local error introduced by our algorithm ($\ref{eq:error}$).
+The stability landscape described in \@ref(eq:Potential) not only has been derived from a linearized system, but also completely neglects the effects of the curl part of the flow. As with any other approximation we need a way to estimate its error. From equation \@ref(eq:MainResult) it is apparent that we can use $\vec f_{curl} (\vec x)$ as an approximation of the local error introduced by our algorithm (\@ref(eq:error)).
 
 \begin{equation}
 \boxed{
@@ -232,14 +232,14 @@ The stability landscape described in $\ref{eq:Potential}$ not only has been deri
 \end{equation}
 
 ## Numerical algorithm
-Equation $\ref{eq:Potential}$ can be rewritten as $\ref{eq:PotentialNum}$, where $\vec{x_0}$ represents the approximation point, $\vec{x_1}$ represents a neighbouring point and the potential difference between both points is given by $\Delta V(\vec{x_1}, \vec{x_0}) \equiv V(\vec{x_1}) - V(\vec{x_0})$.
+Equation \@ref(eq:Potential) can be rewritten as \@ref(eq:PotentialNum), where $\vec{x_0}$ represents the approximation point, $\vec{x_1}$ represents a neighbouring point and the potential difference between both points is given by $\Delta V(\vec{x_1}, \vec{x_0}) \equiv V(\vec{x_1}) - V(\vec{x_0})$.
 
 \begin{equation}
 \Delta V(\vec{x_1}, \vec{x_0}) \approx - \vec f(\vec x_0) \cdot (\vec{x_1} - \vec{x_0}) - \frac{1}{2} (\vec{x_1} - \vec{x_0})^t \cdot J_{Symm} (\vec{x_0}) \cdot (\vec{x_1} - \vec{x_0})
 (\#eq:PotentialNum)
 \end{equation}
 
-Provided we know the value of the potential at one point $\vec x_{previous}$, equation $\ref{eq:PotentialNum}$ allows us to estimate the potential at a different point $\vec x_{next}$ (cf.: equation $\ref{eq:Iterator}$).
+Provided we know the value of the potential at one point $\vec x_{previous}$, equation \@ref(eq:PotentialNum) allows us to estimate the potential at a different point $\vec x_{next}$ (cf.: equation \@ref(eq:Iterator)).
 
 \begin{equation}
 V(\vec x_{next}) \approx V(\vec x_{previous}) + \Delta V(\vec x_{next}, \vec x_{previous})
@@ -253,7 +253,7 @@ The abovementioned ideas can be applied to the numerical computation of the appr
   \item Calculate the jacobian $J(\vec{x_i})$ in each grid point
   \item Decompose each jacobian in its skew $J_{Skew}(\vec{x_i})$ and symmetric $J_{Symm}(\vec{x_i})$ components
   \item Assign potential 0 to the first point in the grid
-  \item Use equation $\ref{eq:Iterator}$ to iterativelly calculate the values of the potential at each point of the grid
+  \item Use equation \@ref(eq:Iterator) to iterativelly calculate the values of the potential at each point of the grid
   \item Use the values of $J_{Skew}(\vec{x_i})$ as a measure of the quality of the approximation point by point.
 \end{enumerate}
 
@@ -280,7 +280,7 @@ theme(panel.grid.minor.y = element_blank())
 
 (ref:steps) Path used to go from point $(x_0,y_0)$ to $(x_3, y_2)$. Note that this is not the only possible path. Our algorithm converges to the same potential regardless of the path chosen thanks to neglecting the skew part of the jacobian in our linearization process.
 
-In the first step we go from $(x_0, y_0)$ to $(x_1, y_0)$. The new potential is thus (using $\ref{eq:Iterator}$):
+In the first step we go from $(x_0, y_0)$ to $(x_1, y_0)$. The new potential is thus (using \@ref(eq:Iterator)):
 
 \begin{equation}
 V(x_1, y_0) \approx V(x_0, y_0) + \Delta V(x_1, y_0; x_0, y_0)
@@ -304,7 +304,7 @@ V(x_3, y_2) \approx V(x_0, y_0) + \Delta V(x_1, y_0; x_0, y_0) + \Delta V(x_2, y
 (\#eq:IteratorEx3)
 \end{equation}
 
-Generalizing the previous example we see that, for a generic point $(x_i, y_j)$, we can compute the approximate potential using the closed formula $\ref{eq:NumericalRecipe}$.
+Generalizing the previous example we see that, for a generic point $(x_i, y_j)$, we can compute the approximate potential using the closed formula \@ref(eq:NumericalRecipe).
 
 \begin{equation}
 \boxed{
@@ -313,7 +313,7 @@ V(x_i, y_j) = V(x_0, y_0) + \sum_{k = 1}^i \Delta V(x_k, y_0; x_{k-1}, y_0) + \s
 (\#eq:NumericalRecipe)
 \end{equation}
 
-Formula $\ref{eq:NumericalRecipe}$ has been derived sweeping first in the horizontal direction and next in the vertical one. Of course, we can choose different paths of summation. Because we are building our potential neglecting the curl part of our flow, we know that our results will converge to the same solution regardless of the chosen path.
+Formula \@ref(eq:NumericalRecipe) has been derived sweeping first in the horizontal direction and next in the vertical one. Of course, we can choose different paths of summation. Because we are building our potential neglecting the curl part of our flow, we know that our results will converge to the same solution regardless of the chosen path.
 
 ## Code package
 In the spirit of reproducible research, we published an _R_ package that applies the abovementioned algorithm. It is freely available at: TBA.
@@ -321,7 +321,7 @@ In the spirit of reproducible research, we published an _R_ package that applies
 # Results
 
 ## A synthetic example
-We tested our algorithm against a flow of the form given in $\ref{eq:TestField}$, where $p_x$ and $p_y$ are non-gradient perturbations. When we chose those perturbations to be zero, the flow becomes gradient and corresponds with a four-well potential. Our algorithm rendered it succesfully (cf. figure $\ref{fig:synthetic}$, left panel).
+We tested our algorithm against a flow of the form given in \@ref(eq:TestField), where $p_x$ and $p_y$ are non-gradient perturbations. When we chose those perturbations to be zero, the flow becomes gradient and corresponds with a four-well potential. Our algorithm rendered it succesfully (cf. figure $\ref{fig:synthetic}$, left panel).
 
 \begin{equation}
   \begin{cases}
@@ -342,7 +342,7 @@ knitr::include_graphics('img/synthetic.png')
 ## A biological example
 
 ### A simple regulatory gene network
-A bistable network model can be described by a set of equations like $\ref{eq:Waddington}$ (see @Bhattacharya2011).
+A bistable network model can be described by a set of equations like \@ref(eq:Waddington) (see @Bhattacharya2011).
 
 \begin{equation}
   \begin{cases}
@@ -360,7 +360,7 @@ Despite this flow is clearly non-gradient, our algorithm correctly predicts the 
 knitr::include_graphics('img/waddington.png')
 ```
 
-(ref:waddington) In both figures the red and blue lines represent the nullclines of $x$ and $y$, respectivelly. Several trajectories are plotted in black. The contour plot in figure a) shows the potential calculated for the simple gene regulatory network described in equation $\ref{eq:Waddington}$. The stable equilibria correspond to the wells. Figure b) shows the estimated error of our computed potential.
+(ref:waddington) In both figures the red and blue lines represent the nullclines of $x$ and $y$, respectivelly. Several trajectories are plotted in black. The contour plot in figure a) shows the potential calculated for the simple gene regulatory network described in equation \@ref(eq:Waddington). The stable equilibria correspond to the wells. Figure b) shows the estimated error of our computed potential.
 
 # Discussion
 The use of stability landscapes as a helping tool to understand one-dimensional dynamical systems achieved great success, specially in interdisciplinary research communities. A generalization of the idea of scalar potential to two-dimensional systems seemed to be a logical next step. Unfortunately, as we have seen, there are subtle reasons that make two (and higher) dimensional systems fundamentally different from the one-dimensional case. The generalization, straightforward as it may look, is actually impossible for most dynamical equations. As a consequence, any attempt of computing stability landscapes for high-dimensional systems should, neccessarily, drop some desirable properties of classical scalar potentials.
@@ -405,21 +405,21 @@ V(x) = V(x_{n-1}) - f(x_{n-1}) \cdot (x - x_{n-1}) - \frac{1}{2} J(x_{n-1}) \cdo
 (\#eq:Potential1D)
 \end{equation}
 
-After assigning $V(x_0) = V_0$ as initial value, we can use $\ref{eq:Potential1DGrid}$ to calculate the potential in any point of the grid.
+After assigning $V(x_0) = V_0$ as initial value, we can use \@ref(eq:Potential1DGrid) to calculate the potential in any point of the grid.
 
 \begin{equation}
 V(x_i) = V(x_0) - \sum_{n = 1}^{i} \left( f(x_{n-1}) \cdot (x_n - x_{n-1}) + \frac{1}{2} J(x_{n-1}) \cdot (x_n - x_{n-1})^2 \right)
 (\#eq:Potential1DGrid)
 \end{equation}
 
-If the grid has been constructed with a constant step $\Delta x$, equation \ref{eq:Potential1DGrid} can be simplified as:
+If the grid has been constructed with a constant step $\Delta x$, equation \@ref(eq:Potential1DGrid) can be simplified as:
 
 \begin{equation}
 V(x_i) = V(x_0) - \Delta x \sum_{n = 1}^i \left( f(x_{n-1}) + \frac{1}{2} J(x_{n-1}) \cdot \Delta x \right)
 (\#eq:Potential1DGridSimp)
 \end{equation}
 
-Notice that equations \ref{eq:Potential1DGrid} and \ref{eq:Potential1DGridSimp} are just algebraic relationships allowing to compute the potential at any node of the grid. Furthermore, equation \ref{eq:Potential1D} can be used to interpolate between the nodes.
+Notice that equations \@ref(eq:Potential1DGrid) and \@ref(eq:Potential1DGridSimp) are just algebraic relationships allowing to compute the potential at any node of the grid. Furthermore, equation \@ref(eq:Potential1D) can be used to interpolate between the nodes.
 
 It can be useful to define the auxiliary function:
 \begin{equation}
@@ -435,7 +435,7 @@ V(x_i) = V(x_0) + \sum_{n = 1}^{i} \Delta V(x_n; x_{n-1})
 (\#eq:Potential1DGridWithIncrement)
 \end{equation}
 
-It can be shown graphically that equation $\ref{eq:Increment1D}$ approximates the analytical solution given in $\ref{eq:easycase}$.
+It can be shown graphically that equation \@ref(eq:Increment1D) approximates the analytical solution given in \@ref(eq:easycase).
 
 \newpage
 
