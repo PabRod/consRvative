@@ -1,19 +1,15 @@
-inst/doc
 .Rproj.user
 .Rhistory
 .RData
 .Ruserdata
 *.Rproj
 
-*.html
-*.R
-*.pdf
-*_files
+*.out
 *.aux
 *.bbl
-*.blg
-*_latexmk
-*.fls
-*.out
-vignettes/libs/
-*cache*
+*.bbg
+*.pdf
+
+vignettes/libs
+playground/
+vignettes/examples_cache/
