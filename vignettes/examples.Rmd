@@ -180,6 +180,7 @@ The resulting approximate potential looks like:
 ```{r Wadd-plot}
 filled.contour(xs, ys, result$V, 
         color = colorRamps::matlab.like, asp = 1,
+        levels = seq(0, 8, by = 0.1),
         main = 'Approximate potential', xlab = 'x', ylab = 'y')
 
 ```
