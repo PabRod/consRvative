@@ -1,5 +1,5 @@
 ---
-title: "Climbing Escher's ladder, or how to compute stability landscapes for weakly non-gradient flows"
+title: "Climbing Escher's ladder, or how to compute stability landscapes for weakly non-gradient systems"
 author: "Pablo Rodríguez-Sánchez, Marten Scheffer & Egbert van Nes"
 abstract: "Stability landscapes, usually identified with the physical concept of potential, are useful tools for understanding dynamical systems described by autonomous differential equations. Unfortunately, the conditions for those potentials to exist are quite restrictive for systems of two or more dimensions. Here we present a numerical method for decomposing dynamical systems of any size in two terms, one that has an associated potential (the gradient term), and another one that lacks it (the curl term). In those regions where the magnitude of the curl term is small compared to the gradient part, we can still make approximate use of the concept of potential. The curl to gradient ratio can be used as a local measure of the error introduced by our approximation. Both the algorithm and a ready-to-use implementation in the form of an R package are provided."
 date: "`r Sys.Date()`"
@@ -59,7 +59,7 @@ knitr::include_graphics('img/sl.jpg')
 
 (ref:wur) Example of a stability landscape from @Scheffer2001. The upper side of the figure shows the stability landscape of a one-dimensional system for different values of a bifurcation parameter. The lower side shows the bifurcation diagram. This diagram proved to be a succesful tool for explaining an advanced concept in bifurcation theory such as the Fold bifurcation.
 
-Like with any other analogy, it is important to be aware of its limitations. The most important one is the fact that, for flows of more than one dimension, such a potential doesn't exist in general. To get an intutive feeling of why this is true, picture a flow with a stable cyclic attractor. We need our potential to have the shape of a surface where our marble can roll in a closed loop while always going downhill. The kind of surface that only exists on M.C. Escher's surrealistic paintings (see figure \@ref(fig:escher)).
+Like with any other analogy, it is important to be aware of its limitations. The most important one is the fact that, for models with more than one state variable, such a potential doesn't exist in general. To get an intutive feeling of why this is true, picture a model with a stable cyclic attractor. We need our potential to have the shape of a surface where our marble can roll in a closed loop while always going downhill. The kind of surface that only exists on M.C. Escher's surrealistic paintings (see figure \@ref(fig:escher)).
 
 ```{r escher, fig.cap = '(ref:escher)', out.width = "250px", fig.align = 'center'}
 knitr::include_graphics('img/escher.jpg')
@@ -67,7 +67,7 @@ knitr::include_graphics('img/escher.jpg')
 
 (ref:escher) Detail of M.C. Escher's _Klimmen en dalen_. Lithography, 1960. In this surface, the walkers can walk in a closed loop that permanently goes downhill. Unfortunately, such a surface only exists in the imagination of surrealist painters.
 
-In this work we present a detailed overview of the conditions that a flow has to fulfill to be associated with a potential. Next, we center our attention in flows that fail to fulfill those conditions, and we introduce an algorithm to decompose those flows as the sum of a gradient and a curl part. Each part can be used, respectivelly, to compute an associated potential and to measure the local error introduced by our picture.
+In this work we present a detailed overview of the conditions that a model has to fulfill to be associated with a potential. Next, we center our attention in systems that fail to fulfill those conditions, and we introduce an algorithm to decompose those systems as the sum of a gradient and a curl part. Each part can be used, respectivelly, to compute an associated potential and to measure the local error introduced by our picture.
 
 For those readers less familiar with mathematics or programming, we provide a ready to use _R_ package that implements the algorithm described in the present paper.
 
@@ -83,25 +83,25 @@ From a mathematical point of view, the relationship between a two-dimensional sc
   (\#eq:2D)
 \end{equation}
 
-Such a potential $V(x,y)$ exists if and only if the crossed derivatives of the elements of the flow are equal (equation \@ref(eq:2Dcond)). Flows satisfying equation \@ref(eq:2Dcond) are known as conservative, irrotational or gradient flows (cf. section 8.3 of @Marsden2003).
+Such a potential $V(x,y)$ exists if and only if the crossed derivatives of functions $f(x,y)$ and $g(x,y)$ are equal (equation \@ref(eq:2Dcond)). Vector fields satisfying equation \@ref(eq:2Dcond) are known as conservative, irrotational or gradient fields (cf. section 8.3 of @Marsden2003).
 
 \begin{equation}
 \frac{\partial f}{\partial y} = \frac{\partial g}{\partial x}
 (\#eq:2Dcond)
 \end{equation}
 
-If an only if condition \@ref(eq:2Dcond) holds, we can use a line integral (@Marsden2003, section 7.2) to invert \@ref(eq:2D) and calculate $V(x,y)$ using the flow equations $f(x,y)$ and $g(x,y)$ as an input. An example of this inversion is equation \@ref(eq:2Dint), where we have chosen an integration path composed of a horizontal and a vertical line.
+If an only if condition \@ref(eq:2Dcond) holds, we can use a line integral (@Marsden2003, section 7.2) to invert \@ref(eq:2D) and calculate $V(x,y)$ using the equations $f(x,y)$ and $g(x,y)$ as an input. An example of this inversion is equation \@ref(eq:2Dint), where we have chosen an integration path composed of a horizontal and a vertical line.
 
 \begin{equation}
 V(x,y) = V(x_0, y_0) - \int^{x}_{x_0} f(\xi, y_0) d\xi - \int^{y}_{y_0} g(x, \eta) d\eta
 (\#eq:2Dint)
 \end{equation}
 
-The attentive reader may have raised her or his eyebrow after reading the word _chosen_ applied to an integration path. In fact, we can introduce this arbitrary choice without affecting the final result. The condition for potentials to exist (equation \@ref(eq:2Dcond)) is entirelly equivalent (cf. section 7.2 of @Marsden2003) to the path independence of any line integral between two points inside this flow. If the condition was not fulfilled, the calculated potential will have depended crucially on the chosen integration path. Being an arbitrary choice, the computed potential will have been an artifact with no natural meaning.
+The attentive reader may have raised her or his eyebrow after reading the word _chosen_ applied to an integration path. In fact, we can introduce this arbitrary choice without affecting the final result. The condition for potentials to exist (equation \@ref(eq:2Dcond)) is entirelly equivalent (cf. section 7.2 of @Marsden2003) to the path independence of any line integral between two points inside this vector field. If the condition was not fulfilled, the calculated potential will have depended crucially on the chosen integration path. Being an arbitrary choice, the computed potential will have been an artifact with no natural meaning.
 
 ## Generalization
 
-Dynamics in equation \@ref(eq:2D) and the condition for the crossed derivatives \@ref(eq:2Dcond) can be straightforwardly generalized (see equations \@ref(eq:anyD) and \@ref(eq:anyDcond) to systems with an arbitrary number of state variables $\vec x = (x_1, ..., x_n)$. Particularly, if and only if our flow equations $\frac{dx_i}{dt} = f_i(\vec x)$ satisfy the condition:
+Dynamics in equation \@ref(eq:2D) and the condition for the crossed derivatives \@ref(eq:2Dcond) can be straightforwardly generalized (see equations \@ref(eq:anyD) and \@ref(eq:anyDcond) to systems with an arbitrary number of state variables $\vec x = (x_1, ..., x_n)$. Particularly, if and only if our system of equations $\frac{dx_i}{dt} = f_i(\vec x)$ satisfies the condition:
 
 \begin{equation}
   \frac{\partial f_i}{\partial x_j} = \frac{\partial f_j}{\partial x_i} : i \neq j
@@ -130,7 +130,7 @@ It is important to note that the number of equations ($N$) contained in conditio
 
 ## With vector notation
 
-Using vector notation and the nabla operator $\vec \nabla$ both the dynamical equation and the condition can be written compactly for any number of dimensions. Particularly, if and only if our flow equations $\frac{d\vec{x}}{dt} = \vec f(\vec x)$ satisfy the condition:
+Using vector notation and the nabla operator $\vec \nabla$ both the dynamical equation and the condition can be written compactly for any number of dimensions. Particularly, if and only if our system equations $\frac{d\vec{x}}{dt} = \vec f(\vec x)$ satisfy the condition:
 
 \begin{equation}
   \vec \nabla \times \vec f(\vec x) = \vec 0
@@ -154,7 +154,7 @@ V(\vec x) = V(\vec x_0) - \int_\Gamma \vec f(\vec x) \cdot d\vec x
 The nabla operator and the line integral are used to generalize, respectivelly, the key concepts of derivative and definite integral to functions with more than one argument. For more information see @Marsden2003 or any other introductory text about vector calculus.
 
 # Methods
-The method we propose is based on the decomposition of a flow in a conservative or gradient part and a non-conservative or curl part (see equation \@ref(eq:FieldDecomposition)).
+The method we propose is based on the decomposition of a vector field in a conservative or gradient part and a non-conservative or curl part (see equation \@ref(eq:FieldDecomposition)).
 
 \begin{equation}
 \vec f (\vec x) = \vec f_{grad} (\vec x) + \vec f_{curl} (\vec x)
@@ -163,7 +163,7 @@ The method we propose is based on the decomposition of a flow in a conservative 
 
 $\vec f_{grad} (\vec x)$ captures all the part of the system that can be associated to a scalar potential, while $\vec f_{curl} (\vec x)$ represents the deviation from this ideal case. We'll use $\vec f_{gradient} (\vec x)$ to compute a scalar potential. The absolute error of this approach will be given by $\parallel \vec f_{curl} (\vec x) \parallel$. In those regions where the gradient term is stronger than the curl term, the previously calculated potential will represent an acceptable approximation of the underlying dynamics. The next steps show an easy way of achieving such a decomposition.
 
-The reader is probably familiar with the concept of linearization, also known as Taylor expansion. Any sufficiently smooth and continuous flow $\vec f(\vec x)$ can be approximated around the point $\vec{x_0}$ using equation \@ref(eq:TaylorExp), where $J(\vec{x_0})$ is the jacobian matrix evaluated at the approximation point $\vec{x_0}$ and $\Delta \vec x$ is defined as the distance to the approximation point, that is, $\Delta \vec x = \vec x - \vec{x_0}$, written as a column vector.
+The reader is probably familiar with the concept of linearization, also known as Taylor expansion. Any sufficiently smooth and continuous vector field $\vec f(\vec x)$ can be approximated around the point $\vec{x_0}$ using equation \@ref(eq:TaylorExp), where $J(\vec{x_0})$ is the jacobian matrix evaluated at the approximation point $\vec{x_0}$ and $\Delta \vec x$ is defined as the distance to the approximation point, that is, $\Delta \vec x = \vec x - \vec{x_0}$, written as a column vector.
 
 \begin{equation}
 \vec f(\vec x) \approx \vec f(\vec{x_0}) + J(\vec{x_0}) \cdot \Delta \vec x
@@ -194,9 +194,9 @@ Using the skew symmetric decomposition described in equation \@ref(eq:SkewSymDec
 (\#eq:TaylorExpDecomposed)
 \end{equation}
 
-As we have seen from condition \@ref(eq:jaccond), the only term that is not gradient is the one containing $J_{Skew}$. Equation \@ref(eq:TaylorExpDecomposed) represents a natural, well-defined and operational way of writing our flow $\vec f(\vec x)$ decomposed as in equation \@ref(eq:FieldDecomposition), that is, as the sum of a gradient and a non-gradient term[^3] (see \@ref(eq:decomposition)).
+As we have seen from condition \@ref(eq:jaccond), the only term that is not gradient is the one containing $J_{Skew}$. Equation \@ref(eq:TaylorExpDecomposed) represents a natural, well-defined and operational way of writing our vector field $\vec f(\vec x)$ decomposed as in equation \@ref(eq:FieldDecomposition), that is, as the sum of a gradient and a non-gradient term[^3] (see \@ref(eq:decomposition)).
 
-[^3]: This decomposition is related with the Helmholtz decomposition: it is proven that, for a huge range of easy to fulfil conditions, any flow can be decomposed as $\vec f (\vec x) = - \vec \nabla V (\vec x) + \vec \nabla \times \vec A (\vec x )$, where $V$ and $\vec A$ are known as scalar and vector potentials. Both of them have a straightforward natural interpretation, and are widely used, for instance, in electromagnetism and fluid dynamics.
+[^3]: This decomposition is related with the Helmholtz decomposition: it is proven that, for a huge range of easy to fulfil conditions, any vector field can be decomposed as $\vec f (\vec x) = - \vec \nabla V (\vec x) + \vec \nabla \times \vec A (\vec x )$, where $V$ and $\vec A$ are known as scalar and vector potentials. Both of them have a straightforward natural interpretation, and are widely used, for instance, in electromagnetism and fluid dynamics.
 
 \begin{equation}
   \begin{cases}
@@ -222,7 +222,7 @@ Using this potential $V(\vec x)$, we can rewrite our dynamical system as in equa
 (\#eq:MainResult)
 \end{equation}
 
-The stability landscape described in \@ref(eq:Potential) not only has been derived from a linearized system, but also completely neglects the effects of the curl part of the flow. As with any other approximation we need a way to estimate its error. From equation \@ref(eq:MainResult) it is apparent that we can use $\vec f_{curl} (\vec x)$ as an approximation of the local error introduced by our algorithm (\@ref(eq:error)).
+The stability landscape described in \@ref(eq:Potential) not only has been derived from a linearized system, but also completely neglects the effects of the curl part of the system As with any other approximation we need a way to estimate its error. From equation \@ref(eq:MainResult) it is apparent that we can use $\vec f_{curl} (\vec x)$ as an approximation of the local error introduced by our algorithm (\@ref(eq:error)).
 
 \begin{equation}
 \boxed{
@@ -257,7 +257,7 @@ The abovementioned ideas can be applied to the numerical computation of the appr
   \item Use the values of $J_{Skew}(\vec{x_i})$ as a measure of the quality of the approximation point by point.
 \end{enumerate}
 
-By introducing a grid, we expect the linearization error to decrease with the square of the grid's step size. The more fundamental error due to ignoring the curl component of our flow cannot be affected by the grid's step choice, but the algorithm provides us with a measure of its magnitude point-by-point.
+By introducing a grid, we expect the linearization error to decrease with the square of the grid's step size. The more fundamental error due to ignoring the curl component of our system cannot be affected by the grid's step choice, but the algorithm provides us with a measure of its magnitude point-by-point.
 
 ## Two-dimensional example
 
@@ -313,7 +313,7 @@ V(x_i, y_j) = V(x_0, y_0) + \sum_{k = 1}^i \Delta V(x_k, y_0; x_{k-1}, y_0) + \s
 (\#eq:NumericalRecipe)
 \end{equation}
 
-Formula \@ref(eq:NumericalRecipe) has been derived sweeping first in the horizontal direction and next in the vertical one. Of course, we can choose different paths of summation. Because we are building our potential neglecting the curl part of our flow, we know that our results will converge to the same solution regardless of the chosen path.
+Formula \@ref(eq:NumericalRecipe) has been derived sweeping first in the horizontal direction and next in the vertical one. Of course, we can choose different paths of summation. Because we are building our potential neglecting the curl part of our vector field, we know that our results will converge to the same solution regardless of the chosen path.
 
 ## Code package
 In the spirit of reproducible research, we published an _R_ package that applies the abovementioned algorithm. It is freely available at: TBA.
@@ -321,7 +321,7 @@ In the spirit of reproducible research, we published an _R_ package that applies
 # Results
 
 ## A synthetic example
-We tested our algorithm against a flow of the form given in \@ref(eq:TestField), where $p_x$ and $p_y$ are non-gradient perturbations. When we chose those perturbations to be zero, the flow becomes gradient and corresponds with a four-well potential. Our algorithm rendered it succesfully (cf. figure $\ref{fig:synthetic}$, left panel).
+We tested our algorithm with a synthetic model of two uncoupled state variables each with two attractors. As both states are uncoupled, this system is gradient and has a potential with four wells. We added interaction terms $p_x$ and $p_y$ to be able to make it gradually non-gradient (see (equation \@ref(eq:TestField)). When we chose those perturbations to be zero, the system becomes gradient and corresponds with a four-well potential. Our algorithm rendered it succesfully (cf. figure $\ref{fig:synthetic}$, left panel).
 
 \begin{equation}
   \begin{cases}
@@ -354,7 +354,7 @@ A bistable network model can be described by a set of equations like \@ref(eq:Wa
 
 The parameters used are identical to those in equations 6 and 7 of @Bhattacharya2011, with the exception of $By$ and $foldXY$, that we modified in order to induce an assymetry in the the dynamics (we used $By = 0.05$ and $foldXY = 1.75$).
 
-Despite this flow is clearly non-gradient, our algorithm correctly predicts the existence of two wells (see figure \@ref(fig:Waddington)).
+Despite this system is clearly non-gradient, our algorithm correctly predicts the existence of two wells (see figure \@ref(fig:Waddington)).
 
 ```{r, Waddington, fig.cap = '(ref:waddington)', out.width = '400px', fig.align = 'center'}
 knitr::include_graphics('img/waddington.png')
@@ -391,7 +391,7 @@ f(x) = -\frac{dV}{dx} \implies V(x) = -\int_{x_0}^x f(s) ds
 
 But, what happens if we apply our algorithm?
 
-Around each grid point $x_{n-1}$, our flow will look like:
+Around each grid point $x_{n-1}$, our system will look like:
 
 \begin{equation}
 f(x) = f(x_{n-1}) + J(x_{n-1}) \cdot (x - x_{n-1}) : x \in [x_{n-1}, x_{n})
@@ -452,7 +452,7 @@ I am using as almost synonyms the terms:
 - Surface
 
 ## About notation
-It will be advisable to follow a consistent notation for vector flows and its analysis in the final version of this document. Here I show a brief summary of the pros and cons of the three of them (see also accompanying figure):
+It will be advisable to follow a consistent notation for vector fields and its analysis in the final version of this document. Here I show a brief summary of the pros and cons of the three of them (see also accompanying figure):
 
 ### Explicit notation
 - Focus only on 2D systems. Provided we are focused in visualization, this is not a problem
@@ -482,6 +482,6 @@ The perpetual oscillation of a rolling marble while submerged in a very viscous 
 Perpetual oscillation is known to be only possible in systems with two or more dimensions (by virtue of the Poincaré-Bendixson theorem (@Strogatz1994)).
 
 ### From information theory
-If we want to summarize, for instance, a two-dimensional flow in a single surface, the height at each point of such a surface should contain the information about the derivatives of both states. That is, one number, height, codes two numbers. The process of computing the surface is a process of information compression, and it is known from mathematics that only gradient flows allow this kind of compression. In one-dimensional systems there is no compression of information (one number, height, corresponds to one number, the derivative of the only state), so this restriction does not apply in the one-dimensional case.
+If we want to summarize, for instance, a two-dimensional system in a single surface, the height at each point of such a surface should contain the information about the derivatives of both states. That is, one number, height, codes two numbers. The process of computing the surface is a process of information compression, and it is known from mathematics that only gradient fields allow this kind of compression. In one-dimensional systems there is no compression of information (one number, height, corresponds to one number, the derivative of the only state), so this restriction does not apply in the one-dimensional case.
 
 # References
