@@ -374,66 +374,6 @@ After pointing out all the difficulties of calculating potentials for higher-dim
 
 \newpage
 
-# Appendix
-
-### One-dimensional case
-In the one-dimensional case it's always possible to find an exact scalar potential by direct integration.
-
-\begin{equation}
-f(x) = -\frac{dV}{dx} \implies V(x) = -\int_{x_0}^x f(s) ds 
-(\#eq:easycase)
-\end{equation}
-
-But, what happens if we apply our algorithm?
-
-Around each grid point $x_{n-1}$, our system will look like:
-
-\begin{equation}
-f(x) = f(x_{n-1}) + J(x_{n-1}) \cdot (x - x_{n-1}) : x \in [x_{n-1}, x_{n})
-(\#eq:Field1D)
-\end{equation}
-
-and the potential can be approximated with:
-
-\begin{equation}
-V(x) = V(x_{n-1}) - f(x_{n-1}) \cdot (x - x_{n-1}) - \frac{1}{2} J(x_{n-1}) \cdot (x - x_{n-1})^2 : x \in [x_{n-1}, x_{n})
-(\#eq:Potential1D)
-\end{equation}
-
-After assigning $V(x_0) = V_0$ as initial value, we can use \@ref(eq:Potential1DGrid) to calculate the potential in any point of the grid.
-
-\begin{equation}
-V(x_i) = V(x_0) - \sum_{n = 1}^{i} \left( f(x_{n-1}) \cdot (x_n - x_{n-1}) + \frac{1}{2} J(x_{n-1}) \cdot (x_n - x_{n-1})^2 \right)
-(\#eq:Potential1DGrid)
-\end{equation}
-
-If the grid has been constructed with a constant step $\Delta x$, equation \@ref(eq:Potential1DGrid) can be simplified as:
-
-\begin{equation}
-V(x_i) = V(x_0) - \Delta x \sum_{n = 1}^i \left( f(x_{n-1}) + \frac{1}{2} J(x_{n-1}) \cdot \Delta x \right)
-(\#eq:Potential1DGridSimp)
-\end{equation}
-
-Notice that equations \@ref(eq:Potential1DGrid) and \@ref(eq:Potential1DGridSimp) are just algebraic relationships allowing to compute the potential at any node of the grid. Furthermore, equation \@ref(eq:Potential1D) can be used to interpolate between the nodes.
-
-It can be useful to define the auxiliary function:
-\begin{equation}
-\Delta V(x_n; x_{n-1}) \equiv - f(x_{n-1}) \cdot (x_n - x_{n-1}) - \frac{1}{2} J(x_{n-1}) \cdot (x_n - x_{n-1})^2
-(\#eq:Increment1D)
-\end{equation}
-
-so the recursion relation reads:
-\begin{equation}
-\boxed{
-V(x_i) = V(x_0) + \sum_{n = 1}^{i} \Delta V(x_n; x_{n-1})
-}
-(\#eq:Potential1DGridWithIncrement)
-\end{equation}
-
-It can be shown graphically that equation \@ref(eq:Increment1D) approximates the analytical solution given in \@ref(eq:easycase).
-
-\newpage
-
 # Some loose thoughts
 
 ## About the R package
