@@ -256,7 +256,7 @@ By introducing a grid, we expect the linearization error to decrease with the sq
 
 ## Two-dimensional example
 
-For instance, to calculate the value of $V$ at the point $(x_3, y_2)$ of a grid, we should begin by assigning $0$ to the potential at $V(x_0, y_0)$. Then, we need a trajectory that goes from $(x_0,y_0)$ to $(x_3, y_2)$, stopping in the intermediate grid points (see figure \@ref(fig:steps)).
+For instance, to calculate the value of $V$ at the point $(x_3, y_2)$ of a grid, we should begin by assigning $0$ to the potential at our arbitrary starting point (i.e.: $V(x_0, y_0) = 0$ by definition). Then, we need a trajectory that goes from $(x_0,y_0)$ to $(x_3, y_2)$, iterating over the intermediate grid points (see figure \@ref(fig:steps)).
 
 
 ```{r steps, fig.width = 4, fig.height = 3, fig.align = 'center', fig.cap = '(ref:steps)'}
@@ -320,8 +320,8 @@ We tested our algorithm with a synthetic model of two uncoupled state variables 
 
 \begin{equation}
   \begin{cases}
-    f(x,y) = -x (x^2 - 1) + p_x(x,y)\\
-    g(x,y) = -y (y^2 - 1) + p_y(x,y)
+    \frac{dx}{dt} = f(x,y) = -x (x^2 - 1) + p_x(x,y)\\
+    \frac{dy}{dt} = g(x,y) = -y (y^2 - 1) + p_y(x,y)
   \end{cases}
 (\#eq:TestField)
 \end{equation}
@@ -367,10 +367,10 @@ A more theoretical review of potential and pseudopotential functions computation
 The algorithm we present here is an attempt to preserve as much as possible from the classical potential theory. Indeed, it calculates the closest classical potential to our problem, and the exact one when it exists. The price we pay is to calculate a potential that, in general, is only locally meaningful. The estimated error lets us know where does this happen. Additionaly, our algorithm provides:
 
 - Simplicity. The mathematical background required is covered by any introductory course in vector calculus. Additionally, we provide the algorithm in a ready to use _R_ package.
-- Reliability. At each step the local error is computed and stored, providing, so to say, a map of which part of our stability landscape are dangerous to visit.
+- Integrity. At each step the strength of the curl term is calculated. If this term is high, it is fundamentally impossible to calculate a stability landscape with any method. The relative size of the curl term can be interpreted as an error term, mapping which regions of our stability landscape are dangerous to visit.
 - Speed. The rendering of a printing quality surface can be performed in no more than a few minutes in a personal laptop.
 
-After pointing out all the difficulties of calculating potentials for higher-dimensional systems, maybe it is worth to ask ourselves the question: do we really need them? The concept of potential is paramount in physics. In physics, potentials can be related with measurable concepts like energy, so its use goes way further than visualization. Generic stability landscapes lack this straightforward link with measurable quantities, and in most cases are just no more (and no less) than a visual aid. It may be worth reconsidering why do we prefer the idea of stability landscape over the good-old phase plane figure. It is true that the latter is slightly less intuitive than the stability landscape, but it has a very desirable property: existence under general circumstances.
+After pointing out all the difficulties of calculating potentials for higher-dimensional systems, maybe it is worth to ask ourselves the question: do we really need them? The concept of potential is paramount in physics. In physics, potentials can be related with measurable concepts like energy, so its use goes way further than visualization. Generic stability landscapes lack this straightforward link with measurable quantities, and in most cases are just no more (and no less) than a visual aid. It may be worth reconsidering why do we prefer the idea of stability landscape over a traditional phase plane figure. It is true that the latter is slightly less intuitive than the stability landscape, but it has a very desirable property: existence under general circumstances.
 
 \newpage
 
