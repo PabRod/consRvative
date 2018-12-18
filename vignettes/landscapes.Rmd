@@ -43,15 +43,13 @@ knitr::opts_chunk$set(
 ```
 
 # Introduction
-With knowledge becoming progressively more interdisciplinary, the relevance of science communication is increasing fast. Mathematical concepts are among the hardest topics to communicate to non-expert audiences, policy makers, and even to professionals from the so-called _soft sciences_. Visual methods are known to be, when applicable, successful ways of introducing mathematical concepts and results to non-specialists.
+With knowledge becoming progressively more interdisciplinary, the relevance of science communication is increasing fast. Mathematical concepts are among the hardest topics to communicate to non-expert audiences, policy makers, and also to scientists with little mathematical background. Visual methods are known to be successful ways of explaining mathematical concepts and results to non-specialists.
 
-One particularly successful visualization method is that of the stability landscape, also known as the rolling marble or ball-in-a-cup diagram (@Beisner2003). In stability landscapes (e.g.: figure $\ref{fig:aew}$) the horizontal position of the marble represents the state of the system at a given time. With this picture in mind, the shape of the surface represents the underlying dynamical equations, being the slope the driver of the movement. The peaks on the undulated surface represent unstable equilibrium states and the wells represent stable equilibria. Different basins of attraction are separated by _mountain ridges_ in the surface. Summarizing: the marble naturally rolls downhill to the lowest point of its basin of attraction. 
+One particularly successful visualization method is that of the stability landscape, also known as the rolling marble or ball-in-a-cup diagram (@Beisner2003). In stability landscapes (e.g.: figure $\ref{fig:aew}$) the horizontal position of the marble represents the state of the system at a given time. With this picture in mind, the shape of the surface represents the underlying dynamical equations, where the slope is the driver of the movement. The peaks on the undulated surface represent unstable equilibrium states and the wells represent stable equilibria. Different basins of attraction are separated by _mountain ridges_ in the surface. Summarizing: the marble naturally rolls downhill to the lowest point of its basin of attraction. 
 
-Stability landscapes have proven to be a successful tool to understand and explain certain non-trivial concepts about dynamical systems described by autonomous differential equations in a remarkably intuitive way. Examples of those concepts are multistability, basin of attraction and even bifurcation and hystheresis (see @Beisner2003, @Scheffer2001).
+Stability landscapes have proven to be a successful tool to explain aspects about stability of dynamical systems in an intuitive way. Stability landscapes have been used to explain concepts as multistability, basin of attraction and even bifurcation points and hystheresis (see @Beisner2003, @Scheffer2001).
 
-The main reason for the success of this picture arises from the fact that stability landscapes are built as an analogy with our most familiar dynamical system: movement. Particularly, the movement of a marble along a curved surface under the influence of its own weight and a strong frictional force[^1]. The stability landscape corresponds then with the physical concept of potential (@Strogatz1994). This explains why our intuition, based in what we know about movement in our everyday life, works so well reading this diagrams.
-
-[^1]: It is important to stress the fact that under this picture there's not such a thing as inertia (@Beisner2003). The accurate analogy is that of a marble rolling in a surface while submerged inside a very viscous fluid (@Strogatz1994).
+The main reason for the success of this picture arises from the fact that stability landscapes are built as an analogy with our most familiar dynamical system: movement. Particularly, the movement of a marble along a curved surface under the influence of its own weight and a strong frictional force. The stability landscape corresponds then with the physical concept of potential energy (@Strogatz1994). This explains why our intuition, based in what we know about movement in our everyday life, works so well reading this diagrams. It is important to stress the fact that under this picture there's not such a thing as inertia (@Beisner2003). The accurate analogy is that of a marble rolling in a surface while submerged inside a very viscous fluid (@Strogatz1994).
 
 ```{r aew, fig.cap = '(ref:wur)', fig.align = 'center'}
 knitr::include_graphics('img/sl.jpg')
@@ -59,7 +57,7 @@ knitr::include_graphics('img/sl.jpg')
 
 (ref:wur) Example of a stability landscape from @Scheffer2001. The upper side of the figure shows the stability landscape of a one-dimensional system for different values of a bifurcation parameter. The lower side shows the bifurcation diagram. This diagram proved to be a succesful tool for explaining an advanced concept in bifurcation theory such as the Fold bifurcation.
 
-Like with any other analogy, it is important to be aware of its limitations. The most important one is the fact that, for models with more than one state variable, such a potential doesn't exist in general. To get an intutive feeling of why this is true, picture a model with a stable cyclic attractor. We need our potential to have the shape of a surface where our marble can roll in a closed loop while always going downhill. The kind of surface that only exists on M.C. Escher's surrealistic paintings (see figure \@ref(fig:escher)).
+Like with any other analogy, it is important to be aware of its limitations. The most important one is the fact that, for models with more than one state variable, such a potential doesn't exist in general. To get an intutive feeling of why this is true, picture a model with a stable cyclic attractor. As the slope of the potential should reflect the speed of change, we would need a potential landscape where our marble can roll in a closed loop while always going downhill. The kind of surface that only exists in M.C. Escher's famous work (see figure \@ref(fig:escher)).
 
 ```{r escher, fig.cap = '(ref:escher)', out.width = "250px", fig.align = 'center'}
 knitr::include_graphics('img/escher.jpg')
@@ -69,7 +67,7 @@ knitr::include_graphics('img/escher.jpg')
 
 In this work we present a detailed overview of the conditions that a model has to fulfill to be associated with a potential. Next, we center our attention in systems that fail to fulfill those conditions, and we introduce an algorithm to decompose those systems as the sum of a gradient and a curl part. Each part can be used, respectivelly, to compute an associated potential and to measure the local error introduced by our picture.
 
-For those readers less familiar with mathematics or programming, we provide a ready to use _R_ package that implements the algorithm described in the present paper.
+Additionally, we provide a ready to use _R_ package that implements the algorithm described in the present paper.
 
 ## Mathematical background
 
