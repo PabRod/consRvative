@@ -63,7 +63,7 @@ Like with any other analogy, it is important to be aware of its limitations. The
 knitr::include_graphics('img/escher.jpg')
 ```
 
-(ref:escher) Detail of M.C. Escher's _Klimmen en dalen_. Lithography, 1960. In this surface, the walkers can walk in a closed loop that permanently goes downhill. Unfortunately, such a surface only exists in the imagination of surrealist painters.
+(ref:escher) Detail of M.C. Escher's _Klimmen en dalen_. Lithography, 1960. In this surface, the walkers can walk in a closed loop that permanently goes downhill. Unfortunately, such a surface only exists in the imagination of surrealist artists
 
 In this work we present a detailed overview of the conditions that a model has to fulfill to be associated with a potential. Next, we center our attention in systems that fail to fulfill those conditions, and we introduce an algorithm to decompose those systems as the sum of a gradient and a curl part. Each part can be used, respectivelly, to compute an associated potential and to measure the local error introduced by our picture.
 
@@ -71,8 +71,7 @@ Additionally, we provide a ready to use _R_ package that implements the algorith
 
 ## Mathematical background
 
-From a mathematical point of view, the relationship between a two-dimensional scalar potential $V(x,y)$ and the dynamics it creates is given by equation \@ref(eq:2D).
-
+Consider a coupled differential equation with two state variables $x$ and $y$. The dynamics of such system can be described by a two-dimensional stability landscape if a potential function $V(x,y)$ exists whose slope is proportional to the change in time of both states (equation \@ref(eq:2D)).
 \begin{equation}
   \begin{cases}
     \frac{dx}{dt} = f(x,y) = - \frac{\partial V}{\partial x} \\
@@ -81,21 +80,19 @@ From a mathematical point of view, the relationship between a two-dimensional sc
   (\#eq:2D)
 \end{equation}
 
-Such a potential $V(x,y)$ exists if and only if the crossed derivatives of functions $f(x,y)$ and $g(x,y)$ are equal (equation \@ref(eq:2Dcond)). Vector fields satisfying equation \@ref(eq:2Dcond) are known as conservative, irrotational or gradient fields (cf. section 8.3 of @Marsden2003).
+Such a potential $V(x,y)$ exists if and only if the crossed derivatives of functions $f(x,y)$ and $g(x,y)$ are equal for all $x$ and $y$ (equation \@ref(eq:2Dcond)). Vector fields satisfying equation \@ref(eq:2Dcond) are known as conservative, irrotational or gradient fields (cf. section 8.3 of @Marsden2003).
 
 \begin{equation}
 \frac{\partial f}{\partial y} = \frac{\partial g}{\partial x}
 (\#eq:2Dcond)
 \end{equation}
 
-If an only if condition \@ref(eq:2Dcond) holds, we can use a line integral (@Marsden2003, section 7.2) to invert \@ref(eq:2D) and calculate $V(x,y)$ using the equations $f(x,y)$ and $g(x,y)$ as an input. An example of this inversion is equation \@ref(eq:2Dint), where we have chosen an integration path composed of a horizontal and a vertical line.
+If an only if condition \@ref(eq:2Dcond) holds, we can use a line integral (@Marsden2003, section 7.2) to invert \@ref(eq:2D) and calculate $V(x,y)$ using the equations $f(x,y)$ and $g(x,y)$ as an input. An example of this inversion is equation \@ref(eq:2Dint), where we have chosen an integration path composed of a horizontal and a vertical line. The attentive reader may have raised her or his eyebrow after reading the word _chosen_ applied to an integration path. In fact, we can introduce this arbitrary choice without affecting the final result. The condition for potentials to exist (equation \@ref(eq:2Dcond)) is entirelly equivalent (cf. section 7.2 of @Marsden2003) to the path independence of any line integral between two points inside this vector field. If the condition was not fulfilled, the calculated potential will have depended crucially on the chosen integration path. Being an arbitrary choice, the computed potential will have been an artifact with no natural meaning.
 
 \begin{equation}
 V(x,y) = V(x_0, y_0) - \int^{x}_{x_0} f(\xi, y_0) d\xi - \int^{y}_{y_0} g(x, \eta) d\eta
 (\#eq:2Dint)
 \end{equation}
-
-The attentive reader may have raised her or his eyebrow after reading the word _chosen_ applied to an integration path. In fact, we can introduce this arbitrary choice without affecting the final result. The condition for potentials to exist (equation \@ref(eq:2Dcond)) is entirelly equivalent (cf. section 7.2 of @Marsden2003) to the path independence of any line integral between two points inside this vector field. If the condition was not fulfilled, the calculated potential will have depended crucially on the chosen integration path. Being an arbitrary choice, the computed potential will have been an artifact with no natural meaning.
 
 ## Generalization
 
@@ -106,7 +103,7 @@ Dynamics in equation \@ref(eq:2D) and the condition for the crossed derivatives 
 (\#eq:anyDcond)
 \end{equation}
 
-then exists a potential $V(\vec x)$ verifying:
+then exists a potential $V(\vec x)$, related to the original vector field by:
 
 \begin{equation}
   f_i(\vec x) = -\frac{\partial V}{\partial x_i} : i = 1..n
