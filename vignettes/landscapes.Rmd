@@ -55,7 +55,7 @@ The main reason for the success of this picture arises from the fact that stabil
 knitr::include_graphics('img/sl.jpg')
 ```
 
-(ref:wur) Example of a stability landscape from @Scheffer2001. The upper side of the figure shows the stability landscape of a one-dimensional system for different values of a bifurcation parameter. The lower side shows the bifurcation diagram. This diagram proved to be a succesful tool for explaining an advanced concept in bifurcation theory such as the Fold bifurcation.
+(ref:wur) Example of a set of 4 stability landscapes from @Scheffer2001. The upper side of the figure shows the stability landscape of a one-dimensional system for 4 different values of a control parameter. The lower side shows the bifurcation diagram. This diagram proved to be a succesful tool for explaining advanced concepts in bifurcation theory such as bistability and fold bifurcations.
 
 Like with any other analogy, it is important to be aware of its limitations. The most important one is the fact that, for models with more than one state variable, such a potential doesn't exist in general. To get an intutive feeling of why this is true, picture a model with a stable cyclic attractor. As the slope of the potential should reflect the speed of change, we would need a potential landscape where our marble can roll in a closed loop while always going downhill. The kind of surface that only exists in M.C. Escher's famous work (see figure \@ref(fig:escher)).
 
