@@ -321,7 +321,7 @@ In the spirit of reproducible research, we published an _R_ package that applies
 # Results
 
 ## A synthetic example
-We tested our algorithm with a synthetic model of two uncoupled state variables each with two attractors. As both states are uncoupled, this system is gradient and has a potential with four wells. We added interaction terms $p_x$ and $p_y$ to be able to make it gradually non-gradient (see (equation \@ref(eq:TestField)). When we chose those perturbations to be zero, the system becomes gradient and corresponds with a four-well potential. Our algorithm rendered it succesfully (cf. figure $\ref{fig:synthetic}$, left panel).
+We tested our algorithm with a synthetic model of two uncoupled state variables each with two attractors. As both states are uncoupled, this system is gradient and has a potential with four wells. We added interaction terms $p_x$ and $p_y$ to be able to make it gradually non-gradient (see equation \@ref(eq:TestField)). When we chose those perturbations to be zero, the system becomes gradient and corresponds with a four-well potential. Our algorithm rendered it succesfully (cf. figure $\ref{fig:synthetic}$, left panel).
 
 \begin{equation}
   \begin{cases}
