@@ -123,31 +123,6 @@ The method we'll present in the next section lies in the fact that the condition
 
 It is important to note that the number of equations ($N$) contained in condition \@ref(eq:anyDcond) grows with the dimensionality of the system ($D$), particularly following the series of triangular numbers $N = \frac{1}{2}(D-1)D$. Thus, the higher the dimensionality, the harder it gets to fulfill condition \@ref(eq:anyDcond). As a side effect, we see that in one-dimensional systems the condition contains $0$ equations and is thus automatically fulfilled, meaning that one-dimensional systems always have a well defined stability landscape.
 
-## With vector notation
-
-Using vector notation and the nabla operator $\vec \nabla$ both the dynamical equation and the condition can be written compactly for any number of dimensions. Particularly, if and only if our system equations $\frac{d\vec{x}}{dt} = \vec f(\vec x)$ satisfy the condition:
-
-\begin{equation}
-  \vec \nabla \times \vec f(\vec x) = \vec 0
-(\#eq:vecCond)
-\end{equation}
-
-then exists a potential $V(\vec x)$ verifying:
-
-\begin{equation}
-  \frac{d\vec x}{dt} = \vec f(\vec x) = - \vec{\nabla{V}}
-(\#eq:vec)
-\end{equation}
-
-and such a potential can be computed using:
-
-\begin{equation}
-V(\vec x) = V(\vec x_0) - \int_\Gamma \vec f(\vec x) \cdot d\vec x
-(\#eq:vecInt)
-\end{equation}
-
-The nabla operator and the line integral are used to generalize, respectivelly, the key concepts of derivative and definite integral to functions with more than one argument. For more information see @Marsden2003 or any other introductory text about vector calculus.
-
 # Methods
 The method for deriving a potential we propose is based on the decomposition of a vector field in a conservative or gradient part and a non-conservative or curl part (see equation \@ref(eq:FieldDecomposition)).
 
@@ -201,7 +176,7 @@ Equation \@ref(eq:TaylorExpDecomposed) represents a natural, well-defined and op
 (\#eq:decomposition)
 \end{equation}
 
-The gradient term can thus be associated to a potential $V(\vec x)$, whose shape can be computed analytically using a line integral (see \@ref(eq:vecInt)). The result of this integration yields a relationship between the value of the potential at two points \@ref(eq:Potential).
+The gradient term can thus be associated to a potential $V(\vec x)$, whose shape can be computed analytically using a line integral (see equation \@ref(eq:anyDint)). The result of this integration yields a relationship between the value of the potential at two points \@ref(eq:Potential).
 
 \begin{equation}
 \boxed{ 
@@ -217,7 +192,7 @@ Using this potential $V(\vec x)$, we can rewrite our dynamical system as in equa
 (\#eq:MainResult)
 \end{equation}
 
-The stability landscape described in \@ref(eq:Potential) not only has been derived from a linearized system, but also completely neglects the effects of the curl part of the system As with any other approximation we need a way to estimate its error. From equation \@ref(eq:MainResult) it is apparent that we can use $\vec f_{curl} (\vec x)$ as an approximation of the local error introduced by our algorithm (\@ref(eq:error)).
+The stability landscape described in \@ref(eq:Potential) not only has been derived from a linearized system, but also completely neglects the effects of the curl part of the system As with any other approximation we need a way to estimate its error. From equation \@ref(eq:MainResult) it is apparent that we can use $\vec f_{curl} (\vec x)$ as an approximation of the local error introduced by our algorithm (see equation \@ref(eq:error)).
 
 \begin{equation}
 \boxed{
