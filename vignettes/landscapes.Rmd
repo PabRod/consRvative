@@ -136,7 +136,7 @@ $\vec f_{grad} (\vec x)$ captures the part of the system that can be associated 
 The reader is probably familiar with the concept of linearization, also known as Taylor expansion. Any sufficiently smooth and continuous vector field $\vec f(\vec x)$ can be approximated around a point $\vec{x_0}$ using equation \@ref(eq:TaylorExp), where $J(\vec{x_0})$ is the jacobian matrix evaluated at the point $\vec{x_0}$ and $\Delta \vec x$ is defined as the distance to this point, that is, $\Delta \vec x = \vec x - \vec{x_0}$, written as a column vector.
 
 \begin{equation}
-\vec f(\vec x) \approx \vec f(\vec{x_0}) + J(\vec{x_0}) \cdot \Delta \vec x
+\vec f(\vec x) \approx \vec f(\vec{x_0}) + J(\vec{x_0}) \Delta \vec x
 (\#eq:TaylorExp)
 \end{equation}
 
@@ -160,7 +160,7 @@ We know from basic linear algebra that any square matrix $M$ can be uniquely dec
 Using the skew symmetric decomposition described in equation \@ref(eq:SkewSymDec), we can rewrite \@ref(eq:TaylorExp) as:
 
 \begin{equation}
-\vec f(\vec x) \approx \vec f(\vec{x_0}) + J_{Symm}(\vec{x_0}) \cdot \Delta \vec x + J_{Skew}(\vec{x_0}) \cdot \Delta \vec x
+\vec f(\vec x) \approx \vec f(\vec{x_0}) + J_{Symm}(\vec{x_0}) \Delta \vec x + J_{Skew}(\vec{x_0})  \Delta \vec x
 (\#eq:TaylorExpDecomposed)
 \end{equation}
 
@@ -170,8 +170,8 @@ Equation \@ref(eq:TaylorExpDecomposed) represents a natural, well-defined and op
 
 \begin{equation}
   \begin{cases}
-    \vec f_{grad} (\vec x) \approx \vec f(\vec{x_0}) + J_{Symm}(\vec{x_0}) \cdot \Delta \vec x \\
-    \vec f_{curl} (\vec x) \approx J_{Skew}(\vec{x_0}) \cdot \Delta \vec x
+    \vec f_{grad} (\vec x) \approx \vec f(\vec{x_0}) + J_{Symm}(\vec{x_0})  \Delta \vec x \\
+    \vec f_{curl} (\vec x) \approx J_{Skew}(\vec{x_0})  \Delta \vec x
   \end{cases}
 (\#eq:decomposition)
 \end{equation}
@@ -180,7 +180,7 @@ The gradient term can thus be associated to a potential $V(\vec x)$, whose shape
 
 \begin{equation}
 \boxed{ 
-  V(\vec{x_0} + \Delta \vec x) \approx  V(\vec{x_0}) - \vec f(\vec x_0) \cdot \Delta \vec x - \frac{1}{2} \Delta \vec x^T \cdot J_{Symm} (\vec{x_0}) \cdot \Delta \vec x
+  V(\vec{x_0} + \Delta \vec x) \approx  V(\vec{x_0}) - \vec f(\vec x_0) \cdot \Delta \vec x - \frac{1}{2} \Delta \vec x^T  J_{Symm} (\vec{x_0})  \Delta \vec x
 }
 (\#eq:Potential)
 \end{equation}
@@ -205,7 +205,7 @@ The stability landscape described in \@ref(eq:Potential) not only has been deriv
 Equation \@ref(eq:Potential) can be rewritten as \@ref(eq:PotentialNum), where $\vec{x_0}$ represents the approximation point, $\vec{x_1}$ represents a neighbouring point and the potential difference between both points is given by $\Delta V(\vec{x_1}, \vec{x_0}) \equiv V(\vec{x_1}) - V(\vec{x_0})$.
 
 \begin{equation}
-\Delta V(\vec{x_1}, \vec{x_0}) \approx - \vec f(\vec x_0) \cdot (\vec{x_1} - \vec{x_0}) - \frac{1}{2} (\vec{x_1} - \vec{x_0})^T \cdot J_{Symm} (\vec{x_0}) \cdot (\vec{x_1} - \vec{x_0})
+\Delta V(\vec{x_1}, \vec{x_0}) \approx - \vec f(\vec x_0) \cdot (\vec{x_1} - \vec{x_0}) - \frac{1}{2} (\vec{x_1} - \vec{x_0})^T  J_{Symm} (\vec{x_0})  (\vec{x_1} - \vec{x_0})
 (\#eq:PotentialNum)
 \end{equation}
 
@@ -333,7 +333,7 @@ knitr::include_graphics('img/waddington.png')
 (ref:waddington) In both figures the red and blue lines represent the nullclines of $x$ and $y$, respectivelly. Several trajectories are plotted in black. The contour plot in figure a) shows the potential calculated for the simple gene regulatory network described in equation \@ref(eq:Waddington). The stable equilibria correspond to the wells. Figure b) shows the estimated error of our computed potential.
 
 # Discussion
-The use of stability landscapes as a helping tool to understand one-dimensional dynamical systems achieved great success, specially in interdisciplinary research communities. A generalization of the idea of scalar potential to two-dimensional systems seemed to be a logical next step. Unfortunately, as we have seen, there are subtle reasons that make two (and higher) dimensional systems fundamentally different from the one-dimensional case. The generalization, straightforward as it may look, is actually impossible for most dynamical equations. As a consequence, any attempt of computing stability landscapes for high-dimensional systems should, neccessarily, drop some desirable properties of classical scalar potentials.
+The use of stability landscapes as a helping tool to understand one-dimensional dynamical systems achieved great success, specially in interdisciplinary research communities. A generalization of the idea of scalar potential to two-dimensional systems seemed to be a logical next step. Unfortunately, as we have seen, there are reasons that make two (and higher) dimensional systems fundamentally different from the one-dimensional case. The generalization, straightforward as it may look, is actually impossible for most dynamical equations. As a consequence, any attempt of computing stability landscapes for high-dimensional systems should, neccessarily, drop some desirable properties of classical scalar potentials.
 
 The method proposed by @Bhattacharya2011, for instance, avoids the problem of path dependence of line integrals by integrating along trajectories. The price paid is that this algorithm cannot guarantee simultaneous continuity at all equilibria and along separatrices unless the underlying dynamics have a high degree of symmetry.
 
