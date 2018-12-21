@@ -335,7 +335,7 @@ knitr::include_graphics('img/waddington.png')
 # Discussion
 The use of stability landscapes as a helping tool to understand one-dimensional dynamical systems achieved great success, specially in interdisciplinary research communities. A generalization of the idea of scalar potential to two-dimensional systems seemed to be a logical next step. Unfortunately, as we have seen, there are reasons that make two (and higher) dimensional systems fundamentally different from the one-dimensional case. The generalization, straightforward as it may look, is actually impossible for most dynamical equations. As a consequence, any attempt of computing stability landscapes for high-dimensional systems should, neccessarily, drop some desirable properties of classical scalar potentials.
 
-The method proposed by @Bhattacharya2011, for instance, avoids the problem of path dependence of line integrals by integrating along trajectories. The price paid is that this algorithm cannot guarantee simultaneous continuity at all equilibria and along separatrices unless the underlying dynamics have a high degree of symmetry.
+The method proposed by @Bhattacharya2011, for instance, avoids the problem of path dependence of line integrals by integrating along trajectories. The price paid is that this algorithm cannot guarantee simultaneous continuity at all equilibria and along separatrices for general systems.
 
 A more theoretical review of potential and pseudopotential functions computation, for a mathematically oriented audience, can be found in @Zhou.
 
