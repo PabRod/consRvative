@@ -106,7 +106,7 @@ Dynamics in equation \@ref(eq:2D) and the condition for the crossed derivatives 
 then exists a potential $V(\vec x)$, related to the original vector field by:
 
 \begin{equation}
-  f_i(\vec x) = -\frac{\partial V}{\partial x_i} : i = 1..n
+  \frac{d x_i}{dt} = f_i(\vec x) = -\frac{\partial V}{\partial x_i} : i = 1..n
 (\#eq:anyD)
 \end{equation}
 
@@ -183,14 +183,9 @@ The gradient term can thus be associated to a potential $V(\vec x)$, whose shape
 (\#eq:Potential)
 \end{equation}
 
-Using this potential $V(\vec x)$, we can rewrite our dynamical system as in equation \@ref(eq:MainResult). Due to the approximations used, this result will only be true on the vicinity of $\vec{x_0}$.
+Using this potential $V(\vec x)$, we can rewrite our dynamical system as in equation \@ref(eq:anyD). Due to the approximations used, this result will only be true on the vicinity of $\vec{x_0}$.
 
-\begin{equation}
-\vec f(\vec x) \approx -\vec \nabla V + \vec f_{curl}(\vec x)
-(\#eq:MainResult)
-\end{equation}
-
-The stability landscape described in \@ref(eq:Potential) not only has been derived from a linearized system, but also completely neglects the effects of the curl part of the system As with any other approximation we need a way to estimate its error. From equation \@ref(eq:MainResult) it is apparent that we can use the euclidean size of $\vec f_{curl} (\vec x)$ as an approximation of the local error introduced by our algorithm. The relative error can be approximated using equation \@ref(eq:error).
+The stability landscape described in \@ref(eq:Potential) not only has been derived from a linearized system, but also completely neglects the effects of the curl part of the system As with any other approximation we need a way to estimate its error. From equation \@ref(eq:FieldDecomposition) it is apparent that we can use the euclidean size of $\vec f_{curl} (\vec x)$ as an approximation of the local error introduced by our algorithm. The relative error can be approximated using equation \@ref(eq:error).
 
 \begin{equation}
 \boxed{
