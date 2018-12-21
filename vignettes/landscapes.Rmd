@@ -119,8 +119,6 @@ V(\vec x) = V(\vec x_0) - \int_\Gamma \sum_{i=1}^n f_i(\vec x) dx_i
 
 where the line integral in \@ref(eq:anyDint) is computed along any curve $\Gamma$ joining the points $\vec x_0$ and $\vec x$.
 
-The method we'll present in the next section lies in the fact that the conditions \@ref(eq:anyDcond) are equalities between functions, that is, both cross derivatives have to be equal at each point $\vec x$. Their difference, thus, will not remain constant in the whole phase space. In general, there will be regions where the conditions \@ref(eq:anyDcond) are, at least, approximately fulfilled. Those regions will admit an approximate potential.
-
 It is important to note that the number of equations ($N$) contained in condition \@ref(eq:anyDcond) grows with the dimensionality of the system ($D$), particularly following the series of triangular numbers $N = \frac{1}{2}(D-1)D$. Thus, the higher the dimensionality, the harder it gets to fulfill condition \@ref(eq:anyDcond). As a side effect, we see that in one-dimensional systems the condition contains $0$ equations and is thus automatically fulfilled, meaning that one-dimensional systems always have a well defined stability landscape.
 
 # Methods
@@ -131,7 +129,7 @@ The method for deriving a potential we propose is based on the decomposition of 
 (\#eq:FieldDecomposition)
 \end{equation}
 
-$\vec f_{grad} (\vec x)$ captures the part of the system that can be associated to a potential function, while $\vec f_{curl} (\vec x)$ represents the deviation from this ideal case. We'll use $\vec f_{gradient} (\vec x)$ to compute an approximate potential. The absolute error of this approach will be given by $\parallel \vec f_{curl} (\vec x) \parallel$. In those regions where the gradient term is stronger than the curl term, the previously calculated potential will represent an acceptable approximation of the underlying dynamics. The next steps show an easy way of achieving such a decomposition.
+$\vec f_{grad} (\vec x)$ captures the part of the system that can be associated to a potential function, while $\vec f_{curl} (\vec x)$ represents the deviation from this ideal case. We'll use $\vec f_{gradient} (\vec x)$ to compute an approximate potential. The absolute error of this approach will be given by $\parallel \vec f_{curl} (\vec x) \parallel$. In those regions where the gradient term is stronger than the curl term, the condition \@ref(eq:anyDcond) will be approximately fulfilled, and thus the previously calculated potential will represent an acceptable approximation of the underlying dynamics. The next steps show an easy way of achieving such a decomposition.
 
 The reader is probably familiar with the concept of linearization, also known as Taylor expansion. Any sufficiently smooth and continuous vector field $\vec f(\vec x)$ can be approximated around a point $\vec{x_0}$ using equation \@ref(eq:TaylorExp), where $J(\vec{x_0})$ is the jacobian matrix evaluated at the point $\vec{x_0}$ and $\Delta \vec x$ is defined as the distance to this point, that is, $\Delta \vec x = \vec x - \vec{x_0}$, written as a column vector.
 
