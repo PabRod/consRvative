@@ -174,18 +174,21 @@ Equation \@ref(eq:TaylorExpDecomposed) represents a natural, well-defined and op
 (\#eq:decomposition)
 \end{equation}
 
-The gradient term can thus be associated to a potential $V(\vec x)$, whose shape can be computed analytically using a line integral (see equation \@ref(eq:anyDint)). The result of this integration yields a relationship between the value of the potential at two points \@ref(eq:Potential).
+The gradient term can thus be associated to a potential $V(\vec x)$ that can be computed analytically using a line integral (see equation \@ref(eq:anyDint)). The result of this integration yields an analytical expression for the potential difference between the reference point $\vec{x_0}$ and another point $\vec{x_1} \equiv \vec{x_0} + \Delta \vec{x}$ separated by a distance $\Delta \vec x$ (see equation \@ref(eq:Potential)).
 
 \begin{equation}
 \boxed{ 
-  V(\vec{x_0} + \Delta \vec x) \approx  V(\vec{x_0}) - \vec f(\vec x_0) \cdot \Delta \vec x - \frac{1}{2} \Delta \vec x^T  J_{Symm} (\vec{x_0})  \Delta \vec x
+  \Delta V(\vec{x_1}, \vec{x_0}) \equiv V(\vec{x_1}) - V(\vec{x_0}) \approx - \vec f(\vec x_0) \cdot \Delta \vec x - \frac{1}{2} \Delta \vec x^T  J_{Symm} (\vec{x_0})  \Delta \vec x
 }
 (\#eq:Potential)
 \end{equation}
 
-Using this potential $V(\vec x)$, we can rewrite our dynamical system as in equation \@ref(eq:anyD). Due to the approximations used, this result will only be true on the vicinity of $\vec{x_0}$.
+As with any other approximation we need a way to estimate and control its error. The stability landscape described in \@ref(eq:Potential) has two main sources of errors:
 
-The stability landscape described in \@ref(eq:Potential) not only has been derived from a linearized system, but also completely neglects the effects of the curl part of the system As with any other approximation we need a way to estimate its error. From equation \@ref(eq:FieldDecomposition) it is apparent that we can use the euclidean size of $\vec f_{curl} (\vec x)$ as an approximation of the local error introduced by our algorithm. The relative error can be approximated using equation \@ref(eq:error).
+1. It completely neglects the effects of the curl part of the system
+2. It has been derived from a linearized system
+
+From equation \@ref(eq:FieldDecomposition) it is apparent that we can use the euclidean size of $\vec f_{curl} (\vec x)$ as an approximation of the local error introduced by neglecting the curl in our algorithm. The relative error due to this effect can be estimated using equation \@ref(eq:error).
 
 \begin{equation}
 \boxed{
@@ -194,15 +197,10 @@ The stability landscape described in \@ref(eq:Potential) not only has been deriv
 (\#eq:error)
 \end{equation}
 
-## Numerical algorithm
-Equation \@ref(eq:Potential) can be rewritten as \@ref(eq:PotentialNum), where $\vec{x_0}$ represents the approximation point, $\vec{x_1}$ represents a neighbouring point and the potential difference between both points is given by $\Delta V(\vec{x_1}, \vec{x_0}) \equiv V(\vec{x_1}) - V(\vec{x_0})$.
+The error due to linearization is roughly proportional to $\mid \Delta \vec{x} \mid^3$ in equation \@ref(eq:Potential), being $\mid \Delta \vec{x} \mid$ the euclidean distance to the reference point. This error can be minimized by using \@ref(eq:Potential) as a recurrence relation, that is, by iterating it in small steps in space. A working algorithm is described in section \@ref(algorithm).
 
-\begin{equation}
-\Delta V(\vec{x_1}, \vec{x_0}) \approx - \vec f(\vec x_0) \cdot (\vec{x_1} - \vec{x_0}) - \frac{1}{2} (\vec{x_1} - \vec{x_0})^T  J_{Symm} (\vec{x_0})  (\vec{x_1} - \vec{x_0})
-(\#eq:PotentialNum)
-\end{equation}
-
-Provided we know the value of the potential at one point $\vec x_{previous}$, equation \@ref(eq:PotentialNum) allows us to estimate the potential at a different point $\vec x_{next}$ (cf.: equation \@ref(eq:Iterator)).
+## Numerical algorithm {#algorithm}
+Provided we know the value of the potential at one point $\vec x_{previous}$, equation \@ref(eq:Potential) allows us to estimate the potential at a different point $\vec x_{next}$ (cf.: equation \@ref(eq:Iterator)).
 
 \begin{equation}
 V(\vec x_{next}) \approx V(\vec x_{previous}) + \Delta V(\vec x_{next}, \vec x_{previous})
@@ -211,16 +209,14 @@ V(\vec x_{next}) \approx V(\vec x_{previous}) + \Delta V(\vec x_{next}, \vec x_{
 
 The abovementioned ideas can be applied to the numerical computation of the approximate potential over a grid of points by following this list of steps:
 
-\begin{enumerate}
-  \item Create a grid in the phase plane $\left\lbrace \vec x_i \right\rbrace$
-  \item Calculate the jacobian $J(\vec{x_i})$ in each grid point
-  \item Decompose each jacobian in its skew $J_{Skew}(\vec{x_i})$ and symmetric $J_{Symm}(\vec{x_i})$ components
-  \item Assign potential 0 to the first point in the grid
-  \item Use equation \@ref(eq:Iterator) to iterativelly calculate the values of the potential at each point of the grid
-  \item Use the values of $J_{Skew}(\vec{x_i})$ as a measure of the quality of the approximation point by point.
-\end{enumerate}
+1. Create a grid in the phase plane $\left\lbrace \vec x_i \right\rbrace$
+2. Calculate the jacobian $J(\vec{x_i})$ in each grid point
+3. Decompose each jacobian in its skew $J_{Skew}(\vec{x_i})$ and symmetric $J_{Symm}(\vec{x_i})$ components
+4. Assign potential 0 to the first point in the grid
+5. Use equation \@ref(eq:Potential) to iterativelly calculate the values of the potential at each point of the grid
+6. Use equation \@ref(eq:error) as a measure of the quality of the approximation point by point.
 
-By introducing a grid, we expect the linearization error to decrease with the square of the grid's step size. The more fundamental error due to ignoring the curl component of our system cannot be affected by the grid's step choice, but the algorithm provides us with a measure of its magnitude point-by-point.
+By introducing a grid, we expect the linearization error to decrease with the grid's step size. The more fundamental error due to ignoring the curl component of our system cannot be affected by the grid's step choice, but the algorithm provides us with a measure of its magnitude point-by-point.
 
 ## Two-dimensional example
 
@@ -257,7 +253,7 @@ V(x_3, y_0) \approx V(x_0, y_0) + \Delta V(x_1, y_0; x_0, y_0) + \Delta V(x_2, y
 (\#eq:IteratorEx2)
 \end{equation}
 
-Now, to reach our destination $(x_3, y_2)$ we have to move in the vertical direction:
+Now, to reach our destination $(x_3, y_2)$ we have to move two steps in the vertical direction:
 
 \begin{equation}
 \begin{split}
@@ -267,7 +263,7 @@ V(x_3, y_2) \approx V(x_0, y_0) + \Delta V(x_1, y_0; x_0, y_0) + \Delta V(x_2, y
 (\#eq:IteratorEx3)
 \end{equation}
 
-Generalizing the previous example we see that, for a generic point $(x_i, y_j)$, we can compute the approximate potential using the closed formula \@ref(eq:NumericalRecipe).
+Generalizing the previous example we see that, for a generic point $(x_i, y_j)$, we can compute the approximate potential using the closed formula \@ref(eq:NumericalRecipe). Formula \@ref(eq:NumericalRecipe) has been derived sweeping first in the horizontal direction and next in the vertical one. Of course, we can choose different paths of summation. Because we are building our potential neglecting the curl part of our vector field, we know that our results will converge to the same solution regardless of the chosen path.
 
 \begin{equation}
 \boxed{
@@ -276,7 +272,14 @@ V(x_i, y_j) = V(x_0, y_0) + \sum_{k = 1}^i \Delta V(x_k, y_0; x_{k-1}, y_0) + \s
 (\#eq:NumericalRecipe)
 \end{equation}
 
-Formula \@ref(eq:NumericalRecipe) has been derived sweeping first in the horizontal direction and next in the vertical one. Of course, we can choose different paths of summation. Because we are building our potential neglecting the curl part of our vector field, we know that our results will converge to the same solution regardless of the chosen path.
+By direct application of equation \@ref(eq:error) we can easily find the relative error at each point of our grid (equation \@ref(eq:2Derror)).
+
+\begin{equation}
+\boxed{
+err(x_i, y_j) = \frac{\mid J_{Skew}(x_i, y_j)\mid}{\mid J_{Symm}(x_i, y_j)\mid + \mid J_{Skew}(x_i, y_j)\mid}
+}
+(\#eq:2Derror)
+\end{equation}
 
 ## Code package
 In the spirit of reproducible research, we published an _R_ package that applies the abovementioned algorithm. It is freely available at: TBA.
