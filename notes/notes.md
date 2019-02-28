@@ -15,3 +15,9 @@
 - Their methods require both simplicity enough to be applicable and mathematical expertise
 - They don't seem to output an associated error
 - Give them credit enough
+
+## Citations
+
+- Relevance of visualization: Edward Tufte
+- https://hanswisbrun.nl/2015/09/14/escher-en-de-buitelende-man/15-1-2/
+- Penrose stairs

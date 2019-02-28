@@ -1,7 +1,7 @@
 ---
 title: "Climbing Escher's ladder, or how to compute stability landscapes for weakly non-gradient systems"
-author: "Pablo Rodríguez-Sánchez, Marten Scheffer & Egbert van Nes"
-abstract: "Stability landscapes are useful tools for understanding dynamical systems. These landscapes are usually derived from differential equations in analogy with the physical concept of potential. Unfortunately, the conditions for those potentials to exist are quite restrictive for systems with two or more state variables. Here we present a numerical method for decomposing differential equations of any size in two terms, one that has an associated potential (the gradient term), and another one that lacks it (the curl term). In regions of the state space where the magnitude of the curl term is small compared to the gradient part, we can still make approximate use of the concept of potential. The curl to gradient ratio can be used as a local measure of the error introduced by our approximation. Both the algorithm and a ready-to-use implementation in the form of an R package are provided."
+author: "Pablo Rodríguez-Sánchez, Egbert van Nes & Marten Scheffer"
+abstract: "Stability landscapes are useful tools for understanding dynamical systems. These landscapes are usually calculated from differential equations in analogy with the physical concept of potential. Unfortunately, the conditions for those potentials to exist are quite restrictive for systems with two or more state variables. Here we present a numerical method for decomposing differential equations of any size in two terms, one that has an associated potential (the gradient term), and another one that lacks it (the curl term). In regions of the state space where the magnitude of the curl term is small compared to the gradient part, we can still make approximate use of the concept of potential. The curl to gradient ratio can be used to estimate the local error introduced by our approximation. Both the algorithm and a ready-to-use implementation in the form of an R package are provided."
 date: "`r Sys.Date()`"
 output:
   bookdown::pdf_book:
@@ -45,11 +45,11 @@ knitr::opts_chunk$set(
 # Introduction
 With knowledge becoming progressively more interdisciplinary, the relevance of science communication is increasing fast. Mathematical concepts are among the hardest topics to communicate to non-expert audiences, policy makers, and also to scientists with little mathematical background. Visual methods are known to be successful ways of explaining mathematical concepts and results to non-specialists.
 
-One particularly successful visualization method is that of the stability landscape, also known as the rolling marble or ball-in-a-cup diagram (@Beisner2003). In stability landscapes (e.g.: figure $\ref{fig:aew}$) the horizontal position of the marble represents the state of the system at a given time. With this picture in mind, the shape of the surface represents the underlying dynamical equations, where the slope is the driver of the movement. The peaks on the undulated surface represent unstable equilibrium states and the wells represent stable equilibria. Different basins of attraction are separated by _mountain ridges_ in the surface. Summarizing: the marble naturally rolls downhill to the lowest point of its basin of attraction. 
+One particularly successful visualization method is that of the stability landscape, also known as the rolling marble or ball-in-a-cup diagram (@Beisner2003). In stability landscapes (e.g.: figure $\ref{fig:aew}$) the position of the marble represents the state of the system at a given time. With this picture in mind, the shape of the surface represents the underlying dynamical rules, where the slope is the driver of the movement. The peaks on the undulated surface represent unstable equilibrium states and the wells represent stable equilibria. Different basins of attraction are separated by _mountain ridges_ in the surface. Summarizing: the marble naturally rolls downhill to the lowest point of its basin of attraction. 
 
-Stability landscapes have proven to be a successful tool to explain aspects about stability of dynamical systems in an intuitive way. Stability landscapes have been used to explain concepts as multistability, basin of attraction and even bifurcation points and hystheresis (see @Beisner2003, @Scheffer2001).
+The main reason for the success of this picture arises from the fact that stability landscapes are built as an analogy with our most familiar dynamical system: movement. Particularly, the movement of a marble along a curved landscape under the influence of its own weight and a strong frictional force. The stability landscape corresponds then with the physical concept of potential energy (@Strogatz1994). This explains why our intuition, based in what we know about movement in our everyday life, works so well reading this diagrams. It is important to stress the fact that under this picture there's not such a thing as inertia (@Beisner2003). The accurate analogy is that of a marble rolling in a surface while submerged inside a very viscous fluid (@Strogatz1994).
 
-The main reason for the success of this picture arises from the fact that stability landscapes are built as an analogy with our most familiar dynamical system: movement. Particularly, the movement of a marble along a curved surface under the influence of its own weight and a strong frictional force. The stability landscape corresponds then with the physical concept of potential energy (@Strogatz1994). This explains why our intuition, based in what we know about movement in our everyday life, works so well reading this diagrams. It is important to stress the fact that under this picture there's not such a thing as inertia (@Beisner2003). The accurate analogy is that of a marble rolling in a surface while submerged inside a very viscous fluid (@Strogatz1994).
+Stability landscapes have proven to be a successful tool to explain advanced concepts related with the stability of dynamical systems in an intuitive way. Some examples of those advanced concepts are multistability, basin of attraction, bifurcation points and hystheresis (see @Scheffer2001, @Beisner2003 and figure $\ref{fig:aew}$).
 
 ```{r aew, fig.cap = '(ref:wur)', fig.align = 'center'}
 knitr::include_graphics('img/sl.jpg')
@@ -63,7 +63,7 @@ Like with any other analogy, it is important to be aware of its limitations. The
 knitr::include_graphics('img/escher.jpg')
 ```
 
-(ref:escher) Detail of M.C. Escher's _Klimmen en dalen_. Lithography, 1960. In this surface, the walkers can walk in a closed loop that permanently goes downhill. Unfortunately, such a surface only exists in the imagination of surrealist artists
+(ref:escher) Detail of M.C. Escher's _Klimmen en dalen_. Lithography, 1960. In this surface, it is possible to walk in a closed loop while permanently going downhill. Unfortunately, such a surface only exists in the imagination of surrealist artists
 
 In this work we present a detailed overview of the conditions that a model has to fulfill to be associated with a potential. Next, we center our attention in systems that fail to fulfill those conditions, and we introduce an algorithm to decompose those systems as the sum of a gradient and a curl part. Each part can be used, respectivelly, to compute an associated potential and to measure the local error introduced by our picture.
 
@@ -87,7 +87,7 @@ Such a potential $V(x,y)$ exists if and only if the crossed derivatives of funct
 (\#eq:2Dcond)
 \end{equation}
 
-If an only if condition \@ref(eq:2Dcond) holds, we can use a line integral (@Marsden2003, section 7.2) to invert \@ref(eq:2D) and calculate $V(x,y)$ using the equations $f(x,y)$ and $g(x,y)$ as an input. An example of this inversion is equation \@ref(eq:2Dint), where we have chosen an integration path composed of a horizontal and a vertical line. The attentive reader may have raised her or his eyebrow after reading the word _chosen_ applied to an integration path. In fact, we can introduce this arbitrary choice without affecting the final result. The condition for potentials to exist (equation \@ref(eq:2Dcond)) is entirelly equivalent (cf. section 7.2 of @Marsden2003) to the path independence of any line integral between two points inside this vector field. If the condition was not fulfilled, the calculated potential will have depended crucially on the chosen integration path. Being an arbitrary choice, the computed potential will have been an artifact with no natural meaning.
+If an only if condition \@ref(eq:2Dcond) holds, we can use a line integral (@Marsden2003, section 7.2) to invert \@ref(eq:2D) and calculate $V(x,y)$ using the functions $f(x,y)$ and $g(x,y)$ as an input. An example of this inversion is equation \@ref(eq:2Dint), where we have chosen an integration path composed of a horizontal and a vertical line. The attentive reader may have raised her or his eyebrow after reading the word _chosen_ applied to an algorithm. In fact, we can introduce this arbitrary choice without affecting the final result. The condition for potentials to exist (equation \@ref(eq:2Dcond)) is entirelly equivalent (cf. section 7.2 of @Marsden2003) to the path independence of any line integral between two points inside this vector field. If the condition was not fulfilled, the calculated potential will have depended crucially on the chosen integration path. Being an arbitrary choice, the computed potential will have been an artifact with no natural meaning.
 
 \begin{equation}
 V(x,y) = V(x_0, y_0) - \int^{x}_{x_0} f(\xi, y_0) d\xi - \int^{y}_{y_0} g(x, \eta) d\eta
@@ -110,7 +110,7 @@ then exists a potential $V(\vec x)$, related to the original vector field by:
 (\#eq:anyD)
 \end{equation}
 
-and such a potential can be computed using:
+and such a potential can be computed using a line integral:
 
 \begin{equation}
 V(\vec x) = V(\vec x_0) - \int_\Gamma \sum_{i=1}^n f_i(\vec x) dx_i
@@ -119,7 +119,7 @@ V(\vec x) = V(\vec x_0) - \int_\Gamma \sum_{i=1}^n f_i(\vec x) dx_i
 
 where the line integral in \@ref(eq:anyDint) is computed along any curve $\Gamma$ joining the points $\vec x_0$ and $\vec x$.
 
-It is important to note that the number of equations ($N$) contained in condition \@ref(eq:anyDcond) grows with the dimensionality of the system ($D$), particularly following the series of triangular numbers $N = \frac{1}{2}(D-1)D$. Thus, the higher the dimensionality, the harder it gets to fulfill condition \@ref(eq:anyDcond). As a side effect, we see that in one-dimensional systems the condition contains $0$ equations and is thus automatically fulfilled, meaning that one-dimensional systems always have a well defined stability landscape.
+It is important to note that the number of equations ($N$) contained in condition \@ref(eq:anyDcond) grows with the dimensionality of the system ($D$), particularly following the series of triangular numbers $N = \frac{1}{2}(D-1)D$. Thus, the higher the dimensionality, the harder it gets to fulfill condition \@ref(eq:anyDcond). As a side effect, we see that one-dimensional systems always have a well defined stability landscape.
 
 # Methods
 The method for deriving a potential we propose is based on the decomposition of a vector field in a conservative or gradient part and a non-conservative or curl part (see equation \@ref(eq:FieldDecomposition)).
@@ -138,7 +138,7 @@ The reader is probably familiar with the concept of linearization, also known as
 (\#eq:TaylorExp)
 \end{equation}
 
-As usual in linearization, we have neglected the terms of order $2$ and higher in equation \@ref(eq:TaylorExp). This approximation is valid for $\vec{x}$ close to $\vec{x_0}$. For an equation like \@ref(eq:TaylorExp), the condition \@ref(eq:anyDcond) becomes a very simple restriction on the jacobian matrix: for the system to be gradient, its jacobian has to be symmetric (see equation \@ref(eq:jaccond), where $t$ represents transposition).
+As usual in linearization, we have neglected the terms of order $2$ and higher in equation \@ref(eq:TaylorExp). This approximation is valid for $\vec{x}$ close to $\vec{x_0}$. For an equation like \@ref(eq:TaylorExp), the condition \@ref(eq:anyDcond) becomes a very simple restriction on the jacobian matrix: for the system to be gradient, its jacobian has to be symmetric (see equation \@ref(eq:jaccond), where $T$ represents transposition).
 
 \begin{equation}
 J = J^T
@@ -341,14 +341,11 @@ The algorithm we present here is an attempt to preserve as much as possible from
 - Integrity. At each step the strength of the curl term is calculated. If this term is high, it is fundamentally impossible to calculate a stability landscape with any method. The relative size of the curl term can be interpreted as an error term, mapping which regions of our stability landscape are dangerous to visit.
 - Speed. The rendering of a printing quality surface can be performed in no more than a few minutes in a personal laptop.
 
-After pointing out all the difficulties of calculating potentials for higher-dimensional systems, maybe it is worth to ask ourselves the question: do we really need them? The concept of potential is paramount in physics. In physics, potentials can be related with measurable concepts like energy, so its use goes way further than visualization. Generic stability landscapes lack this straightforward link with measurable quantities, and in most cases are just no more (and no less) than a visual aid. It may be worth reconsidering why do we prefer the idea of stability landscape over a traditional phase plane figure. It is true that the latter is slightly less intuitive than the stability landscape, but it has a very desirable property: existence under general circumstances.
+After pointing out all the difficulties of calculating potentials for higher-dimensional systems, maybe it is worth to ask ourselves the question: do we really need them? The concept of potential is paramount in physics. Physical potentials can be related with measurable concepts like energy, so its use goes way further than visualization. Generic stability landscapes lack this straightforward link with measurable quantities, and in most cases are just no more (and no less) than a visual aid. It may be worth reconsidering why do we prefer the idea of stability landscape over a traditional phase plane figure. It is true that the latter is slightly less intuitive than the stability landscape, but it has a very desirable property: existence under general circumstances.
 
 \newpage
 
 # Some loose thoughts
-
-## About the R package
-I've implemented the algorithm in Matlab, as part of a suite of visualization tools for dynamical systems I am planning to publish at some point. My plan for this paper is to translate this function alone to _R_ and publish it as a package. The translation should not take much time.
 
 ## Glossary
 I am using as almost synonyms the terms:
@@ -356,29 +353,6 @@ I am using as almost synonyms the terms:
 - Potential (also classical potential and scalar potential)
 - Stability landscape
 - Surface
-
-## About notation
-It will be advisable to follow a consistent notation for vector fields and its analysis in the final version of this document. Here I show a brief summary of the pros and cons of the three of them (see also accompanying figure):
-
-### Explicit notation
-- Focus only on 2D systems. Provided we are focused in visualization, this is not a problem
-- Understandable for readers from different backgrounds
-- The mechanics of the algorithm look less clear
-- Big and (arguably) ugly
-
-### Tensor notation
-- Valid for systems of any size
-- Understandable for readers from different backgrounds
-- The matrix product appears hidden as a sum of products
-- Big and (arguably) ugly
-
-### Vector notation
-- Valid for systems of any size
-- Less understandable for readers from different backgrounds
-- The mechanics of the algorithm are written very clearly
-- Pretty and compact
-
-![Summary of the three possible notations](img/blackboard.png)
 
 ## Why the existence of a potential fails for more than 1 dimension? Alternative approaches
 
