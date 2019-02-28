@@ -82,8 +82,9 @@ This is a gradient system, that can be derived from the potential:
 $$
 V(x,y) = \frac{x^2}{4}(x^2 - 2) + \frac{y^2}{4}(y^2 - 2) + V_0
 $$
+Such a system has four stable equilibria at the corners of a 2 x 2 square (i.e, $(\pm 1, \pm 1)$), and an unstable one at $(0,0)$.
 
-It is important to remember that we'll code the function's input as a vector:
+We build the flow function, not forgetting to write the input as a vector:
 
 ```{r Four-def}
 f <- function(x) {c(-x[1]*(x[1]^2 - 1), 
@@ -108,9 +109,11 @@ result <- approxPot2D(f, xs, ys)
 * `result$V` contains the estimated values of the potentials at each grid point
 * `result$err` contains the estimated error at each grid point
 
+By plotting the field $V$, we can see the potential:
+
 ```{r Four-plot}
 filled.contour(xs, ys, result$V, 
-        color=gray.colors, asp = 1,
+        color = gray.colors, asp = 1,
         main = 'Approximate potential', xlab = 'x', ylab = 'y')
 ```
 
@@ -139,7 +142,10 @@ $$
   \frac{dy}{dt} = g(x,y) = b_y - r_y y + \frac{a_y}{k_y + x^n}
 \end{cases}
 $$
-We can code it in vector form:
+
+This set of equations is, in general, not gradient (because $\frac{\partial f}{\partial y} \neq \frac{\partial g}{\partial x}$). Anyways, we can use the method `approxPot2D` to compute the approximate potential.
+
+First, we define the parameters' values and the flow function:
 
 ```{r Wadd-def}
 # Parameters
@@ -160,9 +166,7 @@ f <- function(x) {c(bx - rx*x[1] + ax/(kx + x[2]^n),
                     by - ry*x[2] + ay/(ky + x[1]^n))}
 ```
 
-This set of equations is, in general, not gradient (because $\frac{\partial f}{\partial y} \neq \frac{\partial g}{\partial x}$). Anyways, we can use the method `approxPot2D` to compute the approximate potential.
-
-First, we need to define our region of interest:
+Secondly, we need to define our region of interest:
 
 ```{r Wadd-points}
 xs <- seq(0, 4, by = 0.05)
@@ -185,7 +189,7 @@ filled.contour(xs, ys, result$V,
 
 ```
 
-Being this not a gradient system it is advisable to plot the estimated error. The areas in green represent small approximation error, so the potential can be safely used in those regions.
+Being this not a gradient system it is advisable to plot the estimated error. The areas in green represent small approximation error, so the previously obtained potential can be safely used in those regions.
 
 ```{r Wadd-err}
 filled.contour(xs, ys, result$err, 
