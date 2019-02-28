@@ -94,32 +94,7 @@ V(x,y) = V(x_0, y_0) - \int^{x}_{x_0} f(\xi, y_0) d\xi - \int^{y}_{y_0} g(x, \et
 (\#eq:2Dint)
 \end{equation}
 
-## Generalization
-
-Dynamics in equation \@ref(eq:2D) and the condition for the crossed derivatives \@ref(eq:2Dcond) can be straightforwardly generalized (see equations \@ref(eq:anyD) and \@ref(eq:anyDcond) to systems with an arbitrary number of state variables $\vec x = (x_1, ..., x_n)$. Particularly, if and only if our system of equations $\frac{dx_i}{dt} = f_i(\vec x)$ satisfies the condition:
-
-\begin{equation}
-  \frac{\partial f_i}{\partial x_j} = \frac{\partial f_j}{\partial x_i} : i \neq j
-(\#eq:anyDcond)
-\end{equation}
-
-then exists a potential $V(\vec x)$, related to the original vector field by:
-
-\begin{equation}
-  \frac{d x_i}{dt} = f_i(\vec x) = -\frac{\partial V}{\partial x_i} : i = 1..n
-(\#eq:anyD)
-\end{equation}
-
-and such a potential can be computed using a line integral:
-
-\begin{equation}
-V(\vec x) = V(\vec x_0) - \int_\Gamma \sum_{i=1}^n f_i(\vec x) dx_i
-(\#eq:anyDint)
-\end{equation}
-
-where the line integral in \@ref(eq:anyDint) is computed along any curve $\Gamma$ joining the points $\vec x_0$ and $\vec x$.
-
-It is important to note that the number of equations ($N$) contained in condition \@ref(eq:anyDcond) grows with the dimensionality of the system ($D$), particularly following the series of triangular numbers $N = \frac{1}{2}(D-1)D$. Thus, the higher the dimensionality, the harder it gets to fulfill condition \@ref(eq:anyDcond). As a side effect, we see that one-dimensional systems always have a well defined stability landscape.
+Those readers interested in systems with 3 or more state variables can find a generalization of these results in section \@ref(generalization-to-an-arbitrary-number-of-dimensions) of the online appendix.
 
 # Methods
 The method for deriving a potential we propose is based on the decomposition of a vector field in a conservative or gradient part and a non-conservative or curl part (see equation \@ref(eq:FieldDecomposition)).
@@ -345,23 +320,59 @@ After pointing out all the difficulties of calculating potentials for higher-dim
 
 \newpage
 
-# Some loose thoughts
+# Online appendix {-}
 
-## Glossary
+\setcounter{equation}{0}
+\setcounter{figure}{0}
+\setcounter{section}{0}
+\setcounter{subsection}{0}
+\renewcommand{\theequation}{A.\arabic{equation}}
+\renewcommand{\thefigure}{A.\arabic{figure}}
+\renewcommand{\thesubsection}{A.\arabic{subsection}}
+
+## Generalization to an arbitrary number of dimensions
+Dynamics in equation \@ref(eq:2D) and the condition for the crossed derivatives \@ref(eq:2Dcond) can be straightforwardly generalized (see equations \@ref(eq:anyD) and \@ref(eq:anyDcond) to systems with an arbitrary number of state variables $\vec x = (x_1, ..., x_n)$. Particularly, if and only if our system of equations $\frac{dx_i}{dt} = f_i(\vec x)$ satisfies the condition:
+
+\begin{equation}
+  \frac{\partial f_i}{\partial x_j} = \frac{\partial f_j}{\partial x_i} : i \neq j
+(\#eq:anyDcond)
+\end{equation}
+
+then exists a potential $V(\vec x)$, related to the original vector field by:
+
+\begin{equation}
+  \frac{d x_i}{dt} = f_i(\vec x) = -\frac{\partial V}{\partial x_i} : i = 1..n
+(\#eq:anyD)
+\end{equation}
+
+and such a potential can be computed using a line integral:
+
+\begin{equation}
+V(\vec x) = V(\vec x_0) - \int_\Gamma \sum_{i=1}^n f_i(\vec x) dx_i
+(\#eq:anyDint)
+\end{equation}
+
+where the line integral in \@ref(eq:anyDint) is computed along any curve $\Gamma$ joining the points $\vec x_0$ and $\vec x$.
+
+It is important to note that the number of equations ($N$) contained in condition \@ref(eq:anyDcond) grows with the dimensionality of the system ($D$), particularly following the series of triangular numbers $N = \frac{1}{2}(D-1)D$. Thus, the higher the dimensionality, the harder it gets to fulfill condition \@ref(eq:anyDcond). As a side effect, we see that one-dimensional systems always have a well defined stability landscape.
+
+## Some loose thoughts
+
+### Glossary
 I am using as almost synonyms the terms:
 
 - Potential (also classical potential and scalar potential)
 - Stability landscape
 - Surface
 
-## Why the existence of a potential fails for more than 1 dimension? Alternative approaches
+### Why the existence of a potential fails for more than 1 dimension? Alternative approaches
 
-### From mechanics
+#### From mechanics
 The perpetual oscillation of a rolling marble while submerged in a very viscous fluid is impossible. This rules out the existence of potentials for systems with cyclic attractors.
 
 Perpetual oscillation is known to be only possible in systems with two or more dimensions (by virtue of the Poincaré-Bendixson theorem (@Strogatz1994)).
 
-### From information theory
+#### From information theory
 If we want to summarize, for instance, a two-dimensional system in a single surface, the height at each point of such a surface should contain the information about the derivatives of both states. That is, one number, height, codes two numbers. The process of computing the surface is a process of information compression, and it is known from mathematics that only gradient fields allow this kind of compression. In one-dimensional systems there is no compression of information (one number, height, corresponds to one number, the derivative of the only state), so this restriction does not apply in the one-dimensional case.
 
 # References
