@@ -94,7 +94,7 @@ V(x,y) = V(x_0, y_0) - \int^{x}_{x_0} f(\xi, y_0) d\xi - \int^{y}_{y_0} g(x, \et
 (\#eq:2Dint)
 \end{equation}
 
-Those readers interested in systems with 3 or more state variables can find a generalization of these results in section \@ref(generalization-to-an-arbitrary-number-of-dimensions) of the online appendix.
+Those readers interested in systems with 3 or more state variables can find a generalization of these results in section \@ref(sec:generalization) of the online appendix.
 
 # Methods
 The method for deriving a potential we propose is based on the decomposition of a vector field in a conservative or gradient part and a non-conservative or curl part (see equation \@ref(eq:FieldDecomposition)).
@@ -330,7 +330,7 @@ After pointing out all the difficulties of calculating potentials for higher-dim
 \renewcommand{\thefigure}{A.\arabic{figure}}
 \renewcommand{\thesubsection}{A.\arabic{subsection}}
 
-## Generalization to an arbitrary number of dimensions
+## Generalization to an arbitrary number of dimensions {#sec:generalization}
 Dynamics in equation \@ref(eq:2D) and the condition for the crossed derivatives \@ref(eq:2Dcond) can be straightforwardly generalized (see equations \@ref(eq:anyD) and \@ref(eq:anyDcond) to systems with an arbitrary number of state variables $\vec x = (x_1, ..., x_n)$. Particularly, if and only if our system of equations $\frac{dx_i}{dt} = f_i(\vec x)$ satisfies the condition:
 
 \begin{equation}
