@@ -1,5 +1,5 @@
 ---
-title: "Climbing Escher's ladder, or how to compute stability landscapes for weakly non-gradient systems"
+title: "Climbing Escher's stairs, or how to estimate stability landscapes for multidimensional deterministic systems"
 author: "Pablo Rodríguez-Sánchez, Egbert van Nes & Marten Scheffer"
 abstract: "Stability landscapes are useful tools for understanding dynamical systems. These landscapes are usually calculated from differential equations in analogy with the physical concept of potential. Unfortunately, the conditions for those potentials to exist are quite restrictive for systems with two or more state variables. Here we present a numerical method for decomposing differential equations of any size in two terms, one that has an associated potential (the gradient term), and another one that lacks it (the curl term). In regions of the state space where the magnitude of the curl term is small compared to the gradient part, we can still make approximate use of the concept of potential. The curl to gradient ratio can be used to estimate the local error introduced by our approximation. Both the algorithm and a ready-to-use implementation in the form of an R package are provided."
 date: "`r Sys.Date()`"
