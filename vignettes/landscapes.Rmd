@@ -88,7 +88,7 @@ Such a potential $V(x,y)$ exists if and only if the crossed derivatives of funct
 (\#eq:2Dcond)
 \end{equation}
 
-If an only if condition \@ref(eq:2Dcond) holds, we can use a line integral (@Marsden2003, section 7.2) to invert \@ref(eq:2D) and calculate $V(x,y)$ using the functions $f(x,y)$ and $g(x,y)$ as an input. An example of this inversion is equation \@ref(eq:2Dint), where we have chosen an integration path composed of a horizontal and a vertical line. The attentive reader may have raised her or his eyebrow after reading the word _chosen_ applied to an algorithm. In fact, we can introduce this arbitrary choice without affecting the final result. The condition for potentials to exist (equation \@ref(eq:2Dcond)) is entirelly equivalent (cf. section 7.2 of @Marsden2003) to the path independence of any line integral between two points inside this vector field. If the condition was not fulfilled, the calculated potential will have depended crucially on the chosen integration path. Being an arbitrary choice, the computed potential will have been an artifact with no natural meaning.
+If condition \@ref(eq:2Dcond) holds, we can use a line integral (@Marsden2003, section 7.2) to invert \@ref(eq:2D) and calculate $V(x,y)$ using the functions $f(x,y)$ and $g(x,y)$ as an input. An example of this inversion is equation \@ref(eq:2Dint), where we have chosen an integration path composed of a horizontal and a vertical line. The attentive reader may have raised her or his eyebrow after reading the word _chosen_ applied to an algorithm. In fact, we can introduce this arbitrary choice without affecting the final result. The condition for potentials to exist (equation \@ref(eq:2Dcond)) is entirelly equivalent (cf. section 7.2 of @Marsden2003) to the path independence of any line integral between two points inside this vector field. If the condition was not fulfilled, the calculated potential will have depended crucially on the chosen integration path. Being an arbitrary choice, the computed potential will have been an artifact with no natural meaning.
 
 \begin{equation}
 V(x,y) = V(x_0, y_0) - \int^{x}_{x_0} f(\xi, y_0) d\xi - \int^{y}_{y_0} g(x, \eta) d\eta
@@ -105,7 +105,7 @@ The method for deriving a potential we propose is based on the decomposition of 
 (\#eq:FieldDecomposition)
 \end{equation}
 
-$\vec f_{grad} (\vec x)$ captures the part of the system that can be associated to a potential function, while $\vec f_{curl} (\vec x)$ represents the deviation from this ideal case. We'll use $\vec f_{gradient} (\vec x)$ to compute an approximate potential. The absolute error of this approach will be given by the euclidean size of the curl term $\mid \vec f_{curl} (\vec x) \mid$. In those regions where the gradient term is stronger than the curl term, the condition \@ref(eq:anyDcond) will be approximately fulfilled, and thus the previously calculated potential will represent an acceptable approximation of the underlying dynamics. The next steps show an easy way of achieving such a decomposition.
+$\vec f_{grad} (\vec x)$ captures the part of the system that can be associated to a potential function, while $\vec f_{curl} (\vec x)$ represents the deviation from this ideal case. We'll use $\vec f_{gradient} (\vec x)$ to compute an approximate potential. The absolute error of this approach will be given by the euclidean size of the curl term $\mid \vec f_{curl} (\vec x) \mid$. In those regions where the gradient term is stronger than the curl term, the condition \@ref(eq:2Dcond) will be approximately fulfilled, and thus the previously calculated potential will represent an acceptable approximation of the underlying dynamics. The next steps show an easy way of achieving such a decomposition.
 
 The reader is probably familiar with the concept of linearization, also known as Taylor expansion. Any sufficiently smooth and continuous vector field $\vec f(\vec x)$ can be approximated around a point $\vec{x_0}$ using equation \@ref(eq:TaylorExp), where $J(\vec{x_0})$ is the jacobian matrix evaluated at the point $\vec{x_0}$ and $\Delta \vec x$ is defined as the distance to this point, that is, $\Delta \vec x = \vec x - \vec{x_0}$, written as a column vector.
 
@@ -114,7 +114,7 @@ The reader is probably familiar with the concept of linearization, also known as
 (\#eq:TaylorExp)
 \end{equation}
 
-As usual in linearization, we have neglected the terms of order $2$ and higher in equation \@ref(eq:TaylorExp). This approximation is valid for $\vec{x}$ close to $\vec{x_0}$. For an equation like \@ref(eq:TaylorExp), the condition \@ref(eq:anyDcond) becomes a very simple restriction on the jacobian matrix: for the system to be gradient, its jacobian has to be symmetric (see equation \@ref(eq:jaccond), where $T$ represents transposition).
+As usual in linearization, we have neglected the terms of order $2$ and higher in equation \@ref(eq:TaylorExp). This approximation is valid for $\vec{x}$ close to $\vec{x_0}$. For an equation like \@ref(eq:TaylorExp), the condition on the crossed derivatives (for 2 dimensions, equation \@ref(eq:2Dcond), for any dimensions, equation \@ref(eq:anyDcond) in online appendix) becomes a very simple restriction on the jacobian matrix: for the system to be gradient, its jacobian has to be symmetric (see equation \@ref(eq:jaccond), where $T$ represents transposition).
 
 \begin{equation}
 J = J^T
@@ -150,7 +150,7 @@ Equation \@ref(eq:TaylorExpDecomposed) represents a natural, well-defined and op
 (\#eq:decomposition)
 \end{equation}
 
-The gradient term can thus be associated to a potential $V(\vec x)$ that can be computed analytically using a line integral (see equation \@ref(eq:anyDint)). The result of this integration yields an analytical expression for the potential difference between the reference point $\vec{x_0}$ and another point $\vec{x_1} \equiv \vec{x_0} + \Delta \vec{x}$ separated by a distance $\Delta \vec x$ (see equation \@ref(eq:Potential)).
+The gradient term can thus be associated to a potential $V(\vec x)$ that can be computed analytically using a line integral (see equation \@ref(eq:2Dint) for the two dimensional case, or \@ref(eq:anyDint) in the online appendix for the general one). The result of this integration yields an analytical expression for the potential difference between the reference point $\vec{x_0}$ and another point $\vec{x_1} \equiv \vec{x_0} + \Delta \vec{x}$ separated by a distance $\Delta \vec x$ (see equation \@ref(eq:Potential)).
 
 \begin{equation}
 \boxed{ 
@@ -159,23 +159,6 @@ The gradient term can thus be associated to a potential $V(\vec x)$ that can be 
 (\#eq:Potential)
 \end{equation}
 
-As with any other approximation we need a way to estimate and control its error. The stability landscape described in \@ref(eq:Potential) has two main sources of errors:
-
-1. It completely neglects the effects of the curl part of the system
-2. It has been derived from a linearized system
-
-From equation \@ref(eq:FieldDecomposition) it is apparent that we can use the euclidean size of $\vec f_{curl} (\vec x)$ as an approximation of the local error introduced by neglecting the curl in our algorithm. The relative error due to this effect can be estimated using equation \@ref(eq:error).
-
-\begin{equation}
-\boxed{
-  err(\vec x) \approx \frac{\mid \vec f_{curl}(\vec x) \mid}{\mid \vec f_{grad}(\vec x) \mid + \mid \vec f_{curl}(\vec x) \mid} = \frac{\mid J_{Skew}(\vec{x}) \mid}{\mid J_{Symm}(\vec{x}) \mid + \mid J_{Skew}(\vec{x}) \mid}
-}
-(\#eq:error)
-\end{equation}
-
-The error due to linearization is roughly proportional to $\mid \Delta \vec{x} \mid^3$ in equation \@ref(eq:Potential), being $\mid \Delta \vec{x} \mid$ the euclidean distance to the reference point. This error can be minimized by using \@ref(eq:Potential) as a recurrence relation, that is, by iterating it in small steps in space. A working algorithm is described in section \@ref(algorithm).
-
-## Numerical algorithm {#algorithm}
 Provided we know the value of the potential at one point $\vec x_{previous}$, equation \@ref(eq:Potential) allows us to estimate the potential at a different point $\vec x_{next}$ (cf.: equation \@ref(eq:Iterator)).
 
 \begin{equation}
@@ -183,16 +166,30 @@ V(\vec x_{next}) \approx V(\vec x_{previous}) + \Delta V(\vec x_{next}, \vec x_{
 (\#eq:Iterator)
 \end{equation}
 
-The abovementioned ideas can be applied to the numerical computation of the approximate potential over a grid of points by following this list of steps (see also sections \@ref(sec:detail) and \@ref(sec:2d-example) in the online appendix):
+Equation \@ref(eq:Iterator) can be applied sequentially over a grid of points to calculate the approximate potential on each of them. In two dimensions, the resulting potential is given by the closed formula \@ref(eq:NumericalRecipe). The cases with 3 and more dimensions can be generalized straightforwardly. For a step by step example, see section \@ref(sec:2d-example) in the online appendix. For a flowchart overview of the algorithm, please refer to section \@ref(sec:detail) in the online appendix:
 
-1. Create a grid in the phase plane $\left\lbrace \vec x_i \right\rbrace$
-2. Calculate the jacobian $J(\vec{x_i})$ in each grid point
-3. Decompose each jacobian in its skew $J_{Skew}(\vec{x_i})$ and symmetric $J_{Symm}(\vec{x_i})$ components
-4. Assign potential 0 to the first point in the grid
-5. Use equation \@ref(eq:Potential) to iterativelly calculate the values of the potential at each point of the grid
-6. Use equation \@ref(eq:error) as a measure of the quality of the approximation point by point.
+\begin{equation}
+\boxed{
+V(x_i, y_j) = V(x_0, y_0) + \sum_{k = 1}^i \Delta V(x_k, y_0; x_{k-1}, y_0) + \sum_{l = 1}^j \Delta V(x_i, y_l; x_i, y_{l-1})
+}
+(\#eq:NumericalRecipe)
+\end{equation}
 
-By introducing a grid, we expect the linearization error to decrease with the grid's step size. The more fundamental error due to ignoring the curl component of our system cannot be affected by the grid's step choice, but the algorithm provides us with a measure of its magnitude point-by-point.
+As with any other approximation we need a way to estimate and control its error. The stability landscape described in \@ref(eq:Potential) has two main sources of errors:
+
+1. It completely neglects the effects of the curl part of the system
+2. It has been derived from a linearized system
+
+The error due to linearization is roughly proportional to $\mid \Delta \vec{x} \mid^3$ in equation \@ref(eq:Potential), being $\mid \Delta \vec{x} \mid$ the euclidean distance to the reference point. By introducing a grid, we expect the linearization error to decrease with the grid's step size.
+
+The more fundamental error due to ignoring the curl component of our system cannot be affected by the grid's step choice. From equation \@ref(eq:FieldDecomposition) it is apparent that we can use the euclidean size of $\vec f_{curl} (\vec x)$ as an approximation of the local error introduced by neglecting the curl in our algorithm. The relative error due to this effect can be estimated using equation \@ref(eq:error).
+
+\begin{equation}
+\boxed{
+  err(\vec x) \approx \frac{\mid \vec f_{curl}(\vec x) \mid}{\mid \vec f_{grad}(\vec x) \mid + \mid \vec f_{curl}(\vec x) \mid} \approx \frac{\mid J_{Skew}(\vec{x}) \mid}{\mid J_{Symm}(\vec{x}) \mid + \mid J_{Skew}(\vec{x}) \mid}
+}
+(\#eq:error)
+\end{equation}
 
 ## Code package
 As an application of the abovementioned ideas, and following the spirit of reproducible research, we developed a robust and easy to use _R_ package we called _consRvative_. Our algorithm accepts a set of dynamical equations and a grid of points defining our region of interest as an input. The output is the estimated potential and the estimated error, both of them calculated at each point of our grid (see figure \@ref(fig:algorithm)).
@@ -254,7 +251,7 @@ The use of stability landscapes as a helping tool to understand one-dimensional 
 
 The method proposed by @Bhattacharya2011, for instance, avoids the problem of path dependence of line integrals by integrating along trajectories. The price paid is that this algorithm cannot guarantee simultaneous continuity at all equilibria and along separatrices for general systems.
 
-A more theoretical review of potential and pseudopotential functions computation, for a mathematically oriented audience, can be found in @Zhou.
+A more theoretical review of potential and pseudopotential computation, for a mathematically oriented audience, can be found in @Zhou.
 
 The algorithm we present here is an attempt to preserve as much as possible from the classical potential theory. Indeed, it calculates the closest classical potential to our problem, and the exact one when it exists. The price we pay is to calculate a potential that, in general, is only locally meaningful. The estimated error lets us know where does this happen. Additionaly, our algorithm provides:
 
@@ -325,45 +322,29 @@ theme(panel.grid.minor.y = element_blank())
 
 In the first step we go from $(x_0, y_0)$ to $(x_1, y_0)$. The new potential is thus (using \@ref(eq:Iterator)):
 
-\begin{equation}
+\begin{equation*}
 V(x_1, y_0) \approx V(x_0, y_0) + \Delta V(x_1, y_0; x_0, y_0)
 (\#eq:IteratorEx1)
-\end{equation}
+\end{equation*}
 
 The next two steps continue in the horizontal direction, all the way to $(x_3, y_0)$. The value of the potential there is:
 
-\begin{equation}
+\begin{equation*}
 V(x_3, y_0) \approx V(x_0, y_0) + \Delta V(x_1, y_0; x_0, y_0) + \Delta V(x_2, y_0; x_1, y_0) + \Delta V(x_3, y_0; x_2, y_0)
 (\#eq:IteratorEx2)
-\end{equation}
+\end{equation*}
 
 Now, to reach our destination $(x_3, y_2)$ we have to move two steps in the vertical direction:
 
-\begin{equation}
+\begin{equation*}
 \begin{split}
 V(x_3, y_2) \approx V(x_0, y_0) + \Delta V(x_1, y_0; x_0, y_0) + \Delta V(x_2, y_0; x_1, y_0) + \Delta V(x_3, y_0; x_2, y_0) + \\
 + \Delta V(x_3, y_1; x_3, y_0) + \Delta V(x_3, y_2; x_3, y_1)
 \end{split}
 (\#eq:IteratorEx3)
-\end{equation}
+\end{equation*}
 
-Generalizing the previous example we see that, for a generic point $(x_i, y_j)$, we can compute the approximate potential using the closed formula \@ref(eq:NumericalRecipe). Formula \@ref(eq:NumericalRecipe) has been derived sweeping first in the horizontal direction and next in the vertical one. Of course, we can choose different paths of summation. Because we are building our potential neglecting the curl part of our vector field, we know that our results will converge to the same solution regardless of the chosen path.
-
-\begin{equation}
-\boxed{
-V(x_i, y_j) = V(x_0, y_0) + \sum_{k = 1}^i \Delta V(x_k, y_0; x_{k-1}, y_0) + \sum_{l = 1}^j \Delta V(x_i, y_l; x_i, y_{l-1})
-}
-(\#eq:NumericalRecipe)
-\end{equation}
-
-By direct application of equation \@ref(eq:error) we can easily find the relative error at each point of our grid (equation \@ref(eq:2Derror)).
-
-\begin{equation}
-\boxed{
-err(x_i, y_j) = \frac{\mid J_{Skew}(x_i, y_j)\mid}{\mid J_{Symm}(x_i, y_j)\mid + \mid J_{Skew}(x_i, y_j)\mid}
-}
-(\#eq:2Derror)
-\end{equation}
+Generalizing the previous example we see that we can compute the approximate potential at a generic point $(x_i, y_j)$ using the closed formula \@ref(eq:NumericalRecipe). Both our example \@ref(eq:IteratorEx3) and formula \@ref(eq:NumericalRecipe) have been derived sweeping first in the horizontal direction and next in the vertical one. Of course, we can choose different paths of summation. Nevertheless, because we are building our potential neglecting the curl part of our vector field, we know that our results will converge to the same solution regardless of the chosen path.
 
 ## Detailed flowchart {#sec:detail}
 Those readers interested in the details of our algorithm may find figure \@ref(fig:detail) illuminating:
@@ -374,7 +355,7 @@ knitr::include_graphics('img/detail.png')
 
 (ref:detail) Detailed flowchart of our algorithm
 
-## Some loose thoughts
+## Notes and loose thoughts
 
 ### Glossary
 I am using as almost synonyms the terms:
