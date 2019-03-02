@@ -14,6 +14,7 @@ output:
     fig_width: 4
     fig_height: 4
     fig_caption: true
+  bookdown::word_document2:
 documentclass: article
 classoption: onecolumn, a4paper
 fontsize: 10pt
@@ -46,11 +47,11 @@ knitr::opts_chunk$set(
 # Introduction
 With knowledge becoming progressively more interdisciplinary, the relevance of science communication is increasing fast. Mathematical concepts are among the hardest topics to communicate to non-expert audiences, policy makers, and also to scientists with little mathematical background. Visual methods are known to be successful ways of explaining mathematical concepts and results to non-specialists.
 
-One particularly successful visualization method is that of the stability landscape, also known as the rolling marble or ball-in-a-cup diagram (@Beisner2003). In stability landscapes (e.g.: figure $\ref{fig:aew}$) the position of the marble represents the state of the system at a given time. With this picture in mind, the shape of the surface represents the underlying dynamical rules, where the slope is the driver of the movement. The peaks on the undulated surface represent unstable equilibrium states and the wells represent stable equilibria. Different basins of attraction are separated by _mountain ridges_ in the surface. Summarizing: the marble naturally rolls downhill to the lowest point of its basin of attraction. 
+One particularly successful visualization method is that of the stability landscape, also known as the rolling marble or ball-in-a-cup diagram (@Beisner2003). In stability landscapes (e.g.: figure \@ref(fig:aew)) the position of the marble represents the state of the system at a given time. With this picture in mind, the shape of the surface represents the underlying dynamical rules, where the slope is the driver of the movement. The peaks on the undulated surface represent unstable equilibrium states and the wells represent stable equilibria. Different basins of attraction are separated by _mountain ridges_ in the surface. Summarizing: the marble naturally rolls downhill to the lowest point of its basin of attraction. 
 
 The main reason for the success of this picture arises from the fact that stability landscapes are built as an analogy with our most familiar dynamical system: movement. Particularly, the movement of a marble along a curved landscape under the influence of its own weight and a strong frictional force. The stability landscape corresponds then with the physical concept of potential energy (@Strogatz1994). This explains why our intuition, based in what we know about movement in our everyday life, works so well reading this diagrams. It is important to stress the fact that under this picture there's not such a thing as inertia (@Beisner2003). The accurate analogy is that of a marble rolling in a surface while submerged inside a very viscous fluid (@Strogatz1994).
 
-Stability landscapes have proven to be a successful tool to explain advanced concepts related with the stability of dynamical systems in an intuitive way. Some examples of those advanced concepts are multistability, basin of attraction, bifurcation points and hystheresis (see @Scheffer2001, @Beisner2003 and figure $\ref{fig:aew}$).
+Stability landscapes have proven to be a successful tool to explain advanced concepts related with the stability of dynamical systems in an intuitive way. Some examples of those advanced concepts are multistability, basin of attraction, bifurcation points and hystheresis (see @Scheffer2001, @Beisner2003 and figure \@ref(fig:aew)).
 
 ```{r aew, fig.cap = '(ref:wur)', fig.align = 'center'}
 knitr::include_graphics('img/sl.jpg')
@@ -205,7 +206,7 @@ The package is tested, documented and freely available at https://github.com/Pab
 # Results
 
 ## A synthetic example
-We tested our algorithm with a synthetic model of two uncoupled state variables each with two attractors. As both states are uncoupled, this system is gradient and has a potential with four wells. We added interaction terms $p_x$ and $p_y$ to be able to make it gradually non-gradient (see equation \@ref(eq:TestField)). When we chose those perturbations to be zero, the system becomes gradient and corresponds with a four-well potential. Our algorithm rendered it succesfully (cf. figure $\ref{fig:synthetic}$, left panel).
+We tested our algorithm with a synthetic model of two uncoupled state variables each with two attractors. As both states are uncoupled, this system is gradient and has a potential with four wells. We added interaction terms $p_x$ and $p_y$ to be able to make it gradually non-gradient (see equation \@ref(eq:TestField)). When we chose those perturbations to be zero, the system becomes gradient and corresponds with a four-well potential. Our algorithm rendered it succesfully (cf. figure @\ref(fig:synthetic), left panel).
 
 \begin{equation}
   \begin{cases}
@@ -215,7 +216,7 @@ We tested our algorithm with a synthetic model of two uncoupled state variables 
 (\#eq:TestField)
 \end{equation}
 
-When non-zero perturbations are introduced a four-well potential is still recognizable (figure $\ref{fig:synthetic}$, central panel). The error obtained correlates with the two perpendicular stripes of the plane $(x,y)$ were we defined the perturbations to be maximum (figure \@ref(fig:synthetic), right panel).
+When non-zero perturbations are introduced a four-well potential is still recognizable (figure \@ref(fig:synthetic), central panel). The error obtained correlates with the two perpendicular stripes of the plane $(x,y)$ were we defined the perturbations to be maximum (figure \@ref(fig:synthetic), right panel).
 
 ```{r synthetic, fig.cap = '(ref:synthetic)', out.width = '450px', fig.align = 'center'}
 knitr::include_graphics('img/synthetic.png')
