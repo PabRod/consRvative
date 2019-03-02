@@ -63,7 +63,7 @@ Like with any other analogy, it is important to be aware of its limitations. The
 knitr::include_graphics('img/penrose.png')
 ```
 
-(ref:penrose) The Penrose stair, a classical example of an impossible object. In this surface, it is possible to walk in a closed loop while permanently going downhill. This kind of surfaces were popularized by the Dutch artist M.C. Escher (for a beautiful example, see @escher).
+(ref:penrose) The Penrose stair, a classical example of an impossible object. In this surface, it is possible to walk in a closed loop while permanently going downhill. This kind of surfaces were popularized by the Dutch artist M.C. Escher (for a beautiful example, see @escher. The same idea is explored in @escher1961).
 
 In this work we present a detailed overview of the conditions that a model has to fulfill to be associated with a potential. Next, we center our attention in systems that fail to fulfill those conditions, and we introduce an algorithm to decompose those systems as the sum of a gradient and a curl part. Each part can be used, respectivelly, to compute an associated potential and to measure the local error introduced by our picture.
 
