@@ -225,7 +225,9 @@ knitr::include_graphics('img/synthetic.png')
 ## A biological example
 
 ### A simple regulatory gene network
-A bistable network model can be described by a set of equations like \@ref(eq:Waddington) (see @Bhattacharya2011).
+Waddington's epigenetic landscapes (@Gilbert1991) are a particular application of stability landscapes to gene regulatory networks controlling cellular differentiation. When applied to this problem, stability/epigenetic landscapes serve as a visual metaphor for the branching pathways of cell fate determination (@Bhattacharya2011).
+
+A bistable network cell fate model can be described by a set of equations like \@ref(eq:Waddington). Such a system represents two genes ($x$ and $y$) that inhibit each other. This circuit works as a toggle switch with two stable steady states, one with dominant $x$, the other with dominant $y$ (see @Bhattacharya2011).
 
 \begin{equation}
   \begin{cases}
