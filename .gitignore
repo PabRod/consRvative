@@ -8,11 +8,10 @@
 *.aux
 *.bbl
 *.bbg
-*.blg
 
-vignettes/*/*/*.pdf
-Rplots.pdf
 vignettes/libs
 playground/
-*_cache/
-assets
+*_files
+*_cache
+vignettes/assets/
+*.blg
