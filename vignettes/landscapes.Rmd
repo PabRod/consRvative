@@ -63,7 +63,7 @@ Like with any other analogy, it is important to be aware of its limitations. The
 knitr::include_graphics('img/penrose.png')
 ```
 
-(ref:penrose) The Penrose stair, a classical example of an impossible object. In this surface, it is possible to walk in a closed loop while permanently going downhill. This kind of surfaces were popularized by the Dutch artist M.C. Escher (for a beautiful example, see @escher. The same idea is explored in @escher1961).
+(ref:penrose) The Penrose stair (@Penrose1958) is a classical example of an impossible object. In such a surface, it is possible to walk in a closed loop while permanently going downhill. This object was popularized by the Dutch artist M.C. Escher (for a beautiful example, see @escher. The same idea is explored in @escher1961).
 
 In this work we present a detailed overview of the conditions that a model has to fulfill to be associated with a potential. Next, we center our attention in systems that fail to fulfill those conditions, and we introduce an algorithm to decompose those systems as the sum of a gradient and a curl part. Each part can be used, respectivelly, to compute an associated potential and to measure the local error introduced by our picture.
 
@@ -176,12 +176,12 @@ V(x_i, y_j) = V(x_0, y_0) + \sum_{k = 1}^i \Delta V(x_k, y_0; x_{k-1}, y_0) + \s
 
 As with any other approximation we need a way to estimate and control its error. The stability landscape described in \@ref(eq:Potential) has two main sources of errors:
 
-1. It completely neglects the effects of the curl part of the system
-2. It has been derived from a linearized system
+1. It has been derived from a linearized system
+2. It completely neglects the effects of the curl part of the system
 
 The error due to linearization is roughly proportional to $\mid \Delta \vec{x} \mid^3$ in equation \@ref(eq:Potential), being $\mid \Delta \vec{x} \mid$ the euclidean distance to the reference point. By introducing a grid, we expect the linearization error to decrease with the grid's step size.
 
-The more fundamental error due to ignoring the curl component of our system cannot be affected by the grid's step choice. From equation \@ref(eq:FieldDecomposition) it is apparent that we can use the euclidean size of $\vec f_{curl} (\vec x)$ as an approximation of the local error introduced by neglecting the curl in our algorithm. The relative error due to this effect can be estimated using equation \@ref(eq:error).
+The more fundamental error due to neglecting the curl component of our system is not affected by the grid's step choice. From equation \@ref(eq:FieldDecomposition) it is apparent that we can use the euclidean size of $\vec f_{curl} (\vec x)$ as an approximation of the local error introduced by our algorithm. The relative error due to this effect can be estimated using equation \@ref(eq:error).
 
 \begin{equation}
 \boxed{
@@ -204,7 +204,7 @@ The package is tested, documented and freely available at https://github.com/Pab
 # Results
 
 ## A synthetic example
-We tested our algorithm with a synthetic model of two uncoupled state variables each with two attractors. As both states are uncoupled, this system is gradient and has a potential with four wells. We added interaction terms $p_x$ and $p_y$ to be able to make it gradually non-gradient (see equation \@ref(eq:TestField)). When we chose those perturbations to be zero, the system becomes gradient and corresponds with a four-well potential. Our algorithm rendered it succesfully (cf. figure @\ref(fig:synthetic), left panel).
+We tested our algorithm with a synthetic model of two uncoupled state variables each with two attractors. As both states are uncoupled, this system is gradient and has a potential with four wells. We added interaction terms $p_x$ and $p_y$ to be able to make it gradually non-gradient (see equation \@ref(eq:TestField)). When we chose those perturbations to be zero, the system becomes gradient and corresponds with a four-well potential. Our algorithm rendered it succesfully (cf. figure \@ref(fig:synthetic), left panel).
 
 \begin{equation}
   \begin{cases}
@@ -254,11 +254,15 @@ A more theoretical review of potential and pseudopotential computation, for a ma
 
 The algorithm we present here is an attempt to preserve as much as possible from the classical potential theory. Indeed, it calculates the closest classical potential to our problem, and the exact one when it exists. The price we pay is to calculate a potential that, in general, is only locally meaningful. The estimated error lets us know where does this happen. Additionaly, our algorithm provides:
 
-- Simplicity. The mathematical background required is covered by any introductory course in vector calculus. Additionally, we provide the algorithm in a ready to use _R_ package.
+- Simplicity. The required mathematical background is covered by any introductory course in linear algebra and vector calculus.
+- Usability. We provide the algorithm in the form of a ready to use, documented and tested _R_ package.
 - Integrity. At each step the strength of the curl term is calculated. If this term is high, it is fundamentally impossible to calculate a stability landscape with any method. The relative size of the curl term can be interpreted as an error term, mapping which regions of our stability landscape are dangerous to visit.
 - Speed. The rendering of a printing quality surface can be performed in no more than a few minutes in a personal laptop.
 
-After pointing out all the difficulties of calculating potentials for higher-dimensional systems, maybe it is worth to ask ourselves the question: do we really need them? The concept of potential is paramount in physics. Physical potentials can be related with measurable concepts like energy, so its use goes way further than visualization. Generic stability landscapes lack this straightforward link with measurable quantities, and in most cases are just no more (and no less) than a visual aid. It may be worth reconsidering why do we prefer the idea of stability landscape over a traditional phase plane figure. It is true that the latter is slightly less intuitive than the stability landscape, but it has a very desirable property: existence under general circumstances.
+After pointing out all the difficulties of calculating potentials for higher-dimensional systems, maybe it is worth to ask ourselves the question: do we really need them? Physical potentials can be related with measurable concepts like energy, so its use in physics goes way further than visualization. On the other hand, generic stability landscapes lack this straightforward link with measurable quantities, and in most cases are just no more (and no less) than a visual aid. It may be worth reconsidering why do we prefer the idea of stability landscape over a traditional phase plane figure. It is true that the latter is slightly less intuitive than the stability landscape, but it has a very desirable property: existence under general circumstances.
+
+## Acknowledgments
+This work was greatly inspired by the dicussions with Cristina Sargent, Iñaki Úcar, Enrique Benito, Tobias Oertel-Jäger, Jelle Lever, and Els Weinans. This work was supported by funding from the European Union's _Horizon 2020_ research and innovation programme for the _ITN CRITICS_ under Grant Agreement Number _643073_.
 
 \newpage
 
