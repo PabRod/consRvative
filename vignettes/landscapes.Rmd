@@ -65,9 +65,9 @@ knitr::include_graphics('img/penrose.png')
 
 (ref:penrose) The Penrose stair (@Penrose1958) is a classical example of an impossible object. In such a surface, it is possible to walk in a closed loop while permanently going downhill. This object was popularized by the Dutch artist M.C. Escher (for a beautiful example, see @escher. The same idea is explored in @escher1961).
 
-In this work we present a detailed overview of the conditions that a model has to fulfill to be associated with a potential. Next, we center our attention in systems that fail to fulfill those conditions, and we introduce an algorithm to decompose those systems as the sum of a gradient and a curl part. Each part can be used, respectivelly, to compute an associated potential and to measure the local error introduced by our picture.
+Being this a centuries-old problem (see for instance @VonHelmholtz1858), several methods have been proposed to estimate stability landscapes for general, high-dimensional systems (for a good review, see @Zhou). Nevertheless, we share the perception with other authors (@Beisner2003) that the concept of potential is often misunderstood in research communities with a limited mathematical background, and that even methods like the ones described in @Zhou are often discarded as "too complicated to implement". 
 
-Additionally, we provide a ready to use _R_ package that implements the algorithm described in the present paper.
+The present work adds one more method to this list. First, we present an overview of the conditions that a model has to fulfill to be robustly associated with a potential. Next, we center our attention in systems that fail to fulfill those conditions, and we introduce an algorithm to decompose them as the sum of a gradient and a non-gradient part. Each part can be used, respectivelly, to compute an associated potential and to measure the local error introduced by our picture. In order to reach those interested readers with little background in mathematics, we voluntarily limited our mathematical weaponry. Knowledge of basic linear algebra and basic vector calculus will suffice to understand the paper to its last detail. Additionally, we provide a ready to use _R_ package that implements the algorithm this paper describes.
 
 ## Mathematical background
 
