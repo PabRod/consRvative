@@ -263,7 +263,7 @@ The algorithm we present here is an attempt to preserve as much as possible from
 
 After pointing out all the difficulties of calculating potentials for higher-dimensional systems, maybe it is worth to ask ourselves the question: do we really need them? Physical potentials can be related with measurable concepts like energy, so its use in physics goes way further than visualization. On the other hand, generic stability landscapes lack this straightforward link with measurable quantities, and in most cases are just no more (and no less) than a visual aid. It may be worth reconsidering why do we prefer the idea of stability landscape over a traditional phase plane figure. It is true that the latter is slightly less intuitive than the stability landscape, but it has a very desirable property: existence under general circumstances.
 
-## Acknowledgments
+# Acknowledgments
 This work was greatly inspired by the dicussions with Cristina Sargent, Iñaki Úcar, Enrique Benito, Tobias Oertel-Jäger, Jelle Lever, and Els Weinans. This work was supported by funding from the European Union's _Horizon 2020_ research and innovation programme for the _ITN CRITICS_ under Grant Agreement Number _643073_.
 
 \newpage
