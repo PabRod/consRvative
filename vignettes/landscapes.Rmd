@@ -57,7 +57,7 @@ knitr::include_graphics('img/sl.jpg')
 
 (ref:wur) Example of a set of 4 stability landscapes from @Scheffer2001. The upper side of the figure shows the stability landscape of a one-dimensional system for 4 different values of a control parameter. The lower side shows the bifurcation diagram. This diagram proved to be a succesful tool for explaining advanced concepts in bifurcation theory such as bistability and fold bifurcations.
 
-Like with any other analogy, it is important to be aware of its limitations. The most important one is the fact that, for models with more than one state variable, such a potential doesn't exist in general. To get an intutive feeling of why this is true, picture a model with a stable cyclic attractor. As the slope of the potential should reflect the speed of change, we would need a potential landscape where our marble can roll in a closed loop while always going downhill. Such a surface is a classical example of an impossible object (see figure \@ref(fig:penrose) and @Penrose1958 for details).
+Like with any other analogy, it is important to be aware of its limitations. The one we address here is the fact that, for models with more than one state variable, such a potential doesn't exist in general. To get an intutive feeling of why this is true, picture a model with a stable cyclic attractor. As the slope of the potential should reflect the speed of change, we would need a potential landscape where our marble can roll in a closed loop while always going downhill. Such a surface is a classical example of an impossible object (see figure \@ref(fig:penrose) and @Penrose1958 for details).
 
 ```{r penrose, fig.cap = '(ref:penrose)', out.width = "250px", fig.align = 'center'}
 knitr::include_graphics('img/penrose.png')
@@ -67,7 +67,7 @@ knitr::include_graphics('img/penrose.png')
 
 Being this a centuries-old problem (see for instance @VonHelmholtz1858), several methods have been proposed to estimate stability landscapes for general, high-dimensional systems. A comprehensive review can be found in @Zhou. Nevertheless, we share the perception with other authors (@Beisner2003) that the concept of potential is often misunderstood in research communities with a limited mathematical background, and that even methods like the ones described in @Zhou are often, and perhaps unfairly discarded as "too complicated to implement". 
 
-The present work adds one more method to this list. First, we present an overview of the conditions that a model has to fulfill to be robustly associated with a potential. Next, we center our attention in systems that fail to fulfill those conditions, and we introduce an algorithm to decompose them as the sum of a gradient and a non-gradient part. Each part can be used, respectivelly, to compute an associated potential and to measure the local error introduced by our picture. In order to reach those interested readers with little background in mathematics, we voluntarily limited our mathematical weaponry. Knowledge of basic linear algebra and basic vector calculus will suffice to understand the paper to its last detail. Additionally, we provide a ready to use _R_ package that implements the algorithm this paper describes.
+Here we review the state of the art, and present a new method to deal with the fundamental problem of approximating stability landscapes for high dimensional systems. First, we present an overview of the conditions that a model has to fulfill to be robustly associated with a potential. Next, we center our attention in systems that fail to fulfill those conditions, and we introduce an algorithm to decompose them as the sum of a gradient and a non-gradient part. Each part can be used, respectivelly, to compute an associated potential and to measure the local error introduced by our picture. In order to reach those interested readers with little background in mathematics, we limited our mathematical weaponry. Knowledge of basic linear algebra and basic vector calculus will suffice to understand the paper to its last detail. Additionally, we provide a ready to use _R_ package that implements the algorithm this paper describes.
 
 ## Mathematical background
 
@@ -191,7 +191,7 @@ The more fundamental error due to neglecting the curl component of our system is
 \end{equation}
 
 ## Code package
-As an application of the abovementioned ideas, and following the spirit of reproducible research, we developed a robust and easy to use _R_ package we called _consRvative_. Our algorithm accepts a set of dynamical equations and a grid of points defining our region of interest as an input. The output is the estimated potential and the estimated error, both of them calculated at each point of our grid (see figure \@ref(fig:algorithm)).
+As an application of the abovementioned ideas, and following the spirit of reproducible research, we developed a transparent _R_ package we called _consRvative_. Our algorithm accepts a set of dynamical equations and a grid of points defining our region of interest as an input. The output is the estimated potential and the estimated error, both of them calculated at each point of our grid (see figure \@ref(fig:algorithm)).
 
 ```{r algorithm, fig.cap = '(ref:algorithm)', fig.align = 'center', fig.pos = 'H'}
 knitr::include_graphics('img/algorithm.png')
@@ -204,7 +204,7 @@ The package is tested, documented and freely available at https://github.com/Pab
 # Results
 
 ## A synthetic example
-We tested our algorithm with a synthetic model of two uncoupled state variables each with two attractors. As both states are uncoupled, this system is gradient and has a potential with four wells. We added interaction terms $p_x$ and $p_y$ to be able to make it gradually non-gradient (see equation \@ref(eq:TestField) and figure \@ref(fig:synthetic)). When we chose those non-gradient interactions to be zero, the system becomes gradient and corresponds with a four-well potential. Our algorithm rendered it succesfully (cf. figure \@ref(fig:synthetic), left panel).
+We first tested our algorithm with a synthetic model of two uncoupled state variables each with two attractors. As both states are uncoupled, this system is gradient and has a potential with four wells. We added interaction terms $p_x$ and $p_y$ to be able to make it gradually non-gradient (see equation \@ref(eq:TestField) and figure \@ref(fig:synthetic)). When we chose those non-gradient interactions to be zero, the system becomes gradient and corresponds with a four-well potential. Our algorithm rendered it succesfully (cf. figure \@ref(fig:synthetic), left panel).
 
 \begin{equation}
   \begin{cases}
@@ -239,7 +239,7 @@ A bistable network cell fate model can be described by a set of equations like \
 
 The parameters used are identical to those in equations 6 and 7 of @Bhattacharya2011, with the exception of $By$ and $foldXY$, that we modified in order to induce an assymetry in the the dynamics (we used $By = 0.05$ and $foldXY = 1.75$).
 
-Despite this system is clearly non-gradient, our algorithm correctly predicts the existence of two wells (see figure \@ref(fig:Waddington)).
+Despite the fact that this system is clearly non-gradient, our algorithm correctly predicts the existence of two wells (see figure \@ref(fig:Waddington)).
 
 ```{r, Waddington, fig.cap = '(ref:waddington)', out.width = '400px', fig.align = 'center'}
 knitr::include_graphics('img/waddington.png')
@@ -252,9 +252,9 @@ The use of stability landscapes as a helping tool to understand one-dimensional 
 
 For instance, the method proposed by @Bhattacharya2011 smartly avoids the problem of path dependence of line integrals by integrating along trajectories, removing thus the freedom of path choice. The price paid is that this algorithm cannot guarantee simultaneous continuity at all equilibria and along separatrices for general systems.
 
-A more theoretical review of pseudopotential computation, for a mathematically oriented audience, can be found in @Zhou. Here, different criterions are used to decompose the dynamics in a scalar potential and an extra term. Unfortunately, our experience is that those methods, despite its obvious quality, have a limited impact outside the physicist community due to their mathematical complexity.
+A more theoretical review of pseudopotential computation, for a mathematically oriented audience, can be found in @Zhou. Here, different criterions are used to decompose the dynamics in a scalar potential and an extra term. Unfortunately, our experience is that those methods, despite their obvious quality, have a limited impact outside the physicist community due to their mathematical complexity.
 
-The algorithm we present here is an attempt to preserve as much as possible from the classical potential theory while keeping the mathematical complexity as low as possible. Indeed, it calculates the closest classical potential to our problem (and thus the exact one in case it exists). The price we pay is to calculate a potential that, in general, is only locally meaningful. The estimated error lets us know where does this happen. Additionaly, our algorithm provides:
+The algorithm we present here is an attempt to preserve as much as possible from the classical potential theory while keeping the mathematical complexity as low as possible. Indeed, it calculates the closest classical potential to our problem (and thus the exact one in case it exists). The price we pay is to calculate a potential that, in general, is only locally meaningful. The estimated error lets us know where this does happen. Additionaly, our algorithm provides:
 
 - Simplicity. The required mathematical background is covered by any introductory course in linear algebra and vector calculus.
 - Usability. We provide the algorithm in the form of a ready to use, documented and tested _R_ package.
