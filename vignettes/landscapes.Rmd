@@ -223,10 +223,104 @@ We first tested our algorithm with a synthetic model of two uncoupled state vari
 After introducing non-gradient interactions a four-well potential is still recognizable (figure \@ref(fig:synthetic), central panel). The error obtained correlates with the two perpendicular stripes of the plane $(x,y)$ were we defined the non-gradient interactions to be maximum (figure \@ref(fig:synthetic), right panel).
 
 ```{r synthetic, fig.cap = '(ref:synthetic)', out.width = '450px', fig.align = 'center'}
-knitr::include_graphics('img/synthetic.png')
+# Dynamics
+f <- function(x) {c(-x[1] * (x[1]^2 - 1), 
+                    -x[2] * (x[2]^2 - 1))}
+
+# Equilibrium points
+eqPoints <- data.frame(x_eq = c(-1, -1, 0, 1, 1), 
+                       y_eq = c(-1, 1, 0, -1, 1), 
+                       equilibrium = factor(c('stable', 'stable', 'unstable', 'stable', 'stable')))
+
+# Region of interest
+xs <- seq(-2, 2, by = 0.05)
+ys <- seq(-2, 2, by = 0.05)
+
+# Calculate potential and error
+result <- approxPot2D(f, xs, ys)
+
+# Transform result into dataframe
+data <- expand.grid(X = xs, Y = ys)
+data$V <- as.vector(result$V)
+data$err <- as.vector(result$err)
+
+# Plot
+breaksV <- c(seq(0, 0.5, by = 0.1), seq(1, 5, by = 0.5))
+nbinsV <- 15
+plotV <- ggplot() +
+          geom_tile(data = data, aes(x = X, y = Y, fill = V)) +
+          geom_contour(data = data, aes(x = X, y = Y, z = V), colour = 'white', alpha = 0.5, breaks = breaksV) +
+          geom_point(data = eqPoints, aes(x = x_eq, y = y_eq, color = equilibrium)) +
+          coord_fixed() +
+          scale_fill_gradientn(colours = colorRamps::matlab.like(nbinsV)) +
+          xlab("x") + ylab("y") + ggtitle("Approximate potential") +
+          theme_bw()
+
+nbinsErr <- 10
+plotErr <- ggplot() +
+          geom_tile(data = data, aes(x = X, y = Y, fill = err)) +
+          geom_point(data = eqPoints, aes(x = x_eq, y = y_eq, color = equilibrium)) +
+          coord_fixed() +
+          scale_fill_gradientn(colours = colorRamps::green2red(nbinsErr), limits = c(0,1)) +
+          xlab("x") + ylab("y") + ggtitle("Error map") +
+          theme_bw()
+
+grid.arrange(plotV, plotErr, ncol = 2)
 ```
 
-(ref:synthetic) In all three figures the red and blue lines represent the nullclines of $x$ and $y$, respectivelly. Several trajectories are plotted in black. The contour plot in figure a) shows the potential calculated for the gradient case (i.e.: $p_x(x,y) = p_y(x,y) = 0$). As expected, the stable equilibria correspond to the wells. The contour plot in figure b) also shows the potential, but now we made $p_x(x,y) = 0.2 y e^{-3^6x^6}$ and $p_y(x,y) = -0.25 x e^{-3^6(y-1)^6}$ in order to introduce a-non gradient interaction term. Defined this way, the non-gradient term will be significantly distinct from zero around the bands centered at $x = 0$ and $y = 1$. It can be noticed that the shape of the potential has been distorted. Notice also that the two equilibria at the upper side of the plot fall slightly outside their closest well. The equilibria at the bottom, to the contrary, fit perfectly centered in their corresponding wells. Figure c) shows the estimated error of our computed potential. As expected, the error is zero everywhere but in the bands centered around $x = 0$ and $y = 1$. This figure warns us against trusting the potential we obtained in the upper and central region, and guarantees us that elsewhere it will work fine. Notice that the two upper equilibria lie in a region where the error is clearly not negligible. The two lower ones, on the contrary, lie on a region where the error is almost zero, so we can safely use the previously derived potential to visualize them. This goes in accordance with our previous observation about the slight mismatch between equilibria and potential wells in the upper part of the figure.
+(ref:synthetic) Results for the gradient case (i.e.: $p_x(x,y) = p_y(x,y) = 0$). In both panels the dots represent equilibrium points. In the left panel we see the potential obtained with our algorithm. The stable equilibria correspond to the bottom of the wells, and the unstable one to the summit between them. The right panel shows the estimated error of our computed potential. As expected, the error is zero everywhere.
+
+```{r synthetic-curl, fig.cap = '(ref:synthetic-curl)', out.width = '450px', fig.align = 'center'}
+# Auxiliary functions
+px <- function(x) { 0.3*x[2]*exp(-3^6*x[1]^6) }
+py <- function(x) {-0.4*x[1]*exp(-3^6*(x[2]-1)^6)}
+
+# Dynamics
+f <- function(x) {c(-x[1] * (x[1]^2 - 1) + px(x), 
+                    -x[2] * (x[2]^2 - 1) + py(x))}
+# Equilibrium points
+eqPoints <- data.frame(x_eq = c(0), 
+                       y_eq = c(0), 
+                       equilibrium = factor(c('unstable')))
+
+# Region of interest
+xs <- seq(-2, 2, by = 0.05)
+ys <- seq(-2, 2, by = 0.05)
+
+# Calculate potential and error
+result <- approxPot2D(f, xs, ys)
+
+# Transform result into dataframe
+data <- expand.grid(X = xs, Y = ys)
+data$V <- as.vector(result$V)
+data$err <- as.vector(result$err)
+
+# Plot
+breaksV <- c(seq(0, 1, by = 0.1), seq(1.5, 5, by = 0.5))
+nbinsV <- 15
+plotV <- ggplot() +
+          geom_tile(data = data, aes(x = X, y = Y, fill = V)) +
+          geom_contour(data = data, aes(x = X, y = Y, z = V), colour = 'white', alpha = 0.5, breaks = breaksV) +
+          #geom_point(data = eqPoints, aes(x = x_eq, y = y_eq, color = equilibrium)) +
+          coord_fixed() +
+          scale_fill_gradientn(colours = colorRamps::matlab.like(nbinsV)) +
+          xlab("x") + ylab("y") + ggtitle("Approximate potential") +
+          theme_bw()
+
+nbinsErr <- 10
+plotErr <- ggplot() +
+          geom_tile(data = data, aes(x = X, y = Y, fill = err)) +
+          #geom_point(data = eqPoints, aes(x = x_eq, y = y_eq, color = equilibrium)) +
+          geom_contour(data = data, aes(x = X, y = Y, z = err), colour = 'white', alpha = 0.5, bins = nbinsErr) +
+          coord_fixed() +
+          scale_fill_gradientn(colours = colorRamps::green2red(nbinsErr), limits = c(0,1)) +
+          xlab("x") + ylab("y") + ggtitle("Error map") +
+          theme_bw()
+
+grid.arrange(plotV, plotErr, ncol = 2)
+```
+
+(ref:synthetic-curl) Results for a non-gradient case ($p_x(x,y) = 0.3 y e^{-3^6x^6}$ and $p_y(x,y) = -0.4 x e^{-3^6(y-1)^6}$). Defined this way, the non-gradient term will be significantly distinct from zero around the bands centered at $x = 0$ and $y = 1$. The left panel shows the obtained pseudopotential. It can be noticed that the shape of the potential has been distorted, but four wells are still recognizable. Notice also that the two equilibria at the upper side of the plot fall slightly outside their closest well. The equilibria at the bottom, to the contrary, fit perfectly centered in their corresponding wells. The right panel shows the estimated error. As expected, the error is zero everywhere but in the bands centered around $x = 0$ and $y = 1$. This figure warns us against trusting the potential we obtained in the upper and central region, and guarantees us that elsewhere it will work fine. Notice that the two upper equilibria lie in a region where the error is clearly not negligible. The two lower ones, on the contrary, lie on a region where the error is almost zero, so we can safely use the previously derived potential to visualize them. This goes in accordance with our previous observation about the slight mismatch between equilibria and potential wells in the upper part of the figure.
 
 ## A biological example
 
