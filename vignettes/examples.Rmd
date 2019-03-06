@@ -13,9 +13,6 @@ vignette: >
 
 ```{r setup, echo = FALSE, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-
-library(consRvative)
-library(latticeExtra)
 ```
 
 ```{r logo, echo=FALSE, fig.height=8.5, fig.pos="H", fig.align='center'}
@@ -30,6 +27,25 @@ devtools::install_github("PabRod/consRvative", ref = "develop")
 ```
 
 in your _R_ console.
+
+## Libraries
+
+In this vignette we will use the following libraries:
+
+```{r libraries, echo=TRUE, message=FALSE}
+library(consRvative)
+
+# To calculate some trajectories
+library(deSolve)
+
+# To plot our results
+library(ggplot2)
+
+# To arrange our plots in panels
+library(latticeExtra) 
+library(gridExtra)
+
+```
 
 # One dimensional examples
 
@@ -70,8 +86,13 @@ plot(xs, Vs,
 ```
 
 # Two dimensional examples
+In this section we'll apply our method to a collection two dimensional systems.
 
-## Four well potential
+## Synthetic examples
+
+We generated some abstract, synthetic examples in order to test our method. Here we present some of them. 
+
+### A gradient system: the four well potential
 In this section we'll deal with the two-dimensional differential equation given by:
 
 $$
@@ -81,14 +102,13 @@ $$
 \end{cases}
 $$
 
-This is a gradient system, that can be derived from the potential:
+This is a gradient system (because $\frac{\partial f}{\partial x} = \frac{\partial g}{\partial y}$ everywhere). This means that the gradient - curl decomposition will have zero curl term everywhere and, thus, there exists a well defined potential. Particularly, the potential can be analytically proven to be:
 
 $$
 V(x,y) = \frac{x^2}{4}(x^2 - 2) + \frac{y^2}{4}(y^2 - 2) + V_0
 $$
-Such a system has four stable equilibria at the corners of a 2 x 2 square (i.e, $(\pm 1, \pm 1)$), and an unstable one at $(0,0)$.
 
-We build the flow function, not forgetting to write the input as a vector:
+Let's try to compute it using our algorithm. First, we'll code our function as a vector:
 
 ```{r Four-def}
 f <- function(x) {c(-x[1]*(x[1]^2 - 1), 
@@ -98,8 +118,8 @@ f <- function(x) {c(-x[1]*(x[1]^2 - 1),
 Our region of interest is now two-dimensional. We need, thus, two vectors to create our grid of points:
 
 ```{r Four-points}
-xs <- seq(-1.5, 1.5, by = 0.05)
-ys <- seq(-1.5, 1.5, by = 0.05)
+xs <- seq(-1.5, 1.5, by = 0.025)
+ys <- seq(-1.5, 1.5, by = 0.025)
 ```
 
 Now we are ready to apply `approxPot2D`:
@@ -108,37 +128,132 @@ Now we are ready to apply `approxPot2D`:
 result <- approxPot2D(f, xs, ys)
 ```
 
+```{r Four-extra, include=FALSE}
+# Transform result into dataframe
+data <- expand.grid(X = xs, Y = ys)
+data$V <- as.vector(result$V)
+data$err <- as.vector(result$err)
+
+# Input equilibrium points (calculated externally)
+eqPoints <- data.frame(x_eq = c(-1, -1, 0, 1, 1), 
+                       y_eq = c(-1, 1, 0, -1, 1), 
+                       equilibrium = factor(c('stable', 'stable', 'unstable', 'stable', 'stable')))
+```
+
 `result` is a list that contains two fields:
 
 * `result$V` contains the estimated values of the potentials at each grid point
 * `result$err` contains the estimated error at each grid point
 
-By plotting the field $V$, we can see the potential:
+By plotting them we see:
 
-```{r Four-plot}
-filled.contour(xs, ys, result$V, 
-        color = gray.colors, asp = 1,
-        main = 'Approximate potential', xlab = 'x', ylab = 'y')
+```{r Four-plot, echo=FALSE, message=FALSE, warning=FALSE}
+nbins <- 15
+
+plotV <- ggplot() +
+          geom_tile(data = data, aes(x = X, y = Y, fill = V)) +
+          geom_contour(data = data, aes(x = X, y = Y, z = V), colour = 'white', alpha = 0.5, bins = nbins) +
+          geom_point(data = eqPoints, aes(x = x_eq, y = y_eq, color = equilibrium)) +
+          coord_fixed() +
+          scale_fill_gradientn(colours = colorRamps::matlab.like(nbins)) +
+          xlab("x") + ylab("y") + ggtitle("Approximate potential") +
+          theme_bw()
+
+plotErr <- ggplot() +
+          geom_tile(data = data, aes(x = X, y = Y, fill = err)) +
+          # geom_contour(data = data, aes(x = X, y = Y, z = err), colour = 'white', alpha = 0.5, bins = nbins) +
+          geom_point(data = eqPoints, aes(x = x_eq, y = y_eq, color = equilibrium)) +
+          coord_fixed() +
+          scale_fill_gradientn(colours = colorRamps::green2red(nbins), limits = c(0,1)) +
+          xlab("x") + ylab("y") + ggtitle("Error map") +
+          theme_bw()
+
+grid.arrange(plotV, plotErr, ncol = 2)
 ```
 
-```{r Four-plot-lattice, echo = FALSE, eval = FALSE}
-data <- expand.grid(xs, ys)
-data$Z <- c(result$V)
-names(data) <- c('X', 'Y', 'Z')
+Provided our example is a purely gradient system, it should not surprise us that the error is zero everywhere.
 
-levelplot(Z  ~ X*Y, data = data, 
-          contour = TRUE, col.regions = gray.colors, asp = 1,
-          xlab = 'x', ylab = 'y', main = 'Approximate potential')
+```{r Four-check}
+max(result$err) == 0
 ```
 
-Provided our example is a gradient system, we expect our approximation error to be zero everywhere.
+### A non-gradient system
+In this example we will apply our algorithm to the system given below:
 
-```{r Four-error}
-max(result$err)
+$$
+\begin{cases}
+  \frac{dx}{dt} = f(x,y) = -y \\
+  \frac{dy}{dt} = g(x,y) = x
+\end{cases}
+$$
+This is an extreme case. The gradient - curl decomposition will give us zero gradient part everywhere. Let's feed our algorithm with these example to see what happens:
+
+First, we code the dynamics in vector form:
+
+```{r Curl-def}
+f <- function(x) {c(-x[2], 
+                    x[1])}
 ```
 
-## Simple regulatory gene network
-A bistable network model can be described by a set of equations of the form:
+Secondly, we define our region of interest:
+
+```{r Curl-points}
+xs <- seq(-2, 2, by = 0.05)
+ys <- seq(-2, 2, by = 0.05)
+```
+
+And then we are ready to apply our algorithm:
+
+```{r Curl-algorithm, cache = TRUE}
+result <- approxPot2D(f, xs, ys)
+```
+
+```{r Curl-extra, include=FALSE}
+# Transform result into dataframe
+data <- expand.grid(X = xs, Y = ys)
+data$V <- as.vector(result$V)
+data$err <- as.vector(result$err)
+
+# Input equilibrium points (calculated externally)
+eqPoints <- data.frame(x_eq = c(0), 
+                       y_eq = c(0), 
+                       equilibrium = factor(c('unstable')))
+```
+
+The resulting approximate potential is plotted below. Being this a purely non-gradient system we expect our pseudopotential to not be trustworthy. By calculating the error we can see that actually that's the case.
+
+```{r Curl-plot, echo=FALSE, message=FALSE, warning=FALSE}
+nbins <- 15
+
+plotV <- ggplot() +
+          geom_tile(data = data, aes(x = X, y = Y, fill = V)) +
+          geom_contour(data = data, aes(x = X, y = Y, z = V), colour = 'white', alpha = 0.5, bins = nbins) +
+          geom_point(data = eqPoints, aes(x = x_eq, y = y_eq, color = equilibrium)) +
+          coord_fixed() +
+          scale_fill_gradientn(colours = colorRamps::matlab.like(nbins)) +
+          xlab("x") + ylab("y") + ggtitle("Approximate potential") +
+          theme_bw()
+
+plotErr <- ggplot() +
+          geom_tile(data = data, aes(x = X, y = Y, fill = err)) +
+          # geom_contour(data = data, aes(x = X, y = Y, z = err), colour = 'white', alpha = 0.5, bins = nbins) +
+          geom_point(data = eqPoints, aes(x = x_eq, y = y_eq, color = equilibrium)) +
+          coord_fixed() +
+          scale_fill_gradientn(colours = colorRamps::green2red(nbins), limits = c(0,1)) +
+          xlab("x") + ylab("y") + ggtitle("Error map") +
+          theme_bw()
+
+grid.arrange(plotV, plotErr, ncol = 2)
+```
+
+The fact that the underlying equations are non-gradient has been captured by the algorithm.
+
+## Biological examples
+
+Here we apply our methods to some dynamical equations well known in biology. While the abstract equations in the previous sections can be manipulated to increase or decrease their curl to gradient ratio, equations describing natural dynamical systems don't allow such a manipulation. Once again, the error map will let us know if our system allows a pseudopotential or not.
+
+### Simple regulatory gene network
+A bistable network cell fate model can be described by the set of equations:
 
 $$
 \begin{cases}
@@ -147,9 +262,9 @@ $$
 \end{cases}
 $$
 
-This set of equations is, in general, not gradient (because $\frac{\partial f}{\partial y} \neq \frac{\partial g}{\partial x}$). Anyways, we can use the method `approxPot2D` to compute the approximate potential.
+Such a system represents two genes ($x$ and $y$) that inhibit each other. This circuit works as a toggle switch with two stable steady states, one with dominant $x$ , the other with dominant $y$.
 
-First, we define the parameters' values and the flow function:
+We can code it in vector form:
 
 ```{r Wadd-def}
 # Parameters
@@ -170,7 +285,9 @@ f <- function(x) {c(bx - rx*x[1] + ax/(kx + x[2]^n),
                     by - ry*x[2] + ay/(ky + x[1]^n))}
 ```
 
-Secondly, we need to define our region of interest:
+This set of equations is, in general, not gradient (because $\frac{\partial f}{\partial y} \neq \frac{\partial g}{\partial x}$). Anyways, we can use the method `approxPot2D` to compute the approximate potential.
+
+First, we need to define our region of interest:
 
 ```{r Wadd-points}
 xs <- seq(0, 4, by = 0.05)
@@ -183,21 +300,173 @@ And then we are ready to apply our algorithm:
 result <- approxPot2D(f, xs, ys)
 ```
 
-The resulting approximate potential looks like:
+```{r Wadd-extra, include=FALSE}
+# Transform result into dataframe
+data <- expand.grid(X = xs, Y = ys)
+data$V <- as.vector(result$V)
+data$err <- as.vector(result$err)
 
-```{r Wadd-plot}
-filled.contour(xs, ys, result$V, 
-        color = colorRamps::matlab.like, asp = 1,
-        levels = seq(0, 8, by = 0.1),
-        main = 'Approximate potential', xlab = 'x', ylab = 'y')
+# Input equilibrium points (calculated externally)
+#
+# Estimated with Wolfram Alpha
+# Prompt: 0 = 0.2 - x + 0.125/(0.0625 + y^4); 0 = 0.05 - y + 0.1094/(0.0625 + x^4)
+eqPoints <- data.frame(x_eq = c(0.213416, 0.559865, 2.19971),
+                       y_eq = c(1.74417, 0.730558, 0.0546602), 
+                       equilibrium = factor(c('stable', 'unstable', 'stable')))
+```
+
+The resulting approximate potential is plotted below. Being this not a gradient system it is advisable to plot also the estimated error. The areas in green represent small approximation error, so the potential can be safely used in those regions.
+
+```{r Wadd-plot, echo=FALSE, message=FALSE, warning=FALSE}
+nbins <- 15
+
+plotV <- ggplot() +
+          geom_tile(data = data, aes(x = X, y = Y, fill = V)) +
+          geom_contour(data = data, aes(x = X, y = Y, z = V), colour = 'white', alpha = 0.5, bins = nbins) +
+          geom_point(data = eqPoints, aes(x = x_eq, y = y_eq, color = equilibrium)) +
+          coord_fixed() +
+          scale_fill_gradientn(colours = colorRamps::matlab.like(nbins)) +
+          xlab("x") + ylab("y") + ggtitle("Approximate potential") +
+          theme_bw()
+
+plotErr <- ggplot() +
+          geom_tile(data = data, aes(x = X, y = Y, fill = err)) +
+          geom_contour(data = data, aes(x = X, y = Y, z = err), colour = 'white', alpha = 0.5, bins = nbins) +
+          geom_point(data = eqPoints, aes(x = x_eq, y = y_eq, color = equilibrium)) +
+          coord_fixed() +
+          scale_fill_gradientn(colours = colorRamps::green2red(nbins), limits = c(0,1)) +
+          xlab("x") + ylab("y") + ggtitle("Error map") +
+          theme_bw()
+
+grid.arrange(plotV, plotErr, ncol = 2)
 
 ```
 
-Being this not a gradient system it is advisable to plot the estimated error. The areas in green represent small approximation error, so the previously obtained potential can be safely used in those regions.
+### Lotka-Volterra predator prey dynamics
+Here we will use a variation of the classical Lotka-Volterra predator prey model. Particularly, the Rosenzweig-MacArthur model, that adds a function $g$ accounting for predator saturation and a carrying capacity $k$ to the prey growth.
 
-```{r Wadd-err}
-filled.contour(xs, ys, result$err, 
-        color = colorRamps::green2red, asp = 1,
-        main = 'Approximation error', xlab = 'x', ylab = 'y')
+The dynamics, being $x$ the prey biomass and $y$ the predator biomass, look like:
+
+$$
+\begin{cases}
+  \frac{dx}{dt} = f(x,y) = r x (1 - \frac{x}{k}) - g(x) x y \\
+  \frac{dy}{dt} = g(x,y) = e g(x) x y - m y
+\end{cases}
+$$
+
+with $g(x)$ being a saturation function:
+
+$$
+g(x) = \frac{1}{h + x}
+$$
+
+We can code it in vector form:
+
+```{r VL-def}
+# Parameters
+r <- 1
+k <- 10
+h <- 2
+e <- 0.2
+m <- 0.1
+
+# Auxiliary function
+g <- function(x) {1/(h + x)}
+
+# Dynamics
+f <- function(x) {c(r*x[1]*(1 - x[1]/k) -g(x[1])*x[1]*x[2], 
+                    e*g(x[1])*x[1]*x[2] - m*x[2])}
+
 ```
 
+Such a system has a limit cycle attractor, as we can see simulating one of its trajectories (particularly, the one beginning at $x = 1$ and $y = 2$):
+
+```{r VL-solution, echo = FALSE}
+# Package desolve requires a slightly different syntax
+f_dyn <- function(t, state, parameters) {
+with(as.list(c(state, parameters)),{
+# rate of change
+  df <- f(state)
+  dX <- df[1]
+  dY <- df[2]
+
+# return the rate of change
+list(c(dX, dY))
+}) # end with(as.list ...
+}
+
+parms <- c(r =r,
+  k = k,
+  h = h,
+  e = e,
+  m = m)
+
+init_state <- c(1,2)
+ts <- seq(0, 300, by = 0.01)
+out <- ode(y = init_state, times = ts, func = f_dyn, parms = parms)
+
+colnames(out) <- c("time", "x", "y")
+out <- as.data.frame(out)
+
+plot(out$x, out$y, type = 'l', asp = 1, 
+     main = 'Trajectory', xlab = 'x (prey biomass)', ylab = 'y (predator biomass)')
+
+
+```
+
+For such a system, we expect our pseudopotential to have a high error over large portions of the phase plane. Let's check it. First, we need to define our region of interest:
+
+```{r VL-points}
+xs <- seq(0, 10, by = 0.05)
+ys <- seq(0, 5, by = 0.05)
+```
+
+And then we are ready to apply our algorithm:
+
+```{r VL-algorithm, cache = TRUE}
+result <- approxPot2D(f, xs, ys)
+```
+
+```{r VL-extra, echo = FALSE}
+# Get the limit cycle attractor
+attr <- dplyr::filter(as.data.frame(out), time > 200)
+
+# Transform result into dataframe
+data <- expand.grid(X = xs, Y = ys)
+data$V <- as.vector(result$V)
+data$err <- as.vector(result$err)
+
+# Input equilibrium points (calculated externally)
+eqPoints <- data.frame(x_eq = c(0),
+                       y_eq = c(0), 
+                       equilibrium = factor(c('unstable')))
+
+```
+
+Even for highly non-gradient systems, our method will compute some pseudopotential. By plotting the estimated error, we can see that it is high almost everywhere. This means that our algorithm noticed that the system is highly non-gradient, and thus, the previously computed pseudopotential is of very limited use.
+
+```{r VL-plot, echo=FALSE, message=FALSE, warning=FALSE}
+nbins <- 15
+
+plotV <- ggplot() +
+          geom_tile(data = data, aes(x = X, y = Y, fill = V)) +
+          geom_contour(data = data, aes(x = X, y = Y, z = V), colour = 'white', alpha = 0.5, bins = nbins) +
+          geom_point(data = eqPoints, aes(x = x_eq, y = y_eq, color = equilibrium)) +
+          geom_path(data = attr, aes(x = x, y = y)) +
+          coord_fixed() +
+          scale_fill_gradientn(colours = colorRamps::matlab.like(nbins)) +
+          xlab("x") + ylab("y") + ggtitle("Approximate potential") +
+          theme_bw()
+
+plotErr <- ggplot() +
+          geom_tile(data = data, aes(x = X, y = Y, fill = err)) +
+          geom_contour(data = data, aes(x = X, y = Y, z = err), colour = 'white', alpha = 0.5, bins = nbins) +
+          geom_point(data = eqPoints, aes(x = x_eq, y = y_eq, color = equilibrium)) +
+          geom_path(data = attr, aes(x = x, y = y)) +
+          coord_fixed() +
+          scale_fill_gradientn(colours = colorRamps::green2red(nbins), limits = c(0,1)) +
+          xlab("x") + ylab("y") + ggtitle("Error map") +
+          theme_bw()
+
+grid.arrange(plotV, plotErr, ncol = 2)
+```
