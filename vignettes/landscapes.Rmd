@@ -42,6 +42,12 @@ knitr::opts_chunk$set(
 )
 ```
 
+```{r Libraries, include = FALSE}
+library(consRvative)
+library(ggplot2)
+library(gridExtra)
+```
+
 # Introduction
 With knowledge becoming progressively more interdisciplinary, the relevance of science communication is increasing fast. Mathematical concepts are among the hardest topics to communicate to non-expert audiences, policy makers, and also to scientists with little mathematical background. Visual methods are known to be successful ways of explaining mathematical concepts and results to non-specialists.
 
@@ -242,10 +248,70 @@ The parameters used are identical to those in equations 6 and 7 of @Bhattacharya
 Despite the fact that this system is clearly non-gradient, our algorithm correctly predicts the existence of two wells (see figure \@ref(fig:Waddington)).
 
 ```{r, Waddington, fig.cap = '(ref:waddington)', out.width = '400px', fig.align = 'center'}
-knitr::include_graphics('img/waddington.png')
+# Parameters
+bx <- 0.2
+ax <- 0.125
+kx <- 0.0625
+rx <- 1
+
+by <- 0.05
+ay <- 0.1094
+ky <- 0.0625
+ry <- 1
+
+n <- 4
+
+# Dynamics
+f <- function(x) {c(bx - rx*x[1] + ax/(kx + x[2]^n), 
+                    by - ry*x[2] + ay/(ky + x[1]^n))}
+
+# Input equilibrium points (calculated externally)
+#
+# Estimated with Wolfram Alpha
+# Prompt: 0 = 0.2 - x + 0.125/(0.0625 + y^4); 0 = 0.05 - y + 0.1094/(0.0625 + x^4)
+eqPoints <- data.frame(x_eq = c(0.213416, 0.559865, 2.19971),
+                       y_eq = c(1.74417, 0.730558, 0.0546602), 
+                       equilibrium = factor(c('stable', 'unstable', 'stable')))
+
+# Region of interest
+xs <- seq(0, 4, by = 0.05)
+ys <- seq(0, 4, by = 0.05)
+
+# Calculate potential and error
+result <- approxPot2D(f, xs, ys)
+
+# Transform result into dataframe
+data <- expand.grid(X = xs, Y = ys)
+data$V <- as.vector(result$V)
+data$err <- as.vector(result$err)
+
+# Plot
+breaksV <- c(seq(0, 2, by = 0.2), seq(2.5, 10, by = 1))
+nbinsV <- 15
+plotV <- ggplot() +
+          geom_tile(data = data, aes(x = X, y = Y, fill = V)) +
+          geom_contour(data = data, aes(x = X, y = Y, z = V), colour = 'white', alpha = 0.5, breaks = breaksV) +
+          geom_point(data = eqPoints, aes(x = x_eq, y = y_eq, color = equilibrium)) +
+          coord_fixed() +
+          scale_fill_gradientn(colours = colorRamps::matlab.like(nbinsV)) +
+          xlab("x") + ylab("y") + ggtitle("Approximate potential") +
+          theme_bw()
+
+nbinsErr <- 10
+plotErr <- ggplot() +
+          geom_tile(data = data, aes(x = X, y = Y, fill = err)) +
+          geom_contour(data = data, aes(x = X, y = Y, z = err), colour = 'white', alpha = 0.5, bins = nbinsErr) +
+          geom_point(data = eqPoints, aes(x = x_eq, y = y_eq, color = equilibrium)) +
+          coord_fixed() +
+          scale_fill_gradientn(colours = colorRamps::green2red(nbinsErr), limits = c(0,1)) +
+          xlab("x") + ylab("y") + ggtitle("Error map") +
+          theme_bw()
+
+grid.arrange(plotV, plotErr, ncol = 2)
+
 ```
 
-(ref:waddington) In both figures the red and blue lines represent the nullclines of $x$ and $y$, respectivelly. Several trajectories are plotted in black. The contour plot in figure a) shows the potential calculated for the simple gene regulatory network described in equation \@ref(eq:Waddington). The stable equilibria correspond to the wells. Figure b) shows the estimated error of our computed potential.
+(ref:waddington) In both figures the dots represent the equilibrium points of the system. The contour plot in left panel shows the potential calculated for the simple gene regulatory network described in equation \@ref(eq:Waddington). The right panel shows the estimated error of our computed potential. The stable equilibria correspond to the wells.
 
 # Discussion
 The use of stability landscapes as a helping tool to understand one-dimensional dynamical systems achieved great success, specially in interdisciplinary research communities. A generalization of the idea of scalar potential to two-dimensional systems seemed to be a logical next step. Unfortunately, as we have seen, there are reasons that make two (and higher) dimensional systems fundamentally different from the one-dimensional case. The generalization, straightforward as it may look, is actually impossible for most dynamical equations. As a consequence, any attempt of computing stability landscapes for high-dimensional systems should, neccessarily, drop some desirable properties of classical scalar potentials.
