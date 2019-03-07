@@ -38,7 +38,8 @@ knitr::opts_chunk$set(
   echo = FALSE,
   warning = FALSE,
   message = FALSE,
-  comment = "#>"
+  comment = "#>",
+  fig.pos = "H"
 )
 ```
 
@@ -46,6 +47,8 @@ knitr::opts_chunk$set(
 library(consRvative)
 library(ggplot2)
 library(gridExtra)
+library(deSolve)
+library(rootSolve)
 ```
 
 # Introduction
@@ -209,8 +212,10 @@ The package is tested, documented and freely available at https://github.com/Pab
 
 # Results
 
-## A synthetic example
-We first tested our algorithm with a synthetic model of two uncoupled state variables each with two attractors. As both states are uncoupled, this system is gradient and has a potential with four wells. We added interaction terms $p_x$ and $p_y$ to be able to make it gradually non-gradient (see equation \@ref(eq:TestField) and figure \@ref(fig:synthetic)). When we chose those non-gradient interactions to be zero, the system becomes gradient and corresponds with a four-well potential. Our algorithm rendered it succesfully (cf. figure \@ref(fig:synthetic), left panel).
+## Synthetic examples
+
+### A four well potential
+We first tested our algorithm with a synthetic model of two uncoupled state variables, each with two attractors. As both states are uncoupled, this system is gradient and has a potential with four wells. We added interaction terms $p_x$ and $p_y$ to be able to make it gradually non-gradient (see equation \@ref(eq:TestField)).
 
 \begin{equation}
   \begin{cases}
@@ -220,7 +225,7 @@ We first tested our algorithm with a synthetic model of two uncoupled state vari
 (\#eq:TestField)
 \end{equation}
 
-After introducing non-gradient interactions a four-well potential is still recognizable (figure \@ref(fig:synthetic), central panel). The error obtained correlates with the two perpendicular stripes of the plane $(x,y)$ were we defined the non-gradient interactions to be maximum (figure \@ref(fig:synthetic), right panel).
+When we choose those non-gradient interactions to be zero, the system becomes gradient and corresponds with a four-well potential. Our algorithm rendered it succesfully (cf. figure \@ref(fig:synthetic), left panel) and with zero error (figure \@ref(fig:synthetic), right panel). After introducing non-gradient interactions a four-well potential is still recognizable (figure \@ref(fig:synthetic-curl), left panel). The error obtained correlates with the two perpendicular stripes of the plane $(x,y)$ were we defined the non-gradient interactions to be maximum (figure \@ref(fig:synthetic-curl), right panel).
 
 ```{r synthetic, fig.cap = '(ref:synthetic)', out.width = '450px', fig.align = 'center'}
 # Dynamics
@@ -268,7 +273,7 @@ plotErr <- ggplot() +
 grid.arrange(plotV, plotErr, ncol = 2)
 ```
 
-(ref:synthetic) Results for the gradient case (i.e.: $p_x(x,y) = p_y(x,y) = 0$). In both panels the dots represent equilibrium points. In the left panel we see the potential obtained with our algorithm. The stable equilibria correspond to the bottom of the wells, and the unstable one to the summit between them. The right panel shows the estimated error of our computed potential. As expected, the error is zero everywhere.
+(ref:synthetic) Results of applying our algorithm to the gradient case (equation \@ref(eq:TestField) with $p_x(x,y) = p_y(x,y) = 0$). In both panels the dots represent equilibrium points. In the left panel we see the potential obtained with our algorithm. The stable equilibria correspond to the bottom of the wells, and the unstable one to the summit between them. The right panel shows the estimated error of our computed potential. As expected, the error is zero everywhere.
 
 ```{r synthetic-curl, fig.cap = '(ref:synthetic-curl)', out.width = '450px', fig.align = 'center'}
 # Auxiliary functions
@@ -278,10 +283,21 @@ py <- function(x) {-0.4*x[1]*exp(-3^6*(x[2]-1)^6)}
 # Dynamics
 f <- function(x) {c(-x[1] * (x[1]^2 - 1) + px(x), 
                     -x[2] * (x[2]^2 - 1) + py(x))}
+
 # Equilibrium points
-eqPoints <- data.frame(x_eq = c(0), 
-                       y_eq = c(0), 
-                       equilibrium = factor(c('unstable')))
+## Make a guess
+startPoints <- list(c(-1,-1), c(-1, 1), c(0,0), c(1,-1), c(1,1))
+startPointsEq <- c('stable', 'stable', 'unstable', 'stable', 'stable')
+
+## Find numerically
+eq_sol <- matrix(NA, nrow = length(startPoints), ncol = 2)
+for(i in 1:length(startPoints)) {
+  eq_sol[i, ] <- multiroot(f, start = startPoints[[i]])$root
+}
+
+eqPoints <- data.frame(x_eq = eq_sol[ , 1], 
+                       y_eq = eq_sol[ , 2], 
+                       equilibrium = factor(startPointsEq))
 
 # Region of interest
 xs <- seq(-2, 2, by = 0.05)
@@ -301,7 +317,7 @@ nbinsV <- 15
 plotV <- ggplot() +
           geom_tile(data = data, aes(x = X, y = Y, fill = V)) +
           geom_contour(data = data, aes(x = X, y = Y, z = V), colour = 'white', alpha = 0.5, breaks = breaksV) +
-          #geom_point(data = eqPoints, aes(x = x_eq, y = y_eq, color = equilibrium)) +
+          geom_point(data = eqPoints, aes(x = x_eq, y = y_eq, color = equilibrium)) +
           coord_fixed() +
           scale_fill_gradientn(colours = colorRamps::matlab.like(nbinsV)) +
           xlab("x") + ylab("y") + ggtitle("Approximate potential") +
@@ -310,7 +326,7 @@ plotV <- ggplot() +
 nbinsErr <- 10
 plotErr <- ggplot() +
           geom_tile(data = data, aes(x = X, y = Y, fill = err)) +
-          #geom_point(data = eqPoints, aes(x = x_eq, y = y_eq, color = equilibrium)) +
+          geom_point(data = eqPoints, aes(x = x_eq, y = y_eq, color = equilibrium)) +
           geom_contour(data = data, aes(x = X, y = Y, z = err), colour = 'white', alpha = 0.5, bins = nbinsErr) +
           coord_fixed() +
           scale_fill_gradientn(colours = colorRamps::green2red(nbinsErr), limits = c(0,1)) +
@@ -320,9 +336,9 @@ plotErr <- ggplot() +
 grid.arrange(plotV, plotErr, ncol = 2)
 ```
 
-(ref:synthetic-curl) Results for a non-gradient case ($p_x(x,y) = 0.3 y e^{-3^6x^6}$ and $p_y(x,y) = -0.4 x e^{-3^6(y-1)^6}$). Defined this way, the non-gradient term will be significantly distinct from zero around the bands centered at $x = 0$ and $y = 1$. The left panel shows the obtained pseudopotential. It can be noticed that the shape of the potential has been distorted, but four wells are still recognizable. Notice also that the two equilibria at the upper side of the plot fall slightly outside their closest well. The equilibria at the bottom, to the contrary, fit perfectly centered in their corresponding wells. The right panel shows the estimated error. As expected, the error is zero everywhere but in the bands centered around $x = 0$ and $y = 1$. This figure warns us against trusting the potential we obtained in the upper and central region, and guarantees us that elsewhere it will work fine. Notice that the two upper equilibria lie in a region where the error is clearly not negligible. The two lower ones, on the contrary, lie on a region where the error is almost zero, so we can safely use the previously derived potential to visualize them. This goes in accordance with our previous observation about the slight mismatch between equilibria and potential wells in the upper part of the figure.
+(ref:synthetic-curl) Results for a non-gradient case (equation \@ref(eq:TestField), where we chose $p_x(x,y) = 0.3 y e^{-3^6x^6}$ and $p_y(x,y) = -0.4 x e^{-3^6(y-1)^6}$). With this choice, the non-gradient term will be significantly distinct from zero around the bands centered at $x = 0$ and $y = 1$. In both panels the dots represent the system's actual equilibrium points. The left panel shows the obtained pseudopotential. It can be noticed that the shape of the potential has been distorted when compared with figure \@ref(fig:synthetic), but four wells are still recognizable. Notice also that the two equilibria at the upper side of the plot fall slightly outside their closest well. The equilibria at the bottom, to the contrary, fit perfectly centered in their corresponding wells. The right panel shows the estimated error. As expected, the error is zero everywhere but in the bands centered around $x = 0$ and $y = 1$. This figure warns us against trusting the potential in those regions, and guarantees us that elsewhere it will work fine. Notice that the two upper equilibria lie in a region where the error is not negligible. The two lower ones, on the contrary, lie on a region where the error is almost zero, so we can safely use the previously derived potential to visualize them. This goes in accordance with our previous observation about the slight mismatch between equilibria and potential wells in the upper part of the figure.
 
-## A biological example
+## Biological examples
 
 ### A simple regulatory gene network
 Waddington's epigenetic landscapes (@Gilbert1991) are a particular application of stability landscapes to gene regulatory networks controlling cellular differentiation. When applied to this problem, stability/epigenetic landscapes serve as a visual metaphor for the branching pathways of cell fate determination (@Bhattacharya2011).
@@ -341,7 +357,7 @@ The parameters used are identical to those in equations 6 and 7 of @Bhattacharya
 
 Despite the fact that this system is clearly non-gradient, our algorithm correctly predicts the existence of two wells (see figure \@ref(fig:Waddington)).
 
-```{r, Waddington, fig.cap = '(ref:waddington)', out.width = '400px', fig.align = 'center'}
+```{r Waddington, fig.cap = '(ref:waddington)', out.width = '400px', fig.align = 'center'}
 # Parameters
 bx <- 0.2
 ax <- 0.125
@@ -359,13 +375,22 @@ n <- 4
 f <- function(x) {c(bx - rx*x[1] + ax/(kx + x[2]^n), 
                     by - ry*x[2] + ay/(ky + x[1]^n))}
 
-# Input equilibrium points (calculated externally)
-#
-# Estimated with Wolfram Alpha
-# Prompt: 0 = 0.2 - x + 0.125/(0.0625 + y^4); 0 = 0.05 - y + 0.1094/(0.0625 + x^4)
-eqPoints <- data.frame(x_eq = c(0.213416, 0.559865, 2.19971),
-                       y_eq = c(1.74417, 0.730558, 0.0546602), 
-                       equilibrium = factor(c('stable', 'unstable', 'stable')))
+# Equilibrium points
+
+## Make a guess
+startPoints <- list(c(0.2, 2), c(0.5, 0.7), c(2, 0.05))
+startPointsEq <- c('stable', 'unstable', 'stable')
+
+## Find numerically
+eq_sol <- matrix(NA, nrow = length(startPoints), ncol = 2)
+for(i in 1:length(startPoints)) {
+  eq_sol[i, ] <- multiroot(f, start = startPoints[[i]])$root
+}
+
+eqPoints <- data.frame(x_eq = eq_sol[ , 1], 
+                       y_eq = eq_sol[ , 2], 
+                       equilibrium = factor(startPointsEq))
+
 
 # Region of interest
 xs <- seq(0, 4, by = 0.05)
@@ -407,10 +432,210 @@ grid.arrange(plotV, plotErr, ncol = 2)
 
 (ref:waddington) In both figures the dots represent the equilibrium points of the system. The contour plot in left panel shows the potential calculated for the simple gene regulatory network described in equation \@ref(eq:Waddington). The right panel shows the estimated error of our computed potential. The stable equilibria correspond to the wells.
 
+### Predator prey dynamics
+The Lotka-Volterra equations \@ref(eq:Lotka) are a classical predator-prey model (@Volterra1926). In this model $x$ and $y$ represent, respectivelly, the prey and predator biomasses.
+
+\begin{equation}
+  \begin{cases}
+    \frac{dx}{dt} = a x - b x y \\
+    \frac{dy}{dt} = c x y - d y
+  \end{cases}
+(\#eq:Lotka)
+\end{equation}
+
+This model is known to have cyclic dynamics. As we discussed in our analogy with Escher's paintings, we cannot compute stability landscapes in the regions of the phase plane where the dynamics are cyclic. When we apply our method to a system like equation \@ref(eq:Lotka), the error map correctly captures the fact that our estimated potential is not trustworthy (see figure \@ref(fig:Lotka)).
+
+```{r Lotka, fig.align='center', fig.cap='(ref:lotka)', out.width='400px'}
+# Parameters
+a <- 1
+b <- 1
+c <- 1
+d <- 1
+
+# Dynamics
+f <- function(x) {c(a*x[1] - b*x[1]*x[2],
+                    c*x[1]*x[2] - d*x[2])}
+
+# Equilibrium points
+## Calculated analytically
+eqPoints <- data.frame(x_eq = c(0, d/c), 
+                       y_eq = c(0, a/b), 
+                       equilibrium = factor(c('unstable', 'unstable')))
+
+# Get limit cycle attractor
+# Package desolve requires a slightly different syntax
+f_dyn <- function(t, state, parameters) {
+with(as.list(c(state, parameters)),{
+# rate of change
+  df <- f(state)
+  dX <- df[1]
+  dY <- df[2]
+
+# return the rate of change
+list(c(dX, dY))
+}) # end with(as.list ...
+}
+
+parms <- c(a = a,
+  b = b,
+  c = c,
+  d = d)
+
+init_state <- c(1,2)
+ts <- seq(0, 300, by = 0.01)
+out <- deSolve::ode(y = init_state, times = ts, func = f_dyn, parms = parms)
+colnames(out) <- c("time", "x", "y")
+out <- as.data.frame(out)
+
+attr <- dplyr::filter(as.data.frame(out), time > 200)
+
+# Region of interest
+xs <- seq(0, 2.5, by = 0.05)
+ys <- seq(0, 2.5, by = 0.05)
+
+# Calculate potential and error
+result <- approxPot2D(f, xs, ys)
+
+# Transform result into dataframe
+data <- expand.grid(X = xs, Y = ys)
+data$V <- as.vector(result$V)
+data$err <- as.vector(result$err)
+
+# Plot
+breaksV <- c(seq(0, 7.5, by = 0.5))
+nbinsV <- 15
+plotV <- ggplot() +
+          geom_tile(data = data, aes(x = X, y = Y, fill = V)) +
+          geom_contour(data = data, aes(x = X, y = Y, z = V), colour = 'white', alpha = 0.5, breaks = breaksV) +
+          geom_point(data = eqPoints, aes(x = x_eq, y = y_eq, color = equilibrium)) +
+          geom_path(data = attr, aes(x = x, y = y)) +
+          coord_fixed() +
+          scale_fill_gradientn(colours = colorRamps::matlab.like(nbinsV)) +
+          xlab("x") + ylab("y") + ggtitle("Approximate potential") +
+          theme_bw()
+
+nbinsErr <- 10
+plotErr <- ggplot() +
+          geom_tile(data = data, aes(x = X, y = Y, fill = err)) +
+          geom_contour(data = data, aes(x = X, y = Y, z = err), colour = 'white', alpha = 0.5, bins = nbinsErr) +
+          geom_point(data = eqPoints, aes(x = x_eq, y = y_eq, color = equilibrium)) +
+          geom_path(data = attr, aes(x = x, y = y)) +
+          coord_fixed() +
+          scale_fill_gradientn(colours = colorRamps::green2red(nbinsErr), limits = c(0,1)) +
+          xlab("x") + ylab("y") + ggtitle("Error map") +
+          theme_bw()
+
+grid.arrange(plotV, plotErr, ncol = 2)
+
+```
+
+(ref:lotka) Results of applying our algorithm to a Lotka-Volterra system (equation \@(eq:Lotka), with $a = b = c = d = 1$). In both figures the dots represent the equilibrium points of the system. The black curve is a solution trajectory. The contour plot in left panel shows the pseudopotential. The right panel shows the estimated error of our computed potential. The high values in the error map tell us that this system doesn't accept an approximate potential in our region of interest.
+
+```{r Rosenzweig, fig.cap = '(ref:rosenzweig)', out.width = '400px', fig.align = 'center', eval = FALSE, include = FALSE}
+# Parameters
+r <- 1
+k <- 10
+h <- 2
+e <- 0.2
+m <- 0.1
+
+# Auxiliary function
+g <- function(x) {1/(h + x)}
+
+# Dynamics
+f <- function(x) {c(r*x[1]*(1 - x[1]/k) -g(x[1])*x[1]*x[2], 
+                    e*g(x[1])*x[1]*x[2] - m*x[2])}
+
+# Equilibrium points
+
+## Make a guess
+startPoints <- list(c(0, 0))
+startPointsEq <- c('unstable')
+
+## Find numerically
+eq_sol <- matrix(NA, nrow = length(startPoints), ncol = 2)
+for(i in 1:length(startPoints)) {
+  eq_sol[i, ] <- multiroot(f, start = startPoints[[i]])$root
+}
+
+eqPoints <- data.frame(x_eq = eq_sol[ , 1], 
+                       y_eq = eq_sol[ , 2], 
+                       equilibrium = factor(startPointsEq))
+
+# Get limit cycle attractor
+# Package desolve requires a slightly different syntax
+f_dyn <- function(t, state, parameters) {
+with(as.list(c(state, parameters)),{
+# rate of change
+  df <- f(state)
+  dX <- df[1]
+  dY <- df[2]
+
+# return the rate of change
+list(c(dX, dY))
+}) # end with(as.list ...
+}
+
+parms <- c(r =r,
+  k = k,
+  h = h,
+  e = e,
+  m = m)
+
+init_state <- c(1,2)
+ts <- seq(0, 300, by = 0.01)
+out <- deSolve::ode(y = init_state, times = ts, func = f_dyn, parms = parms)
+colnames(out) <- c("time", "x", "y")
+out <- as.data.frame(out)
+
+attr <- dplyr::filter(as.data.frame(out), time > 200)
+
+# Region of interest
+xs <- seq(0, 10, by = 0.05)
+ys <- seq(0, 5, by = 0.05)
+
+# Calculate potential and error
+result <- approxPot2D(f, xs, ys)
+
+# Transform result into dataframe
+data <- expand.grid(X = xs, Y = ys)
+data$V <- as.vector(result$V)
+data$err <- as.vector(result$err)
+
+# Plot
+breaksV <- c(seq(0, 30, by = 2))
+nbinsV <- 15
+plotV <- ggplot() +
+          geom_tile(data = data, aes(x = X, y = Y, fill = V)) +
+          geom_contour(data = data, aes(x = X, y = Y, z = V), colour = 'white', alpha = 0.5, breaks = breaksV) +
+          geom_point(data = eqPoints, aes(x = x_eq, y = y_eq, color = equilibrium)) +
+          geom_path(data = attr, aes(x = x, y = y)) +
+          coord_fixed() +
+          scale_fill_gradientn(colours = colorRamps::matlab.like(nbinsV)) +
+          xlab("x") + ylab("y") + ggtitle("Approximate potential") +
+          theme_bw()
+
+nbinsErr <- 10
+plotErr <- ggplot() +
+          geom_tile(data = data, aes(x = X, y = Y, fill = err)) +
+          geom_contour(data = data, aes(x = X, y = Y, z = err), colour = 'white', alpha = 0.5, bins = nbinsErr) +
+          geom_point(data = eqPoints, aes(x = x_eq, y = y_eq, color = equilibrium)) +
+          geom_path(data = attr, aes(x = x, y = y)) +
+          coord_fixed() +
+          scale_fill_gradientn(colours = colorRamps::green2red(nbinsErr), limits = c(0,1)) +
+          xlab("x") + ylab("y") + ggtitle("Error map") +
+          theme_bw()
+
+grid.arrange(plotV, plotErr, ncol = 2)
+
+```
+
+(ref:rosenzweig) In both figures the dots represent the equilibrium points of the system. The contour plot in left panel shows the potential calculated for the simple gene regulatory network described in equation \@ref(eq:Waddington). The right panel shows the estimated error of our computed potential. The stable equilibria correspond to the wells.
+
 # Discussion
 The use of stability landscapes as a helping tool to understand one-dimensional dynamical systems achieved great success, specially in interdisciplinary research communities. A generalization of the idea of scalar potential to two-dimensional systems seemed to be a logical next step. Unfortunately, as we have seen, there are reasons that make two (and higher) dimensional systems fundamentally different from the one-dimensional case. The generalization, straightforward as it may look, is actually impossible for most dynamical equations. As a consequence, any attempt of computing stability landscapes for high-dimensional systems should, neccessarily, drop some desirable properties of classical scalar potentials.
 
-For instance, the method proposed by @Bhattacharya2011 smartly avoids the problem of path dependence of line integrals by integrating along trajectories, removing thus the freedom of path choice. The price paid is that this algorithm cannot guarantee simultaneous continuity at all equilibria and along separatrices for general systems.
+For instance, the method proposed by Bhattacharya (@Bhattacharya2011) smartly avoids the problem of path dependence of line integrals by integrating along trajectories, removing thus the freedom of path choice. The price paid is that this algorithm cannot guarantee simultaneous continuity at all equilibria and along separatrices for general systems.
 
 A more theoretical review of pseudopotential computation, for a mathematically oriented audience, can be found in @Zhou. Here, different criterions are used to decompose the dynamics in a scalar potential and an extra term. Unfortunately, our experience is that those methods, despite their obvious quality, have a limited impact outside the physicist community due to their mathematical complexity.
 
@@ -426,7 +651,7 @@ The concept of potential is paramount in physical sciences, where its use goes w
 Regarding visualization alone, it may be worth reconsidering why do we prefer the idea of stability landscape over a traditional phase plane figure, specially after pointing out all the difficulties of calculating stability landscapes for higher-dimensional systems. It is true that the latter is slightly less intuitive than the stability landscape, but it has a very desirable property: it always exists.
 
 # Acknowledgments
-This work was greatly inspired by the dicussions with Cristina Sargent, Iñaki Úcar, Enrique Benito, Tobias Oertel-Jäger, Jelle Lever, and Els Weinans. This work was supported by funding from the European Union's _Horizon 2020_ research and innovation programme for the _ITN CRITICS_ under Grant Agreement Number _643073_.
+This work was greatly inspired by the dicussions with Cristina Sargent, Iñaki Úcar, Enrique Benito, Sanne J.P. van den Berg, Tobias Oertel-Jäger, Jelle Lever, and Els Weinans. This work was supported by funding from the European Union's _Horizon 2020_ research and innovation programme for the _ITN CRITICS_ under Grant Agreement Number _643073_.
 
 \newpage
 
