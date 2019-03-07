@@ -16,8 +16,11 @@
 - They don't seem to output an associated error
 - Give them credit enough
 
+## Nice sentences
+
+- Instead of trying to force a potential, we ask the system if it accepts one. If not, we try to negotiate an approximation that, at least, works locally. It is an assymmetric negotiaton: in those regions where the system is highly non-gradient, any proposed potential will be vetoed.
+
 ## Citations
 
 - Relevance of visualization: Edward Tufte
 - https://hanswisbrun.nl/2015/09/14/escher-en-de-buitelende-man/15-1-2/
-- Penrose stairs

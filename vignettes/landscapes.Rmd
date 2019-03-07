@@ -54,7 +54,7 @@ library(rootSolve)
 # Introduction
 With knowledge becoming progressively more interdisciplinary, the relevance of science communication is increasing fast. Mathematical concepts are among the hardest topics to communicate to non-expert audiences, policy makers, and also to scientists with little mathematical background. Visual methods are known to be successful ways of explaining mathematical concepts and results to non-specialists.
 
-One particularly successful visualization method is that of the stability landscape, also known as the rolling marble or ball-in-a-cup diagram (@Beisner2003, @Edelstein-Keshet, @Strogatz1994), whose origins can be traced back to the introduction of the scalar potential by Lagrange in the XVIII century (@Lagrange1777). In stability landscapes (e.g.: figure \@ref(fig:aew)) the position of the marble represents the state of the system at a given time. With this picture in mind, the shape of the surface represents the underlying dynamical rules, where the slope is the driver of the movement. The peaks on the undulated surface represent unstable equilibrium states and the wells represent stable equilibria. Different basins of attraction are separated by _mountain ridges_ in the surface. Summarizing: the marble naturally rolls downhill to the lowest point of its basin of attraction. 
+One particularly successful visualization method is that of the stability landscape, also known as the rolling marble or ball-in-a-cup diagram (@Edelstein-Keshet, @Beisner2003, @Strogatz1994), whose origins can be traced back to the introduction of the scalar potential by Lagrange in the XVIII century (@Lagrange1777). In stability landscapes (e.g.: figure \@ref(fig:aew)) the position of the marble represents the state of the system at a given time. With this picture in mind, the shape of the surface represents the underlying dynamical rules, where the slope is the driver of the movement. The peaks on the undulated surface represent unstable equilibrium states and the wells represent stable equilibria. Different basins of attraction are separated by _mountain ridges_ in the surface. Summarizing: the marble naturally rolls downhill to the lowest point of its basin of attraction. 
 
 The main reason for the success of this picture arises from the fact that stability landscapes are built as an analogy with our most familiar dynamical system: movement. Particularly, the movement of a marble along a curved landscape under the influence of its own weight and a strong frictional force. The stability landscape corresponds then with the physical concept of potential energy (@Strogatz1994). This explains why our intuition, based in what we know about movement in our everyday life, works so well reading this diagrams. It is important to stress the fact that under this picture there's not such a thing as inertia (@Beisner2003). The accurate analogy is that of a marble rolling in a surface while submerged inside a very viscous fluid (@Strogatz1994).
 
@@ -76,7 +76,7 @@ knitr::include_graphics('img/penrose.png')
 
 Being this a centuries-old problem (see for instance @VonHelmholtz1858), several methods have been proposed to estimate stability landscapes for general, high-dimensional systems. A comprehensive review can be found in @Zhou. Nevertheless, we share the perception with other authors (@Beisner2003) that the concept of potential is often misunderstood in research communities with a limited mathematical background, and that even methods like the ones described in @Zhou are often, and perhaps unfairly discarded as "too complicated to implement". 
 
-Here we review the state of the art, and present a new method to deal with the fundamental problem of approximating stability landscapes for high dimensional systems. First, we present an overview of the conditions that a model has to fulfill to be robustly associated with a potential. Next, we center our attention in systems that fail to fulfill those conditions, and we introduce an algorithm to decompose them as the sum of a gradient and a non-gradient part. Each part can be used, respectivelly, to compute an associated potential and to measure the local error introduced by our picture. In order to reach those interested readers with little background in mathematics, we limited our mathematical weaponry. Knowledge of basic linear algebra and basic vector calculus will suffice to understand the paper to its last detail. Additionally, we provide a ready to use _R_ package that implements the algorithm this paper describes.
+Here we review the state of the art, and we introduce a new method to deal with the fundamental problem of approximating stability landscapes for high dimensional systems. First, we present an overview of the conditions that a model has to fulfill to be robustly associated with a potential. Next, we center our attention in systems that fail to fulfill those conditions, and we introduce an algorithm to decompose them as the sum of a gradient and a non-gradient part. Each part can be used, respectivelly, to compute an associated potential and to measure the local error introduced by our picture. In order to reach those interested readers with little background in mathematics, we limited our mathematical weaponry. Knowledge of basic linear algebra and basic vector calculus will suffice to understand the paper to its last detail. Additionally, we provide a ready to use _R_ package that implements the algorithm this paper describes.
 
 ## Mathematical background
 
@@ -199,7 +199,7 @@ The more fundamental error due to neglecting the curl component of our system is
 (\#eq:error)
 \end{equation}
 
-## Code package
+## Implementation
 As an application of the abovementioned ideas, and following the spirit of reproducible research, we developed a transparent _R_ package we called _consRvative_. Our algorithm accepts a set of dynamical equations and a grid of points defining our region of interest as an input. The output is the estimated potential and the estimated error, both of them calculated at each point of our grid (see figure \@ref(fig:algorithm)).
 
 ```{r algorithm, fig.cap = '(ref:algorithm)', fig.align = 'center', fig.pos = 'H'}
@@ -215,7 +215,7 @@ The package is tested, documented and freely available at https://github.com/Pab
 ## Synthetic examples
 
 ### A four well potential
-We first tested our algorithm with a synthetic model of two uncoupled state variables, each with two attractors. As both states are uncoupled, this system is gradient and has a potential with four wells. We added interaction terms $p_x$ and $p_y$ to be able to make it gradually non-gradient (see equation \@ref(eq:TestField)).
+We first tested our algorithm with a synthetic model of two uncoupled state variables. Uncoupled systems are always gradient (cf. equation \@ref(eq:2Dcond)). Particularly, this system has a potential with four wells. We added the interaction terms $p_x$ and $p_y$ to be able to make it gradually non-gradient (see equation \@ref(eq:TestField)).
 
 \begin{equation}
   \begin{cases}
@@ -225,7 +225,7 @@ We first tested our algorithm with a synthetic model of two uncoupled state vari
 (\#eq:TestField)
 \end{equation}
 
-When we choose those non-gradient interactions to be zero, the system becomes gradient and corresponds with a four-well potential. Our algorithm rendered it succesfully (cf. figure \@ref(fig:synthetic), left panel) and with zero error (figure \@ref(fig:synthetic), right panel). After introducing non-gradient interactions a four-well potential is still recognizable (figure \@ref(fig:synthetic-curl), left panel). The error obtained correlates with the two perpendicular stripes of the plane $(x,y)$ were we defined the non-gradient interactions to be maximum (figure \@ref(fig:synthetic-curl), right panel).
+When we choose those non-gradient interactions to be zero, the system is purely gradient and corresponds with a four-well potential. Our algorithm rendered it succesfully (cf. figure \@ref(fig:synthetic), left panel) and with zero error (figure \@ref(fig:synthetic), right panel). After introducing non-gradient interactions a four-well potential is still recognizable (figure \@ref(fig:synthetic-curl), left panel). The error obtained correlates with the two perpendicular stripes of the plane $(x,y)$ were we defined the non-gradient interactions to be maximum (figure \@ref(fig:synthetic-curl), right panel).
 
 ```{r synthetic, fig.cap = '(ref:synthetic)', out.width = '450px', fig.align = 'center'}
 # Dynamics
@@ -327,9 +327,9 @@ nbinsErr <- 10
 plotErr <- ggplot() +
           geom_tile(data = data, aes(x = X, y = Y, fill = err)) +
           geom_point(data = eqPoints, aes(x = x_eq, y = y_eq, color = equilibrium)) +
-          geom_contour(data = data, aes(x = X, y = Y, z = err), colour = 'white', alpha = 0.5, bins = nbinsErr) +
+          #geom_contour(data = data, aes(x = X, y = Y, z = err), colour = 'white', alpha = 0.5, bins = nbinsErr) +
           coord_fixed() +
-          scale_fill_gradientn(colours = colorRamps::green2red(nbinsErr), limits = c(0,1)) +
+          scale_fill_gradientn(colours = colorRamps::green2red(nbinsErr)) +
           xlab("x") + ylab("y") + ggtitle("Error map") +
           theme_bw()
 
@@ -337,6 +337,88 @@ grid.arrange(plotV, plotErr, ncol = 2)
 ```
 
 (ref:synthetic-curl) Results for a non-gradient case (equation \@ref(eq:TestField), where we chose $p_x(x,y) = 0.3 y e^{-3^6x^6}$ and $p_y(x,y) = -0.4 x e^{-3^6(y-1)^6}$). With this choice, the non-gradient term will be significantly distinct from zero around the bands centered at $x = 0$ and $y = 1$. In both panels the dots represent the system's actual equilibrium points. The left panel shows the obtained pseudopotential. It can be noticed that the shape of the potential has been distorted when compared with figure \@ref(fig:synthetic), but four wells are still recognizable. Notice also that the two equilibria at the upper side of the plot fall slightly outside their closest well. The equilibria at the bottom, to the contrary, fit perfectly centered in their corresponding wells. The right panel shows the estimated error. As expected, the error is zero everywhere but in the bands centered around $x = 0$ and $y = 1$. This figure warns us against trusting the potential in those regions, and guarantees us that elsewhere it will work fine. Notice that the two upper equilibria lie in a region where the error is not negligible. The two lower ones, on the contrary, lie on a region where the error is almost zero, so we can safely use the previously derived potential to visualize them. This goes in accordance with our previous observation about the slight mismatch between equilibria and potential wells in the upper part of the figure.
+
+### A fully non-gradient system
+In order to stress our algorithm to the maximum, we fed it with equation \@ref(eq:pure-curl). Such a system has a zero gradient part everywhere, and all solutions (but the equilibrium point at $(0,0)$) are cyclic. This fact is captured by our algorithm, that correctly predicts a relative error of $1$ everywhere (see figure \@ref(fig:pure-curl), right panel). In this case, the pseudopotential (figure \@ref(fig:pure-curl), left panel) is completely useless.
+
+\begin{equation}
+  \begin{cases}
+    \frac{dx}{dt} = -y \\
+    \frac{dy}{dt} = x
+  \end{cases}
+(\#eq:pure-curl)
+\end{equation}
+
+```{r pure-curl, fig.cap = '(ref:pure-curl)', out.width = '400px', fig.align = 'center'}
+# Dynamics
+f <- function(x) {c(-x[2], 
+                     x[1])}
+
+# Equilibrium points
+
+## Make a guess
+startPoints <- list(c(0, 0))
+startPointsEq <- c('unstable')
+
+## Find numerically
+eq_sol <- matrix(NA, nrow = length(startPoints), ncol = 2)
+for(i in 1:length(startPoints)) {
+  eq_sol[i, ] <- multiroot(f, start = startPoints[[i]])$root
+}
+
+eqPoints <- data.frame(x_eq = eq_sol[ , 1], 
+                       y_eq = eq_sol[ , 2], 
+                       equilibrium = factor(startPointsEq))
+
+# Find the attractor
+## We know it is a circle
+ts <- seq(0, 2*pi, length.out = 200)
+circle_x <- cos(ts)
+circle_y <- sin(ts)
+
+attr <- data.frame(x = circle_x, y = circle_y)
+
+# Region of interest
+xs <- seq(-2, 2, by = 0.05)
+ys <- seq(-2, 2, by = 0.05)
+
+# Calculate potential and error
+result <- approxPot2D(f, xs, ys)
+
+# Transform result into dataframe
+data <- expand.grid(X = xs, Y = ys)
+data$V <- as.vector(result$V)
+data$err <- as.vector(result$err)
+
+# Plot
+breaksV <- c(seq(0, 25, by = 1))
+nbinsV <- 15
+plotV <- ggplot() +
+          geom_tile(data = data, aes(x = X, y = Y, fill = V)) +
+          geom_contour(data = data, aes(x = X, y = Y, z = V), colour = 'white', alpha = 0.5, breaks = breaksV) +
+          geom_point(data = eqPoints, aes(x = x_eq, y = y_eq, color = equilibrium)) +
+          geom_path(data = attr, aes(x = x, y = y)) +
+          coord_fixed() +
+          scale_fill_gradientn(colours = colorRamps::matlab.like(nbinsV)) +
+          xlab("x") + ylab("y") + ggtitle("Approximate potential") +
+          theme_bw()
+
+nbinsErr <- 10
+plotErr <- ggplot() +
+          geom_tile(data = data, aes(x = X, y = Y, fill = err)) +
+          #geom_contour(data = data, aes(x = X, y = Y, z = err), colour = 'white', alpha = 0.5, bins = nbinsErr) +
+          geom_point(data = eqPoints, aes(x = x_eq, y = y_eq, color = equilibrium)) +
+          geom_path(data = attr, aes(x = x, y = y)) +
+          coord_fixed() +
+          scale_fill_gradientn(colours = colorRamps::green2red(nbinsErr), limits = c(0,1)) +
+          xlab("x") + ylab("y") + ggtitle("Error map") +
+          theme_bw()
+
+grid.arrange(plotV, plotErr, ncol = 2)
+
+```
+
+(ref:pure-curl)  Results of applying our algorithm to (equation \@ref(eq:pure-curl)). In both figures the dots represent the equilibrium points of the system. The black curve is a solution trajectory. This is a fully non-gradient case, that is, the gradient term is zero everywhere and all solutions are cyclic. This makes this example the worst nightmare for those who want to compute a stability landscape. The error returned by our method (right panel) is maximum everywhere. This means that the computed pseudopotential (left panel) is useless everywhere.
 
 ## Biological examples
 
@@ -529,7 +611,7 @@ grid.arrange(plotV, plotErr, ncol = 2)
 
 ```
 
-(ref:lotka) Results of applying our algorithm to a Lotka-Volterra system (equation \@(eq:Lotka), with $a = b = c = d = 1$). In both figures the dots represent the equilibrium points of the system. The black curve is a solution trajectory. The contour plot in left panel shows the pseudopotential. The right panel shows the estimated error of our computed potential. The high values in the error map tell us that this system doesn't accept an approximate potential in our region of interest.
+(ref:lotka) Results of applying our algorithm to a Lotka-Volterra system (equation \@ref(eq:Lotka), with $a = b = c = d = 1$). In both figures the dots represent the equilibrium points of the system. The black curve is a solution trajectory. The contour plot in left panel shows the pseudopotential. The right panel shows the estimated error of our computed potential. The high values in the error map tell us that this system doesn't accept an approximate potential in our region of interest.
 
 ```{r Rosenzweig, fig.cap = '(ref:rosenzweig)', out.width = '400px', fig.align = 'center', eval = FALSE, include = FALSE}
 # Parameters
@@ -641,10 +723,11 @@ A more theoretical review of pseudopotential computation, for a mathematically o
 
 The algorithm we present here is an attempt to preserve as much as possible from the classical potential theory while keeping the mathematical complexity as low as possible. Indeed, it calculates the closest classical potential to our problem (and thus the exact one in case it exists). The price we pay is to calculate a potential that, in general, is only locally meaningful. The estimated error lets us know where this does happen. Additionaly, our algorithm provides:
 
+- Integrity. At each step the strength of the curl term is calculated. If this term is high, it is fundamentally impossible to calculate a scalar potential with any method. 
+- Safety. The relative size of the curl term can be interpreted as an error term, mapping which regions of our stability landscape are dangerous to visit.
+- Speed. The rendering of a printing quality surface can be performed in no more than a few minutes in a personal laptop.
 - Simplicity. The required mathematical background is covered by any introductory course in linear algebra and vector calculus.
 - Usability. We provide the algorithm in the form of a ready to use, documented and tested _R_ package.
-- Integrity. At each step the strength of the curl term is calculated. If this term is high, it is fundamentally impossible to calculate a scalar potential with any method. The relative size of the curl term can be interpreted as an error term, mapping which regions of our stability landscape are dangerous to visit.
-- Speed. The rendering of a printing quality surface can be performed in no more than a few minutes in a personal laptop.
 
 The concept of potential is paramount in physical sciences, where its use goes way further than visualization. The main reason for the ubiquity of potentials in physics is that several physical systems are known to be governed only by gradient terms (e.g.: movement in conservative systems, classical gravitatory fields, electrostatic fields, ...). Physical potentials can be related with measurable concepts like energy. From the depth and width of a potential we can learn about transition rates and resilience to pulse perturbations. The height of the lowest barrier determines the minimum energy to transition to an alternative stable state, which relates to the probability of a critical transition via the Arrhenius equation (@Hanggi1990). All these results from physics remain true for non-physical problems that happen to be governed exclusively by gradient dynamics, and, we claim, should remain approximately true for problems governed by weakly non-gradient dynamics. This is the situation our algorithm has been designed to deal with.
 
