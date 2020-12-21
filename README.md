@@ -5,6 +5,9 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3763038.svg)](https://doi.org/10.5281/zenodo.3763038)
 [![fair-software.eu](https://img.shields.io/badge/fair--software.eu-%E2%97%8F%20%20%E2%97%8F%20%20%E2%97%8B%20%20%E2%97%8F%20%20%E2%97%8B-orange)](https://fair-software.eu)
 
+# Important note
+This repository is archived. The project is being continuated in [github.com/PabRod/waydown](https://github.com/PabRod/waydown). The reason for this is that `rolldown` is already a registered package in CRAN. Sorry for the inconvenience.
+
 # rolldown <img src="vignettes/img/logo.png" width="120" align="right" />
 This package implements some methods for computing potential landscapes for non-gradient systems.
 
